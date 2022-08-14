@@ -1,18 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
 import { Combobox } from '@headlessui/react';
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
+import { classNames } from 'utils/helpers';
 
 const DEFAULT_OPTION = {
   label: 'Select a value',
-  id: '0',
+  _id: null,
 };
-export default function Select({ label = '', options = [], onChange }) {
+export default function Select({
+  label = '',
+  options = [],
+  value,
+  onChange,
+  name,
+}) {
   const [query, setQuery] = useState('');
-  const [selectedOption, setSelectedOption] = useState(DEFAULT_OPTION);
 
   const filteredOptions =
     query === ''
@@ -22,7 +24,7 @@ export default function Select({ label = '', options = [], onChange }) {
         });
 
   return (
-    <Combobox as='div' value={selectedOption} onChange={setSelectedOption}>
+    <Combobox as='div' name={name} value={value} onChange={onChange}>
       <Combobox.Label className='block text-sm font-medium text-gray-700'>
         {label}
       </Combobox.Label>
@@ -30,7 +32,10 @@ export default function Select({ label = '', options = [], onChange }) {
         <Combobox.Input
           className='w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm'
           onChange={(event) => setQuery(event.target.value)}
-          displayValue={(option) => option.label}
+          displayValue={(option) => {
+            console.log(option);
+            return option.label;
+          }}
         />
         <Combobox.Button className='absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none'>
           <SelectorIcon className='h-5 w-5 text-gray-400' aria-hidden='true' />

@@ -72,15 +72,15 @@ export const CREATOR_CONFIG = {
 };
 
 export const CONTRIBUTOR_CONFIG = {
-  firstName: {},
-  lastName: {},
+  firstName: {}, //este
+  lastName: {}, //este
   profilePicture: {}, //+ ESTE
   website: {}, //+ ESTE
   bio: {}, //+ESTE
-  city: {},
-  country: {},
+  city: {}, //este
+  country: {}, //este
   companyName: {}, //+ ESTE
-  taxId: {},
-  socialLinks: {},
+  taxId: {}, //este
+  socialLinks: {}, //este
   categoryId: {}, // ESTE
 };

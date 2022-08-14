@@ -1,6 +1,8 @@
 import ProfilePicture from 'components/Shared/Form/ProfilePicture';
+import countries from 'utils/helpers/countries.json';
 
-export default function PersonalInformation() {
+export default function PersonalInformation({ values, handleChange }) {
+  console.log(countries);
   return (
     <div className='bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6'>
       <div className='md:grid md:grid-cols-3 md:gap-6'>
@@ -8,9 +10,7 @@ export default function PersonalInformation() {
           <h3 className='text-lg font-medium leading-6 text-gray-900'>
             Personal Information
           </h3>
-          <p className='mt-1 text-sm text-gray-500'>
-            Use a permanent address where you can receive mail.
-          </p>
+          <p className='mt-1 text-sm text-gray-500'></p>
         </div>
         <div className='mt-5 md:mt-0 md:col-span-2'>
           <form action='#' method='POST' className='flex flex-col gap-6'>
@@ -18,15 +18,17 @@ export default function PersonalInformation() {
             <div className='grid grid-cols-6 gap-6'>
               <div className='col-span-6 sm:col-span-3'>
                 <label
-                  htmlFor='first-name'
+                  htmlFor='firstName'
                   className='block text-sm font-medium text-gray-700'
                 >
                   First name
                 </label>
                 <input
                   type='text'
-                  name='first-name'
-                  id='first-name'
+                  name='firstName'
+                  value={values.firstName}
+                  onChange={handleChange}
+                  id='firstName'
                   autoComplete='given-name'
                   className='mt-1 focus:ring-secondary focus:border-secondary block w-full shadow-sm sm:text-sm border-gray-300 rounded-md'
                 />
@@ -34,32 +36,18 @@ export default function PersonalInformation() {
 
               <div className='col-span-6 sm:col-span-3'>
                 <label
-                  htmlFor='last-name'
+                  htmlFor='lastName'
                   className='block text-sm font-medium text-gray-700'
                 >
                   Last name
                 </label>
                 <input
                   type='text'
-                  name='last-name'
-                  id='last-name'
+                  name='lastName'
+                  value={values.lastName}
+                  onChange={handleChange}
+                  id='lastName'
                   autoComplete='family-name'
-                  className='mt-1 focus:ring-secondary focus:border-secondary block w-full shadow-sm sm:text-sm border-gray-300 rounded-md'
-                />
-              </div>
-
-              <div className='col-span-6 sm:col-span-4'>
-                <label
-                  htmlFor='email-address'
-                  className='block text-sm font-medium text-gray-700'
-                >
-                  Email address
-                </label>
-                <input
-                  type='text'
-                  name='email-address'
-                  id='email-address'
-                  autoComplete='email'
                   className='mt-1 focus:ring-secondary focus:border-secondary block w-full shadow-sm sm:text-sm border-gray-300 rounded-md'
                 />
               </div>
@@ -74,6 +62,26 @@ export default function PersonalInformation() {
                 <select
                   id='country'
                   name='country'
+                  value={values.country}
+                  autoComplete='country-name'
+                  className='mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-secondary focus:border-secondary sm:text-sm'
+                >
+                  {countries.map((country, idx) => (
+                    <option key={idx}>{country.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className='col-span-6 sm:col-span-3'>
+                <label
+                  htmlFor='city'
+                  className='block text-sm font-medium text-gray-700'
+                >
+                  City
+                </label>
+                <select
+                  id='city'
+                  name='city'
                   autoComplete='country-name'
                   className='mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-secondary focus:border-secondary sm:text-sm'
                 >
@@ -81,70 +89,6 @@ export default function PersonalInformation() {
                   <option>Canada</option>
                   <option>Mexico</option>
                 </select>
-              </div>
-
-              <div className='col-span-6'>
-                <label
-                  htmlFor='street-address'
-                  className='block text-sm font-medium text-gray-700'
-                >
-                  Street address
-                </label>
-                <input
-                  type='text'
-                  name='street-address'
-                  id='street-address'
-                  autoComplete='street-address'
-                  className='mt-1 focus:ring-secondary focus:border-secondary block w-full shadow-sm sm:text-sm border-gray-300 rounded-md'
-                />
-              </div>
-
-              <div className='col-span-6 sm:col-span-6 lg:col-span-2'>
-                <label
-                  htmlFor='city'
-                  className='block text-sm font-medium text-gray-700'
-                >
-                  City
-                </label>
-                <input
-                  type='text'
-                  name='city'
-                  id='city'
-                  autoComplete='address-level2'
-                  className='mt-1 focus:ring-secondary focus:border-secondary block w-full shadow-sm sm:text-sm border-gray-300 rounded-md'
-                />
-              </div>
-
-              <div className='col-span-6 sm:col-span-3 lg:col-span-2'>
-                <label
-                  htmlFor='region'
-                  className='block text-sm font-medium text-gray-700'
-                >
-                  State / Province
-                </label>
-                <input
-                  type='text'
-                  name='region'
-                  id='region'
-                  autoComplete='address-level1'
-                  className='mt-1 focus:ring-secondary focus:border-secondary block w-full shadow-sm sm:text-sm border-gray-300 rounded-md'
-                />
-              </div>
-
-              <div className='col-span-6 sm:col-span-3 lg:col-span-2'>
-                <label
-                  htmlFor='postal-code'
-                  className='block text-sm font-medium text-gray-700'
-                >
-                  ZIP / Postal code
-                </label>
-                <input
-                  type='text'
-                  name='postal-code'
-                  id='postal-code'
-                  autoComplete='postal-code'
-                  className='mt-1 focus:ring-secondary focus:border-secondary block w-full shadow-sm sm:text-sm border-gray-300 rounded-md'
-                />
               </div>
             </div>
           </form>

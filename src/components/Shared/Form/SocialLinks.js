@@ -21,7 +21,7 @@ const SOCIALS = [
   },
 ];
 
-const SocialLinks = () => {
+const SocialLinks = ({ onChange, values, name }) => {
   return (
     <div className='grid grid-cols-3 gap-6'>
       <div className='col-span-3 sm:col-span-2'>
@@ -38,8 +38,10 @@ const SocialLinks = () => {
             </span>
             <input
               type='text'
-              name='socialLinks'
-              id='socialLinks'
+              name={`${name}.${social.key}`}
+              id={`${name}.${social.key}`}
+              onChange={onChange}
+              value={values[name][social.key]}
               className='focus:ring-secondary focus:border-secondary flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300'
               placeholder={social.placeholder}
             />

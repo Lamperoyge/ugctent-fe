@@ -1,8 +1,23 @@
-import { useGetCategories } from 'hooks';
 import Stepper from 'components/Shared/Stepper';
 import { useState } from 'react';
 import CompanyProfile from './CompanyProfile';
 import PersonalInformation from './PersonalInformation';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
+
+const schema = yup.object({
+  companyName: yup.string().required('Please enter your company name'),
+  bio: yup.string(),
+  categoryIds: yup.array().of(yup.string()),
+  website: yup.string(),
+  socialLinks: yup.object({
+    instagram: yup.string(),
+    tiktok: yup.string(),
+    youtube: yup.string(),
+    facebook: yup.string(),
+  }),
+  taxId: yup.string(),
+});
 
 const STEPS = [
   {
@@ -16,7 +31,6 @@ const STEPS = [
 ];
 
 export default function OrgOnboardingForm() {
-  const { categories, categoriesError, categoriesLoading } = useGetCategories();
   const [step, setStep] = useState(STEPS[0]);
 
   const lastCompletedStepIdx = STEPS.findIndex((s) => s.id === step.id) - 1;
@@ -26,6 +40,46 @@ export default function OrgOnboardingForm() {
 
   const ActivePartComponent =
     step.id === 'companyProfile' ? CompanyProfile : PersonalInformation;
+
+  const formik = useFormik({
+    initialValues: {
+      companyName: '',
+      bio: '',
+      categoryIds: [
+        {
+          label: 'Select a value',
+          _id: null,
+        },
+      ],
+      website: '',
+      socialLinks: {
+        youtube: '',
+        tiktok: '',
+        instagram: '',
+        facebook: '',
+      },
+      taxId: '',
+    },
+    onSubmit: (values) => console.log(values),
+    validationSchema: schema,
+  });
+
+  //TODO refactor
+
+  const moveStepper = (type) => {
+    if (type === 'next') {
+      return setStep(STEPS[lastCompletedStepIdx + 2]);
+    }
+    if (type === 'prev') {
+      return setStep(STEPS[lastCompletedStepIdx]);
+    }
+  };
+
+  const submitBtnAction =
+    step.id !== STEPS[STEPS.length - 1].id
+      ? () => moveStepper('next')
+      : formik.handleSubmit;
+
   return (
     <div className='space-y-6 w-full'>
       <div className='py-5 bg-white shadow px-5 py-5 sm:rounded-lg sm:p-6'>
@@ -36,7 +90,12 @@ export default function OrgOnboardingForm() {
           lastCompleted={lastCompletedStep.id}
         />
       </div>
-      <ActivePartComponent />
+      <ActivePartComponent
+        values={formik.values}
+        handleSubmit={formik.handleSubmit}
+        handleChange={formik.handleChange}
+        setFieldValue={formik.setFieldValue}
+      />
 
       <div className='flex justify-end'>
         <button
@@ -46,7 +105,8 @@ export default function OrgOnboardingForm() {
           Cancel
         </button>
         <button
-          type='submit'
+          type='button'
+          onClick={submitBtnAction}
           className='ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primaryOrange hover:bg-transparent hover:border-primaryOrange hover: text-priamryOrange focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary'
         >
           {step.id === STEPS[STEPS.length - 1].id ? 'Submit' : 'Next'}
