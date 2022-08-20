@@ -4,6 +4,8 @@ import CompanyProfile from './CompanyProfile';
 import PersonalInformation from './PersonalInformation';
 import { useFormik } from 'formik';
 import { uploadPhoto } from 'services/upload-media';
+import { CREATE_USER_INFO } from 'graphql/mutations';
+import { useMutation } from '@apollo/client';
 import * as yup from 'yup';
 
 const schema = yup.object({
@@ -43,6 +45,9 @@ const STEPS = [
 ];
 
 export default function OrgOnboardingForm() {
+  const [createUserInfo, { data, error, loading }] =
+    useMutation(CREATE_USER_INFO);
+
   const [step, setStep] = useState(STEPS[0]);
 
   const lastCompletedStepIdx = STEPS.findIndex((s) => s.id === step.id) - 1;
@@ -77,9 +82,19 @@ export default function OrgOnboardingForm() {
       country: '',
       profilePicture: null,
     },
-    onSubmit: (values) => {
-      uploadPhoto(values.profilePicture).then((res) => {
-        console.log(res);
+    onSubmit: async (values) => {
+      // uploadPhoto(values.profilePicture).then((res) => {
+      //   console.log(res);
+      // });
+      const profilePic = await uploadPhoto(values.profilePicture);
+      createUserInfo({
+        variables: {
+          input: {
+            ...values,
+            profilePicture: profilePic,
+            categoryIds: values.categoryIds.map((c) => c._id),
+          },
+        },
       });
     },
     validationSchema: schema,
@@ -101,7 +116,6 @@ export default function OrgOnboardingForm() {
       ? () => moveStepper('next')
       : formik.handleSubmit;
 
-  console.log(formik);
   return (
     <div className='space-y-6 w-full'>
       <div className='py-5 bg-white shadow px-5 py-5 sm:rounded-lg sm:p-6'>

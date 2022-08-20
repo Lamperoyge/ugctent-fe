@@ -15,10 +15,5 @@ export const uploadPhoto = async (file) => {
   });
 
   const src = upload.url + newFileName;
-  console.log(src);
-  if (upload.ok) {
-    console.log('Uploaded successfully!');
-  } else {
-    console.error('Upload failed.');
-  }
+  return src;
 };

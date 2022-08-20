@@ -1,6 +1,5 @@
 import Select from 'components/Shared/Form/Select';
 import SocialLinks from 'components/Shared/Form/SocialLinks';
-import { Formik } from 'formik';
 import { useGetCategories } from 'hooks';
 
 export default function CompanyProfile({
@@ -67,7 +66,6 @@ export default function CompanyProfile({
                 label='Activity Category'
                 options={categories}
                 onChange={(e) => {
-                  console.log(e);
                   setFieldValue('categoryIds', [e], true);
                 }}
                 name='categoryIds'
