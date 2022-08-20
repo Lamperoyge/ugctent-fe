@@ -45,6 +45,11 @@ const SignIn = () => {
               <h2 className='mt-6 text-3xl font-extrabold text-gray-900'>
                 Sign in to your account
               </h2>
+              {signInError?.message ? (
+                <p className='py-4 text-xl font-semibold text-red-400'>
+                  {signInError.message}
+                </p>
+              ) : null}
             </div>
 
             <div className='mt-8'>

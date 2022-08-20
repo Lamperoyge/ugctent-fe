@@ -66,7 +66,10 @@ export default function CompanyProfile({
               <Select
                 label='Activity Category'
                 options={categories}
-                onChange={(e) => setFieldValue('categoryIds', e, true)}
+                onChange={(e) => {
+                  console.log(e);
+                  setFieldValue('categoryIds', [e], true);
+                }}
                 name='categoryIds'
                 value={values.categoryIds}
               />

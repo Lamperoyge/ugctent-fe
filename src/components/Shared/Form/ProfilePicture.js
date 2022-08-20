@@ -1,14 +1,13 @@
 import { useState } from 'react';
 
-const ProfilePicture = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
+const ProfilePicture = ({ setFieldValue, selectedFile }) => {
   const [error, setError] = useState(null);
   const onFileChange = (e) => {
     if (e.target.files[0].size > 2097152) {
       return setError('Max upload size is 2MB');
     }
     if (error) setError(null);
-    setSelectedFile(e.target.files[0]);
+    setFieldValue('profilePicture', e.target.files[0]);
   };
   return (
     <div>

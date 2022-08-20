@@ -1,8 +1,23 @@
 import ProfilePicture from 'components/Shared/Form/ProfilePicture';
 import countries from 'utils/helpers/countries.json';
+import Places from 'components/Places';
 
-export default function PersonalInformation({ values, handleChange }) {
-  console.log(countries);
+export default function PersonalInformation({
+  values,
+  handleChange,
+  setFieldValue,
+}) {
+  const addressHandleChange = (address) => {
+    const country = address.address_components.find((i) =>
+      i.types.includes('country')
+    ).short_name;
+    const city = address.address_components.find((i) =>
+      i.types.includes('locality')
+    ).long_name;
+    setFieldValue('country', country, true);
+    setFieldValue('city', city, true);
+  };
+
   return (
     <div className='bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6'>
       <div className='md:grid md:grid-cols-3 md:gap-6'>
@@ -14,7 +29,10 @@ export default function PersonalInformation({ values, handleChange }) {
         </div>
         <div className='mt-5 md:mt-0 md:col-span-2'>
           <form action='#' method='POST' className='flex flex-col gap-6'>
-            <ProfilePicture onChange={() => {}} />
+            <ProfilePicture
+              setFieldValue={setFieldValue}
+              selectedFile={values.profilePicture}
+            />
             <div className='grid grid-cols-6 gap-6'>
               <div className='col-span-6 sm:col-span-3'>
                 <label
@@ -62,17 +80,30 @@ export default function PersonalInformation({ values, handleChange }) {
                 <select
                   id='country'
                   name='country'
+                  onChange={handleChange}
                   value={values.country}
                   autoComplete='country-name'
                   className='mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-secondary focus:border-secondary sm:text-sm'
                 >
                   {countries.map((country, idx) => (
-                    <option key={idx}>{country.name}</option>
+                    <option value={country.shortCode} key={idx}>
+                      {country.name}
+                    </option>
                   ))}
                 </select>
               </div>
-
               <div className='col-span-6 sm:col-span-3'>
+                <Places
+                  htmlFor='city'
+                  label='City'
+                  name='city'
+                  value={values.city}
+                  disabled={!values.country}
+                  country={values.country}
+                  handleChange={addressHandleChange}
+                />
+              </div>
+              {/* <div className='col-span-6 sm:col-span-3'>
                 <label
                   htmlFor='city'
                   className='block text-sm font-medium text-gray-700'
@@ -89,7 +120,7 @@ export default function PersonalInformation({ values, handleChange }) {
                   <option>Canada</option>
                   <option>Mexico</option>
                 </select>
-              </div>
+              </div> */}
             </div>
           </form>
         </div>

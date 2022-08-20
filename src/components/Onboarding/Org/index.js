@@ -3,12 +3,19 @@ import { useState } from 'react';
 import CompanyProfile from './CompanyProfile';
 import PersonalInformation from './PersonalInformation';
 import { useFormik } from 'formik';
+import { uploadPhoto } from 'services/upload-media';
 import * as yup from 'yup';
 
 const schema = yup.object({
   companyName: yup.string().required('Please enter your company name'),
   bio: yup.string(),
-  categoryIds: yup.array().of(yup.string()),
+  categoryIds: yup.array().of(
+    yup.object({
+      _id: yup.string().nullable(),
+      label: yup.string(),
+      __typename: yup.string(),
+    })
+  ),
   website: yup.string(),
   socialLinks: yup.object({
     instagram: yup.string(),
@@ -17,6 +24,11 @@ const schema = yup.object({
     facebook: yup.string(),
   }),
   taxId: yup.string(),
+  firstName: yup.string(),
+  lastName: yup.string(),
+  city: yup.string(),
+  country: yup.string(),
+  profilePicture: yup.mixed(),
 });
 
 const STEPS = [
@@ -59,8 +71,17 @@ export default function OrgOnboardingForm() {
         facebook: '',
       },
       taxId: '',
+      firstName: '',
+      lastName: '',
+      city: '',
+      country: '',
+      profilePicture: null,
     },
-    onSubmit: (values) => console.log(values),
+    onSubmit: (values) => {
+      uploadPhoto(values.profilePicture).then((res) => {
+        console.log(res);
+      });
+    },
     validationSchema: schema,
   });
 
@@ -80,6 +101,7 @@ export default function OrgOnboardingForm() {
       ? () => moveStepper('next')
       : formik.handleSubmit;
 
+  console.log(formik);
   return (
     <div className='space-y-6 w-full'>
       <div className='py-5 bg-white shadow px-5 py-5 sm:rounded-lg sm:p-6'>
