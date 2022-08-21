@@ -1,2 +1,2 @@
 export { default as OrgOnboardingForm } from './Org';
-export { default as CreatorOnboardingForm } from './creator';
+export { default as CreatorOnboardingForm } from './Creator';

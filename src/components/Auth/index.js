@@ -97,6 +97,7 @@ const Auth = ({ children }) => {
   if (tokenLoading) {
     return <div>spinner...</div>;
   }
+  console.log(data?.getLoggedInUser);
   if (!tokenLoading) {
     if (!EXCLUDED_PATHS.includes(router.pathname) && !token) {
       window.location.href = '/login';
@@ -130,6 +131,7 @@ const Auth = ({ children }) => {
           signInError,
           signupLoading: loading,
           signInLoading,
+          getLoggedInUser,
         }}
       >
         {children}

@@ -1,7 +1,8 @@
-import Stepper from 'components/Shared/Stepper';
 import { useState } from 'react';
-import CompanyProfile from './CompanyProfile';
-import PersonalInformation from './PersonalInformation';
+
+import PersonalInformation from 'components/Onboarding/Org/PersonalInformation';
+import Portfolio from './Portfolio';
+import UserProfile from './UserProfile';
 import { useFormik } from 'formik';
 import { uploadPhoto } from 'services/upload-media';
 import { CREATE_USER_INFO } from 'graphql/mutations';
@@ -9,56 +10,79 @@ import { useMutation } from '@apollo/client';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
 import { LightSpinner } from 'components/Shared/Spinner';
-import { useAuth } from 'hooks';
+import Stepper from 'components/Shared/Stepper';
 
 const schema = yup.object({
-  companyName: yup.string().required('Please enter your company name'),
+  //personal
+  firstName: yup.string().required(),
+  lastName: yup.string().required(),
+  city: yup.string(),
+  country: yup.string(),
+  profilePicture: yup.mixed(),
+  // profile
   bio: yup.string(),
-  categoryIds: yup.array().of(
-    yup.object({
-      _id: yup.string().nullable(),
-      label: yup.string(),
-      __typename: yup.string(),
-    })
-  ),
-  website: yup.string(),
+  interestIds: yup
+    .array()
+    .of(
+      yup.object({
+        _id: yup.string(),
+        label: yup.string(),
+        __typename: yup.string(),
+      })
+    )
+    .required(),
+  skillIds: yup
+    .array()
+    .of(
+      yup.object({
+        _id: yup.string().required(),
+        label: yup.string().required(),
+        __typename: yup.string(),
+      })
+    )
+    .required(),
+
   socialLinks: yup.object({
     instagram: yup.string(),
     tiktok: yup.string(),
     youtube: yup.string(),
     facebook: yup.string(),
   }),
-  taxId: yup.string(),
-  firstName: yup.string(),
-  lastName: yup.string(),
-  city: yup.string(),
-  country: yup.string(),
-  profilePicture: yup.mixed(),
+  website: yup.string(),
+
+  //portfolio
+  works: yup.array().of(
+    yup.object({
+      title: yup.string(),
+      clientName: yup.string(),
+      attachments: yup.array().of(yup.mixed()).max(3),
+      description: yup.string(),
+    })
+  ),
 });
 
 const STEPS = [
   {
-    name: 'Company profile',
-    id: 'companyProfile',
-  },
-  {
     name: 'Personal details',
     id: 'personalDetails',
   },
+  {
+    name: 'Your profile',
+    id: 'userProfile',
+  },
+  {
+    name: 'Portfolio',
+    id: 'portfolio',
+  },
 ];
 
-export default function OrgOnboardingForm() {
-  const { getLoggedInUser } = useAuth();
-  const router = useRouter();
-  const [createUserInfo, { data, error, loading }] = useMutation(
-    CREATE_USER_INFO,
-    {
-      onCompleted: () => {
-        getLoggedInUser();
-      },
-    }
-  );
+const STEPS_TO_COMPONENT_MAP = {
+  personalDetails: PersonalInformation,
+  userProfile: UserProfile,
+  portfolio: Portfolio,
+};
 
+const CreatorOnboardingForm = () => {
   const [step, setStep] = useState(STEPS[0]);
 
   const lastCompletedStepIdx = STEPS.findIndex((s) => s.id === step.id) - 1;
@@ -66,19 +90,13 @@ export default function OrgOnboardingForm() {
   const lastCompletedStep =
     lastCompletedStepIdx >= 0 ? STEPS[lastCompletedStepIdx] : STEPS[0];
 
-  const ActivePartComponent =
-    step.id === 'companyProfile' ? CompanyProfile : PersonalInformation;
-
   const formik = useFormik({
     initialValues: {
-      companyName: '',
-      bio: '',
-      categoryIds: [
-        {
-          label: 'Select a value',
-          _id: null,
-        },
-      ],
+      firstName: '',
+      lastName: '',
+      city: '',
+      country: null,
+      profilePicture: null,
       website: '',
       socialLinks: {
         youtube: '',
@@ -86,30 +104,12 @@ export default function OrgOnboardingForm() {
         instagram: '',
         facebook: '',
       },
-      taxId: '',
-      firstName: '',
-      lastName: '',
-      city: '',
-      country: '',
-      profilePicture: null,
+      bio: '',
+      interestIds: [],
+      skillIds: [],
+      works: null,
     },
-    onSubmit: async (values) => {
-      const profilePic = await uploadPhoto(values.profilePicture);
-      createUserInfo({
-        variables: {
-          input: {
-            ...values,
-            profilePicture: profilePic,
-            categoryIds: values.categoryIds.map((c) => c._id),
-          },
-        },
-      });
-    },
-    validationSchema: schema,
   });
-
-  //TODO refactor
-
   const moveStepper = (type) => {
     if (type === 'next') {
       return setStep(STEPS[lastCompletedStepIdx + 2]);
@@ -132,6 +132,8 @@ export default function OrgOnboardingForm() {
       </div>
     );
   }
+
+  const ActiveComponent = STEPS_TO_COMPONENT_MAP[step.id];
   return (
     <div className='space-y-6 w-full'>
       <div className='py-5 bg-white shadow px-5 py-5 sm:rounded-lg sm:p-6'>
@@ -141,14 +143,15 @@ export default function OrgOnboardingForm() {
           currentStep={step.id}
           lastCompleted={lastCompletedStep.id}
         />
+        <div className='py-6'>
+          <ActiveComponent
+            values={formik.values}
+            handleSubmit={formik.handleSubmit}
+            handleChange={formik.handleChange}
+            setFieldValue={formik.setFieldValue}
+          />
+        </div>
       </div>
-      <ActivePartComponent
-        values={formik.values}
-        handleSubmit={formik.handleSubmit}
-        handleChange={formik.handleChange}
-        setFieldValue={formik.setFieldValue}
-      />
-
       <div className='flex justify-end'>
         {step.id !== STEPS[0].id ? (
           <button
@@ -169,4 +172,6 @@ export default function OrgOnboardingForm() {
       </div>
     </div>
   );
-}
+};
+
+export default CreatorOnboardingForm;

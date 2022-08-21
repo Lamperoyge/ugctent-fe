@@ -64,7 +64,7 @@ const OnboardingPage = () => {
             </div>
           </div>
           <div className='grid grid-cols-1 gap-4 mt-4 leading-7 text-gray-900 border-0 border-gray-200 sm:mt-6 sm:gap-4 md:mt-8 md:gap-0'>
-            <div className='w-full relative z-20 flex flex-col items-center max-w-7xl p-4 mx-auto my-0 bg-primary border-4 border-primary border-solid rounded-lg sm:p-6 md:px-8 md:py-16'>
+            <div className='w-full relative flex flex-col items-center max-w-7xl p-4 mx-auto my-0 bg-primary border-4 border-primary border-solid rounded-lg sm:p-6 md:px-8 md:py-16'>
               <Form />
             </div>
           </div>

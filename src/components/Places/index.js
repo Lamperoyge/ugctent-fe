@@ -10,6 +10,7 @@ async function handlePlaceSelect(handleChange) {
 function handleScriptLoad(autoCompleteRef, country, handleChange) {
   let sessionToken = new google.maps.places.AutocompleteSessionToken();
 
+  console.log(sessionToken);
   autoComplete = new window.google.maps.places.Autocomplete(
     autoCompleteRef.current,
     {
@@ -21,9 +22,10 @@ function handleScriptLoad(autoCompleteRef, country, handleChange) {
     }
   );
   autoComplete.setFields(['address_components', 'formatted_address']);
-  autoComplete.addListener('place_changed', () =>
-    handlePlaceSelect(handleChange)
-  );
+  autoComplete.addListener('place_changed', () => {
+    handlePlaceSelect(handleChange);
+    sessionToken = new google.maps.places.AutocompleteSessionToken();
+  });
 }
 
 function SearchLocationInput({

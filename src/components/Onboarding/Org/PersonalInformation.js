@@ -8,14 +8,18 @@ export default function PersonalInformation({
   setFieldValue,
 }) {
   const addressHandleChange = (address) => {
-    const country = address.address_components.find((i) =>
+    const country = address?.address_components?.find((i) =>
       i.types.includes('country')
     ).short_name;
-    const city = address.address_components.find((i) =>
+    const city = address?.address_components?.find((i) =>
       i.types.includes('locality')
     ).long_name;
-    setFieldValue('country', country, true);
-    setFieldValue('city', city, true);
+    if (country) {
+      setFieldValue('country', country, true);
+    }
+    if (city) {
+      setFieldValue('city', city, true);
+    }
   };
 
   return (
@@ -85,6 +89,10 @@ export default function PersonalInformation({
                   autoComplete='country-name'
                   className='mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-secondary focus:border-secondary sm:text-sm'
                 >
+                  <option disabled selected value>
+                    {' '}
+                    Select country{' '}
+                  </option>
                   {countries.map((country, idx) => (
                     <option value={country.shortCode} key={idx}>
                       {country.name}
