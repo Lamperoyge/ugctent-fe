@@ -1,8 +1,7 @@
 import { useImagePreview } from 'hooks';
 
-export default function ImagePreview({ file }) {
+export default function ImagePreview({ file, className }) {
   const { preview } = useImagePreview(file);
-  console.log(preview);
   if (!preview) return null;
-  return <img src={preview} />;
+  return <img className={className} src={preview} />;
 }

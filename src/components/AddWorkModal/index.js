@@ -3,6 +3,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ImagePreview from 'components/ImagePreview';
+import { TrashIcon } from '@heroicons/react/outline';
 
 const limit = 5097152;
 
@@ -31,18 +32,15 @@ export default function AddWork({ open, onClose }) {
     const files = Array.from(e.target.files)
       .map((file) => (file.size <= limit ? file : null))
       .filter((i) => i);
-    console.log(files, 'files');
     files.length !== e.target.files.length
       ? formik.setErrors({ attachments: 'Max upload size is 2MB' })
       : formik.setFieldValue('attachments', files);
-    // if (e.target.files[0].size > 5097152) {
-    //     return setError('Max upload size is 2MB');
-    //   }
-    //   if (error) setError(null);
-    //   setFieldValue('profilePicture', e.target.files[0]);
   };
 
-  console.log(formik);
+  const removeAttachment = (attach) => {
+    const files = formik.values.attachments.filter((v) => v.name !== attach);
+    return formik.setFieldValue('attachments', files);
+  };
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -147,8 +145,36 @@ export default function AddWork({ open, onClose }) {
                         {formik.values.attachments
                           ? formik.values.attachments.map((attach, idx) => (
                               <div key={idx}>
-                                <ImagePreview file={attach} />
-                                {attach.name}
+                                <ImagePreview
+                                  className='w-auto max-h-24 rounded overflow-hidden'
+                                  file={attach}
+                                />
+                                <span className='inline-flex rounded-full items-center my-2 py-0.5 pl-2.5 pr-1 text-sm font-medium bg-indigo-100 text-indigo-700'>
+                                  {attach.name}
+                                  <button
+                                    type='button'
+                                    onClick={() =>
+                                      removeAttachment(attach.name)
+                                    }
+                                    className='flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-indigo-400 hover:bg-indigo-200 hover:text-indigo-500 focus:outline-none focus:bg-indigo-500 focus:text-white'
+                                  >
+                                    <span className='sr-only'>
+                                      Remove large option
+                                    </span>
+                                    <svg
+                                      className='h-2 w-2'
+                                      stroke='currentColor'
+                                      fill='none'
+                                      viewBox='0 0 8 8'
+                                    >
+                                      <path
+                                        strokeLinecap='round'
+                                        strokeWidth='1.5'
+                                        d='M1 1l6 6m0-6L1 7'
+                                      />
+                                    </svg>
+                                  </button>
+                                </span>
                               </div>
                             ))
                           : null}
