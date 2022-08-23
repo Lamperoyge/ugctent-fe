@@ -3,7 +3,6 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import ImagePreview from 'components/ImagePreview';
-import { TrashIcon } from '@heroicons/react/outline';
 
 const limit = 5097152;
 
@@ -41,6 +40,7 @@ export default function AddWork({ open, onClose }) {
     const files = formik.values.attachments.filter((v) => v.name !== attach);
     return formik.setFieldValue('attachments', files);
   };
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
