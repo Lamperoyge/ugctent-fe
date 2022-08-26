@@ -10,7 +10,12 @@ export const CREATE_USER_INFO = gql`
       lastName
       interestIds
       companyName
-      displayName
+      works {
+        title
+        clientName
+        attachments
+        description
+      }
       taxId
       contactName
       socialLinks {

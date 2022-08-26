@@ -9,12 +9,18 @@ module.exports = {
         primaryOrange: '#E8630A',
         primaryYellow: '#FCD900',
       },
-    },
-    minWidth: {
-      '1/2': '50%',
-      '1/3': '33%',
-      '1/4': '25%',
-      '1/5': '20%',
+      minWidth: {
+        '1/2': '50%',
+        '1/3': '33%',
+        '1/4': '25%',
+        '1/5': '20%',
+      },
+      maxWidth: {
+        '1/2': '50%',
+        '1/3': '33%',
+        '1/4': '25%',
+        '1/5': '20%',
+      }
     },
   },
   plugins: [require('@tailwindcss/forms')],

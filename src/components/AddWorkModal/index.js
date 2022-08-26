@@ -1,45 +1,71 @@
-import { Fragment, useRef } from 'react';
+import { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
 import ImagePreview from 'components/ImagePreview';
 
 const limit = 5097152;
 
-const schema = yup.object({
-  title: yup.string().required(),
-  clientName: yup.string(),
-  attachments: yup.array().of(yup.mixed()).max(3),
-  description: yup.string(),
-});
-
-export default function AddWork({ open, onClose }) {
+export default function AddWork({
+  open,
+  onClose,
+  addWork,
+  editWork = initialValues,
+  handleEdit,
+}) {
+  const initialValues = {
+    title: editWork?.title || '',
+    clientName: editWork?.clientName || '',
+    attachments: editWork?.attachments || null,
+    description: editWork?.description || '',
+  };
   const cancelButtonRef = useRef(null);
 
-  const formik = useFormik({
-    initialValues: {
-      title: '',
-      clientName: '',
-      attachments: null,
-      description: '',
-    },
-    validationSchema: schema,
-    onSubmit: (values) => console.log(values),
+  const [form, setForm] = useState(initialValues);
+
+  const [errors, setErrors] = useState({
+    title: '',
+    clientName: '',
+    attachments: '',
+    description: '',
   });
+
+  const handleSubmit = () => {
+    if (editWork) {
+      return handleEdit(form);
+    }
+    addWork(form);
+  };
+  // const formik = useFormik({
+  //   initialValues: {
+  //     title: editWork?.title || '',
+  //     clientName: editWork?.clientName || '',
+  //     attachments: editWork?.attachments || null,
+  //     description: editWork?.description || '',
+  //   },
+  //   validationSchema: schema,
+  //   onSubmit: (values) => {
+  //     if (editWork) {
+  //       return handleEdit(values);
+  //     }
+  //     addWork(values);
+  //   },
+  // });
 
   const handleAttachments = (e) => {
     const files = Array.from(e.target.files)
       .map((file) => (file.size <= limit ? file : null))
       .filter((i) => i);
     files.length !== e.target.files.length
-      ? formik.setErrors({ attachments: 'Max upload size is 2MB' })
-      : formik.setFieldValue('attachments', files);
+      ? setErrors({ ...errors, attachments: 'Max upload size is 2MB' })
+      : setForm({ ...form, attachments: files });
   };
 
   const removeAttachment = (attach) => {
-    const files = formik.values.attachments.filter((v) => v.name !== attach);
-    return formik.setFieldValue('attachments', files);
+    const files = form.attachments.filter((v) => v.name !== attach);
+    return setForm({ ...form, attachments: files });
   };
+
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -74,7 +100,7 @@ export default function AddWork({ open, onClose }) {
             >
               <Dialog.Panel className='relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full'>
                 <div className='mt-5 md:mt-0 md:col-span-2'>
-                  <form action='#' method='POST'>
+                  <div>
                     <div className='shadow sm:rounded-md sm:overflow-hidden'>
                       <div className='px-4 py-5 bg-white space-y-6 sm:p-6'>
                         <div className='grid grid-cols-3 gap-6'>
@@ -90,8 +116,8 @@ export default function AddWork({ open, onClose }) {
                                 type='text'
                                 name='title'
                                 id='title'
-                                value={formik.values.title}
-                                onChange={formik.handleChange}
+                                value={form.title}
+                                onChange={handleChange}
                                 className='focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded sm:text-sm border-gray-300'
                                 placeholder='Product showcase'
                               />
@@ -111,8 +137,8 @@ export default function AddWork({ open, onClose }) {
                                 type='text'
                                 name='clientName'
                                 id='clientName'
-                                onChange={formik.handleChange}
-                                value={formik.values.clientName}
+                                onChange={handleChange}
+                                value={form.clientName}
                                 className='focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded sm:text-sm border-gray-300'
                                 placeholder='www.example.com'
                               />
@@ -132,8 +158,8 @@ export default function AddWork({ open, onClose }) {
                               id='description'
                               name='description'
                               rows={3}
-                              value={formik.values.description}
-                              onChange={formik.handleChange}
+                              value={form.description}
+                              onChange={handleChange}
                               className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md'
                               placeholder='you@example.com'
                             />
@@ -142,8 +168,8 @@ export default function AddWork({ open, onClose }) {
                             Brief description of the work you did
                           </p>
                         </div>
-                        {formik.values.attachments
-                          ? formik.values.attachments.map((attach, idx) => (
+                        {form.attachments
+                          ? form.attachments.map((attach, idx) => (
                               <div key={idx}>
                                 <ImagePreview
                                   className='w-auto max-h-24 rounded overflow-hidden'
@@ -219,23 +245,24 @@ export default function AddWork({ open, onClose }) {
                               </p>
                             </div>
                           </div>
-                          {formik.errors.attachments ? (
+                          {errors.attachments ? (
                             <span className='text-red-400'>
-                              {formik.values.errors.attachments}
+                              {errors?.attachments}
                             </span>
                           ) : null}
                         </div>
                       </div>
                       <div className='px-4 py-3 bg-gray-50 text-right sm:px-6'>
                         <button
-                          type='submit'
+                          type='button'
+                          onClick={handleSubmit}
                           className='inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
                         >
                           Save
                         </button>
                       </div>
                     </div>
-                  </form>
+                  </div>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

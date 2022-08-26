@@ -56,6 +56,9 @@ const Auth = ({ children }) => {
   });
 
   const [getLoggedInUser, { data, error }] = useLazyQuery(GET_LOGGED_IN_USER, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'network-only',
+    notifyOnNetworkStatusChange: true,
     onCompleted: () => {
       setTokenLoading(false);
     },

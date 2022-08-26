@@ -35,7 +35,6 @@ export const useGetInterests = () => {
 export const useImagePreview = (file) => {
   const [preview, setPreview] = useState();
 
-  console.log(file);
   // create a preview as a side effect, whenever selected file is changed
   useEffect(() => {
     if (!file) {
@@ -48,7 +47,6 @@ export const useImagePreview = (file) => {
 
     // free memory when ever this component is unmounted
     return () => {
-      console.log('unmounts');
       URL.revokeObjectURL(objectUrl);
     };
   }, [file]);

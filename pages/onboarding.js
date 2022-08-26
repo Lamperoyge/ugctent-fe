@@ -7,45 +7,12 @@ import {
 import { USER_TYPES } from 'utils/constants';
 import Script from 'next/script';
 
-/* 
-Contributor fields:
-
-firstName: string - required
-lastName: string - required
-profilePicture: string - not required
-website: String - not required
-bio: String - not required
-city: String
-country: String
-companyName: String
-taxId: String
-socialLinks: [String]
-category: String
-
-Creator fields:
-
-firstName: string - required
-lastName: string - required
-bio: string
-city: string
-profilePicture: string
-interests: [string]
-socialLinks: [String]
-skillIds: [String]
-interestIds: [String] - required
-works: [{
-    client name : String
-    attachments: [] - max 3
-    description: String
-}]
-*/
 
 const ONBOARDING_FORM = {
   [USER_TYPES.ORG]: OrgOnboardingForm,
   [USER_TYPES.CREATOR]: CreatorOnboardingForm,
 };
 
-// https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap
 const OnboardingPage = () => {
   const { user } = useAuth();
 

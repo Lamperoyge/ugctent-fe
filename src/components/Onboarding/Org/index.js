@@ -54,7 +54,9 @@ export default function OrgOnboardingForm() {
     CREATE_USER_INFO,
     {
       onCompleted: () => {
-        getLoggedInUser();
+        getLoggedInUser().then(() =>
+          router.push('/', undefined, { shallow: true })
+        );
       },
     }
   );
@@ -94,12 +96,14 @@ export default function OrgOnboardingForm() {
       profilePicture: null,
     },
     onSubmit: async (values) => {
-      const profilePic = await uploadPhoto(values.profilePicture);
+      const profilePic = values?.profilePicture
+        ? await uploadPhoto(values.profilePicture)
+        : null;
       createUserInfo({
         variables: {
           input: {
             ...values,
-            profilePicture: profilePic,
+            profilePicture: profilePic.src,
             categoryIds: values.categoryIds.map((c) => c._id),
           },
         },

@@ -8,9 +8,10 @@ import { uploadPhoto } from 'services/upload-media';
 import { CREATE_USER_INFO } from 'graphql/mutations';
 import { useMutation } from '@apollo/client';
 import * as yup from 'yup';
-import { useRouter } from 'next/router';
 import { LightSpinner } from 'components/Shared/Spinner';
 import Stepper from 'components/Shared/Stepper';
+import { useAuth } from 'hooks';
+import { useRouter } from 'next/router';
 
 const schema = yup.object({
   //personal
@@ -84,6 +85,19 @@ const STEPS_TO_COMPONENT_MAP = {
 
 const CreatorOnboardingForm = () => {
   const [step, setStep] = useState(STEPS[0]);
+  const router = useRouter();
+  const { getLoggedInUser } = useAuth();
+
+  const [createUserInfo, { data, error, loading }] = useMutation(
+    CREATE_USER_INFO,
+    {
+      onCompleted: () => {
+        getLoggedInUser().then(() =>
+          router.push('/', undefined, { shallow: true })
+        );
+      },
+    }
+  );
 
   const lastCompletedStepIdx = STEPS.findIndex((s) => s.id === step.id) - 1;
 
@@ -107,7 +121,45 @@ const CreatorOnboardingForm = () => {
       bio: '',
       interestIds: [],
       skillIds: [],
-      works: null,
+      works: [],
+    },
+    validationSchema: schema,
+    onSubmit: async (values) => {
+      const profilePic = values?.profilePicture
+        ? await uploadPhoto(values.profilePicture)
+        : null;
+      //TODO refactor me
+
+      let getFileStrings = async (attachments) =>
+        await Promise.all(
+          attachments.map(async (i) => {
+            const data = await uploadPhoto(i);
+            return data.src;
+          })
+        );
+
+      let works = await Promise.all(
+        values?.works?.map(async (el, idx) => {
+          return {
+            ...el,
+            attachments: el.attachments
+              ? await getFileStrings(el.attachments)
+              : [],
+          };
+        })
+      );
+      console.log(values);
+      createUserInfo({
+        variables: {
+          input: {
+            ...values,
+            profilePicture: profilePic?.src,
+            interestIds: values.interestIds.map((c) => c._id),
+            skillIds: values.skillIds.map((s) => s._id),
+            works,
+          },
+        },
+      });
     },
   });
   const moveStepper = (type) => {

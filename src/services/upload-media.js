@@ -15,5 +15,5 @@ export const uploadPhoto = async (file) => {
   });
 
   const src = upload.url + newFileName;
-  return src;
+  return {src, originalFilename: file.name};
 };
