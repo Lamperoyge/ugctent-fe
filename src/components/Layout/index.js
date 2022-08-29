@@ -1,4 +1,3 @@
-/* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Dialog, Transition } from '@headlessui/react';
@@ -14,6 +13,9 @@ import {
 } from '@heroicons/react/outline';
 import { classNames } from 'utils/helpers';
 import { EXCLUDED_PATHS } from 'utils/constants';
+import { useAuth } from 'hooks';
+import Link from 'next/link';
+import EmptyStateAction from 'components/EmptyState';
 
 const navigation = [
   { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
@@ -25,6 +27,8 @@ const navigation = [
 ];
 
 export default function SidebarLayout({ children }) {
+  const { user } = useAuth();
+  const profilePicture = user?.userInfo?.profilePicture;
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -36,14 +40,6 @@ export default function SidebarLayout({ children }) {
     return children;
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full">
-        <body class="h-full">
-        ```
-      */}
       <div>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
@@ -131,24 +127,32 @@ export default function SidebarLayout({ children }) {
                 </div>
                 <div className='flex-shrink-0 flex border-t border-gray-200 p-4'>
                   <a href='#' className='flex-shrink-0 group block'>
-                    <div className='flex items-center'>
-                      <div>
-                        <img
-                          className='inline-block h-10 w-10 rounded-full'
-                          src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-                          alt=''
-                        />
-                      </div>
-                      <div className='ml-3'>
-                        <p className='text-base font-medium text-gray-700 group-hover:text-gray-900'>
-                          Tom Cook
-                        </p>
-                        <p className='text-sm font-medium text-gray-500 group-hover:text-gray-700'>
-                          View profile
-                        </p>
-                      </div>
-                    </div>
+                    {profilePicture ? (
+                      <img
+                        className='inline-block h-9 w-9 rounded-full'
+                        src={profilePicture}
+                        alt=''
+                      />
+                    ) : (
+                      <span className='inline-block h-9 w-9 rounded-full overflow-hidden bg-gray-100'>
+                        <svg
+                          className='h-full w-full text-gray-300'
+                          fill='currentColor'
+                          viewBox='0 0 24 24'
+                        >
+                          <path d='M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z' />
+                        </svg>
+                      </span>
+                    )}
                   </a>
+                  <div className='ml-3'>
+                    <p className='text-sm font-medium text-gray-700 group-hover:text-gray-900'>
+                      {user?.userInfo?.firstName}
+                    </p>
+                    <p className='text-xs font-medium text-gray-500 group-hover:text-gray-700'>
+                      View profile
+                    </p>
+                  </div>
                 </div>
               </div>
             </Transition.Child>
@@ -197,29 +201,47 @@ export default function SidebarLayout({ children }) {
               </nav>
             </div>
             <div className='flex-shrink-0 flex border-t border-gray-200 p-4'>
-              <a href='#' className='flex-shrink-0 w-full group block'>
-                <div className='flex items-center'>
-                  <div>
-                    <img
-                      className='inline-block h-9 w-9 rounded-full'
-                      src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-                      alt=''
-                    />
+              <Link
+                href={`/profile/${user?.userInfo?.userId}`}
+                className='flex-shrink-0 w-full group block'
+                passHref
+              >
+                <a>
+                  <div className='flex items-center'>
+                    <div>
+                      {profilePicture ? (
+                        <img
+                          className='inline-block h-9 w-9 rounded-full'
+                          src={profilePicture}
+                          alt=''
+                        />
+                      ) : (
+                        <span className='inline-block h-9 w-9 rounded-full overflow-hidden bg-gray-100'>
+                          <svg
+                            className='h-full w-full text-gray-300'
+                            fill='currentColor'
+                            viewBox='0 0 24 24'
+                          >
+                            <path d='M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z' />
+                          </svg>
+                        </span>
+                      )}
+                    </div>
+                    <div className='ml-3'>
+                      <p className='text-sm font-medium text-gray-700 group-hover:text-gray-900'>
+                        {user?.userInfo?.firstName}
+                      </p>
+                      <p className='text-xs font-medium text-gray-500 group-hover:text-gray-700'>
+                        View profile
+                      </p>
+                    </div>
                   </div>
-                  <div className='ml-3'>
-                    <p className='text-sm font-medium text-gray-700 group-hover:text-gray-900'>
-                      Tom Cook
-                    </p>
-                    <p className='text-xs font-medium text-gray-500 group-hover:text-gray-700'>
-                      View profile
-                    </p>
-                  </div>
-                </div>
-              </a>
+                </a>
+              </Link>
             </div>
           </div>
         </div>
-        <div className='md:pl-64 flex flex-col flex-1'>
+        <div className='md:pl-64 flex flex-col flex-1 h-full w-full'>
           <div className='sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-white'>
             <button
               type='button'
@@ -230,19 +252,15 @@ export default function SidebarLayout({ children }) {
               <MenuIcon className='h-6 w-6' aria-hidden='true' />
             </button>
           </div>
-          <main className='flex-1'>
-            <div className='py-6'>
+          <main className='flex-1 h-full w-full'>
+            <div className='py-6 h-full w-full'>
               <div className='max-w-7xl mx-auto px-4 sm:px-6 md:px-8'>
                 <h1 className='text-2xl font-semibold text-gray-900'>
-                  Dashboard
+                  Projects
                 </h1>
               </div>
-              <div className='max-w-7xl mx-auto px-4 sm:px-6 md:px-8'>
-                {/* Replace with your content */}
-                <div className='py-4'>
-                  <div className='border-4 border-dashed border-gray-200 rounded-lg h-96' />
-                </div>
-                {/* /End replace */}
+              <div className='max-w-7xl mx-auto px-4 sm:px-6 md:px-8 h-full w-full'>
+                <div className='py-4 h-full w-full'>{children}</div>
               </div>
             </div>
           </main>
