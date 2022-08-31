@@ -5,7 +5,11 @@ import { GET_CATEGORIES, GET_SKILLS, GET_INTERESTS } from 'graphql/queries';
 export const useAuth = () => useContext(AuthContext);
 
 export const useGetCategories = () => {
-  const { data, error, loading } = useQuery(GET_CATEGORIES);
+  const { data, error, loading } = useQuery(GET_CATEGORIES, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first'
+  });
 
   return {
     categories: data?.getCategories,
