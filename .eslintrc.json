@@ -1,3 +1,25 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": ["airbnb", "next", "next/core-web-vitals", "prettier"],
+  "import/extensions": [
+    "error",
+    "ignorePackages",
+    {
+      "ts": "never",
+      "tsx": "never",
+      "js": "never"
+    }
+  ],
+  "rules": {
+    "react/display-name": "warn",
+    "react/require-default-props": "warn",
+    "react/jsx-no-duplicate-props": "warn",
+    "react/no-unused-prop-types": "warn",
+    "react/forbid-prop-types": "warn",
+    "react/static-property-placement": "warn",
+    "react/jsx-no-bind": "warn",
+    "react/jsx-no-useless-fragment": "warn",
+    "react/no-array-index-key": "warn",
+    "react/destructuring-assignment": "warn",
+    "react/function-component-definition": "off"
+  }
 }

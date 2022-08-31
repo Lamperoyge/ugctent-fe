@@ -34,21 +34,6 @@ export default function AddWork({
     }
     addWork(form);
   };
-  // const formik = useFormik({
-  //   initialValues: {
-  //     title: editWork?.title || '',
-  //     clientName: editWork?.clientName || '',
-  //     attachments: editWork?.attachments || null,
-  //     description: editWork?.description || '',
-  //   },
-  //   validationSchema: schema,
-  //   onSubmit: (values) => {
-  //     if (editWork) {
-  //       return handleEdit(values);
-  //     }
-  //     addWork(values);
-  //   },
-  // });
 
   const handleAttachments = (e) => {
     const files = Array.from(e.target.files)

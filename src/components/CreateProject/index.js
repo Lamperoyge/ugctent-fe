@@ -6,13 +6,36 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useGetCategories, useGetSkills } from 'hooks';
 import MultiSelect from 'components/Shared/Form/MultiSelect';
+import { uploadPhoto } from 'services/upload-media';
+
+const limit = 2097152;
 
 const schema = yup.object({
   title: yup.string().required('You need to specify a title').min(3),
   price: yup.number().required('You need to enter a price'),
-  categoryId: yup.string().nullable(),
-  skillIds: yup.array().of(yup.string()),
+
+  categoryId: yup
+    .array()
+    .of(
+      yup.object({
+        _id: yup.string(),
+        label: yup.string(),
+        __typename: yup.string(),
+      })
+    )
+    .required(),
+  skillIds: yup
+    .array()
+    .of(
+      yup.object({
+        _id: yup.string(),
+        label: yup.string(),
+        __typename: yup.string(),
+      })
+    )
+    .required(),
   links: yup.array().of(yup.string()),
+  attachments: yup.array().of(yup.mixed()).max(3),
   description: yup
     .string()
     .required('You need to enter project description')
@@ -91,10 +114,6 @@ const TextArea = ({
   </div>
 );
 
-const Links = () => {
-
-};
-
 const CreateProjectModal = ({ open, onClose }) => {
   const { categories } = useGetCategories();
   const { skills } = useGetSkills();
@@ -121,6 +140,7 @@ const CreateProjectModal = ({ open, onClose }) => {
       options: skills,
     },
     {
+      //add rich text
       name: 'description',
       component: 'textarea',
       rows: 6,
@@ -139,9 +159,14 @@ const CreateProjectModal = ({ open, onClose }) => {
     },
     {
       name: 'links',
-      type: 'links',
+      component: 'links',
       label: 'Links',
       placeholder: 'Add link',
+    },
+    {
+      name: 'attachments',
+      component: 'attachments',
+      label: 'Attachments',
     },
   ];
 
@@ -155,15 +180,62 @@ const CreateProjectModal = ({ open, onClose }) => {
       },
     ],
     skillIds: [],
-    links: [],
     description: '',
+    attachments: [],
   };
 
   const formik = useFormik({
     initialValues,
     validationSchema: schema,
-    onSubmit: (values) => console.log(values),
+    onSubmit: async (values) => {
+      let getFileStrings = async (attachments) =>
+        await Promise.all(
+          attachments.map(async (i) => {
+            const data = await uploadPhoto(i);
+            return data.src;
+          })
+        );
+      let attachments = await getFileStrings(values.attachments);
+      console.log(attachments, 'attachments');
+      // let works = await Promise.all(
+      //   values?.works?.map(async (el, idx) => {
+      //     return {
+      //       ...el,
+      //       attachments: el.attachments
+      //         ? await getFileStrings(el.attachments)
+      //         : [],
+      //     };
+      //   })
+      // );
+      // createUserInfo({
+      //   variables: {
+      //     input: {
+      //       ...values,
+      //       profilePicture: profilePic?.src,
+      //       interestIds: values.interestIds.map((c) => c._id),
+      //       skillIds: values.skillIds.map((s) => s._id),
+      //       works,
+      //     },
+      //   },
+      // });
+    },
   });
+
+  const handleAttachments = (e) => {
+    const files = Array.from(e.target.files)
+      .map((file) => (file.size <= limit ? file : null))
+      .filter((i) => i);
+    files.length !== e.target.files.length
+      ? formik.setFieldError('attachments', 'Max upload size is 2MB')
+      : formik.setFieldValue('attachments', files);
+  };
+
+  console.log(formik);
+  const removeAttachment = (attach) => {
+    const files = formik.values.attachments.filter((v) => v.name !== attach);
+    // return setForm({ ...form, attachments: files });
+    return formik.setFieldValue('attachments', files);
+  };
 
   return (
     <Transition.Root show={open} as={Fragment} onClose={onClose}>
@@ -270,6 +342,99 @@ const CreateProjectModal = ({ open, onClose }) => {
                                     </div>
                                   );
                                 }
+                                if (item.component === 'attachments') {
+                                  return (
+                                    <div>
+                                      <label className='block text-sm font-medium text-gray-700'>
+                                        Attachments
+                                      </label>
+                                      <div className='mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md'>
+                                        <div className='space-y-1 text-center'>
+                                          <svg
+                                            className='mx-auto h-12 w-12 text-gray-400'
+                                            stroke='currentColor'
+                                            fill='none'
+                                            viewBox='0 0 48 48'
+                                            aria-hidden='true'
+                                          >
+                                            <path
+                                              d='M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02'
+                                              strokeWidth={2}
+                                              strokeLinecap='round'
+                                              strokeLinejoin='round'
+                                            />
+                                          </svg>
+                                          <div className='flex text-sm text-gray-600'>
+                                            <label
+                                              htmlFor='attachments'
+                                              className='relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500'
+                                            >
+                                              <span>Upload up to 3 files</span>
+                                              <input
+                                                id='attachments'
+                                                multiple
+                                                name='attachments'
+                                                onChange={handleAttachments}
+                                                type='file'
+                                                className='sr-only'
+                                              />
+                                            </label>
+                                          </div>
+                                          <p className='text-xs text-gray-500'>
+                                            PNG, JPG, GIF up to 5MB
+                                          </p>
+                                        </div>
+                                      </div>
+                                      {formik.errors.attachments ? (
+                                        <span className='text-red-400'>
+                                          {formik.errors?.attachments}
+                                        </span>
+                                      ) : null}
+                                      <div className='py-4'>
+                                        {formik.values.attachments
+                                          ? formik.values.attachments.map(
+                                              (attach, idx) => (
+                                                <div key={idx}>
+                                                  <ImagePreview
+                                                    className='w-auto max-h-24 rounded overflow-hidden'
+                                                    file={attach}
+                                                  />
+                                                  <span className='inline-flex rounded-full items-center my-2 py-0.5 pl-2.5 pr-1 text-sm font-medium bg-indigo-100 text-indigo-700'>
+                                                    {attach.name}
+                                                    <button
+                                                      type='button'
+                                                      onClick={() =>
+                                                        removeAttachment(
+                                                          attach.name
+                                                        )
+                                                      }
+                                                      className='flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-indigo-400 hover:bg-indigo-200 hover:text-indigo-500 focus:outline-none focus:bg-indigo-500 focus:text-white'
+                                                    >
+                                                      <span className='sr-only'>
+                                                        Remove large option
+                                                      </span>
+                                                      <svg
+                                                        className='h-2 w-2'
+                                                        stroke='currentColor'
+                                                        fill='none'
+                                                        viewBox='0 0 8 8'
+                                                      >
+                                                        <path
+                                                          strokeLinecap='round'
+                                                          strokeWidth='1.5'
+                                                          d='M1 1l6 6m0-6L1 7'
+                                                        />
+                                                      </svg>
+                                                    </button>
+                                                  </span>
+                                                </div>
+                                              )
+                                            )
+                                          : null}
+                                      </div>
+                                    </div>
+                                  );
+                                }
                                 return null;
                               })}
                             </div>
@@ -277,7 +442,8 @@ const CreateProjectModal = ({ open, onClose }) => {
                         </div>
                         <div className='px-4 py-3 bg-gray-50 text-right sm:px-6'>
                           <button
-                            type='submit'
+                            type='button'
+                            onClick={formik.handleSubmit}
                             className='bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
                           >
                             Save
