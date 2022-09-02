@@ -103,7 +103,7 @@ export default function AddWork({
                                 id='title'
                                 value={form.title}
                                 onChange={handleChange}
-                                className='focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded sm:text-sm border-gray-300'
+                                className='focus:ring-primary focus:border-primary flex-1 block w-full rounded sm:text-sm border-gray-300'
                                 placeholder='Product showcase'
                               />
                             </div>
@@ -124,7 +124,7 @@ export default function AddWork({
                                 id='clientName'
                                 onChange={handleChange}
                                 value={form.clientName}
-                                className='focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded sm:text-sm border-gray-300'
+                                className='focus:ring-primary focus:border-primary flex-1 block w-full rounded sm:text-sm border-gray-300'
                                 placeholder='www.example.com'
                               />
                             </div>
@@ -145,7 +145,7 @@ export default function AddWork({
                               rows={3}
                               value={form.description}
                               onChange={handleChange}
-                              className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md'
+                              className='shadow-sm focus:ring-primary focus:border-primary mt-1 block w-full sm:text-sm border border-gray-300 rounded-md'
                               placeholder='you@example.com'
                             />
                           </div>
@@ -167,7 +167,7 @@ export default function AddWork({
                                     onClick={() =>
                                       removeAttachment(attach.name)
                                     }
-                                    className='flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-indigo-400 hover:bg-indigo-200 hover:text-indigo-500 focus:outline-none focus:bg-indigo-500 focus:text-white'
+                                    className='flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-indigo-400 hover:bg-indigo-200 hover:text-primary focus:outline-none focus:bg-primary focus:text-white'
                                   >
                                     <span className='sr-only'>
                                       Remove large option
@@ -212,7 +212,7 @@ export default function AddWork({
                               <div className='flex text-sm text-gray-600'>
                                 <label
                                   htmlFor='attachments'
-                                  className='relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500'
+                                  className='relative cursor-pointer bg-white rounded-md font-medium text-secondary hover:text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary'
                                 >
                                   <span>Upload up to 3 files</span>
                                   <input
@@ -241,7 +241,7 @@ export default function AddWork({
                         <button
                           type='button'
                           onClick={handleSubmit}
-                          className='inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                          className='inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
                         >
                           Save
                         </button>

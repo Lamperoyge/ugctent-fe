@@ -18,7 +18,7 @@ export default function Multiselect({
             {label}
           </Listbox.Label>
           <div className='mt-1 relative'>
-            <Listbox.Button className='flex min-h-10 flex-wrap gap-2 relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm'>
+            <Listbox.Button className='flex min-h-10 flex-wrap gap-2 relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm'>
               {selected.length ? (
                 selected?.map((s, idx) => {
                   return (
@@ -56,7 +56,7 @@ export default function Multiselect({
                     key={option._id}
                     className={({ active }) =>
                       classNames(
-                        active ? 'text-white bg-indigo-600' : 'text-gray-900',
+                        active ? 'text-white bg-secondary' : 'text-gray-900',
                         'cursor-default select-none relative py-2 pl-3 pr-9'
                       )
                     }
@@ -83,7 +83,7 @@ export default function Multiselect({
                         {selected ? (
                           <span
                             className={classNames(
-                              active ? 'text-white' : 'text-indigo-600',
+                              active ? 'text-white' : 'text-secondary',
                               'absolute inset-y-0 right-0 flex items-center pr-4'
                             )}
                           >

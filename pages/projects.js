@@ -3,26 +3,27 @@ import { useAuth } from 'hooks';
 import EmptyStateAction from 'components/EmptyState';
 import { useState, useEffect } from 'react';
 import CreateProjectModal from 'components/CreateProject';
-import { CREATE_JOB } from 'graphql/mutations';
 import { GET_ASSIGNED_JOBS, GET_CREATED_JOBS } from 'graphql/queries';
 import { useLazyQuery } from '@apollo/client';
 import { USER_TYPES } from 'utils/constants';
+import ProjectsList from 'components/Projects/List';
 
 export default function Projects() {
   const [open, setIsOpen] = useState(false);
   const { user } = useAuth();
 
+  console.log(user, 'user');
   const [
-    getJobsForCreator,
-    { data: creatorJobs, error: creatorJobsError, loading: creatorJobsLoading },
+    getJobsForBusinessUser,
+    { data: businessJobs, error: businessJobsError, loading: businessLoading },
   ] = useLazyQuery(GET_CREATED_JOBS);
 
   const [
-    getJobsForBusinessUser,
+    getJobsForCreator,
     {
-      data: businessJobs,
-      error: businessJobsError,
-      loading: businessLoading,
+      data: creatorJobs,
+      error: creatorJobsError,
+      loading: creatorJobsLoading,
       fetchMore,
       refetch,
     },
@@ -52,16 +53,29 @@ export default function Projects() {
     }
   }, [user]);
 
+  const displayEmptyState =
+    user?.userType === USER_TYPES.CREATOR
+      ? !creatorJobs?.getJobsForCreator?.length && !creatorJobsLoading
+      : !businessJobs?.getJobsForBusinessUser?.length && !businessLoading;
+
+  const data =
+    creatorJobs?.getJobsForCreator || businessJobs?.getJobsForBusinessUser;
+    
   return (
     <div className='h-full w-full'>
       <div className='h-full w-full flex justify-center items-center'>
-        <CreateProjectModal open={open} onClose={() => setIsOpen(false)} />
-        <EmptyStateAction
-          title='Your projects'
-          subtitle='Add a new project'
-          btnTitle='New project'
-          action={() => setIsOpen(true)}
-        />
+        {!displayEmptyState && <ProjectsList data={data} />}
+        {open && (
+          <CreateProjectModal open={open} onClose={() => setIsOpen(false)} />
+        )}
+        {displayEmptyState && (
+          <EmptyStateAction
+            title='No projects in here'
+            subtitle='Add a new project'
+            btnTitle='New project'
+            action={() => setIsOpen(true)}
+          />
+        )}
       </div>
     </div>
   );

@@ -1,122 +1,23 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useRef, useState } from 'react';
-import ImagePreview from 'components/ImagePreview';
+import { Fragment } from 'react';
 import Select from 'components/Shared/Form/Select';
 import { useFormik } from 'formik';
-import * as yup from 'yup';
 import { useGetCategories, useGetSkills } from 'hooks';
 import MultiSelect from 'components/Shared/Form/MultiSelect';
 import { uploadPhoto } from 'services/upload-media';
-
-const limit = 2097152;
-
-const schema = yup.object({
-  title: yup.string().required('You need to specify a title').min(3),
-  price: yup.number().required('You need to enter a price'),
-
-  categoryId: yup
-    .array()
-    .of(
-      yup.object({
-        _id: yup.string(),
-        label: yup.string(),
-        __typename: yup.string(),
-      })
-    )
-    .required(),
-  skillIds: yup
-    .array()
-    .of(
-      yup.object({
-        _id: yup.string(),
-        label: yup.string(),
-        __typename: yup.string(),
-      })
-    )
-    .required(),
-  links: yup.array().of(yup.string()),
-  attachments: yup.array().of(yup.mixed()).max(3),
-  description: yup
-    .string()
-    .required('You need to enter project description')
-    .min(100),
-});
-
-const Input = ({
-  value,
-  placeholder,
-  label,
-  name,
-  variant = 'md',
-  onChange,
-  ...rest
-}) => {
-  const variantClass = {
-    xs: 'max-w-1/2',
-    md: 'col-span-3 sm:col-span-1',
-  };
-  return (
-    <div className={variantClass[variant]}>
-      <label
-        htmlFor='company-website'
-        className='block text-sm font-medium text-gray-700'
-      >
-        {label}
-      </label>
-      <div className='mt-1 rounded-md shadow-sm flex relative'>
-        {rest.withCurrency && (
-          <div class='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'>
-            <span class='text-gray-500 sm:text-sm'>RON</span>
-          </div>
-        )}
-        <input
-          {...rest}
-          name={name}
-          id={name}
-          onChange={onChange}
-          value={value}
-          placeholder={placeholder}
-          autoComplete={name}
-          className={`focus:ring-indigo-500 focus:border-indigo-500 flex-grow block w-full min-w-0 rounded-none rounded-r-md sm:text-sm border-gray-300 ${
-            rest.withCurrency ? 'pl-12' : ''
-          }`}
-        />
-      </div>
-    </div>
-  );
-};
-
-const TextArea = ({
-  label,
-  rows = 3,
-  name,
-  placeholder,
-  value,
-  description,
-  onChange,
-}) => (
-  <div className='col-span-3'>
-    <label htmlFor={name} className='block text-sm font-medium text-gray-700'>
-      {label}
-    </label>
-    <div className='mt-1'>
-      <textarea
-        id={name}
-        name={name}
-        rows={rows}
-        className='shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md'
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-      />
-    </div>
-    <p className='mt-2 text-sm text-gray-500'>{description}</p>
-  </div>
-);
+import { CREATE_JOB } from 'graphql/mutations';
+import { useMutation } from '@apollo/client';
+import { limit, schema, initialValues } from './config';
+import { Input, TextArea, Attachments } from './helpers';
 
 const CreateProjectModal = ({ open, onClose }) => {
-  const { categories } = useGetCategories();
+  const { categories = [] } = useGetCategories();
   const { skills } = useGetSkills();
+  const [createJob, { data, error, loading }] = useMutation(CREATE_JOB, {
+    onCompleted: () => onClose(),
+    onError: () => console.log(error),
+  });
+
   const formConfig = [
     {
       name: 'title',
@@ -147,6 +48,7 @@ const CreateProjectModal = ({ open, onClose }) => {
       placeholder: 'I want to create TikTok videos for my company',
       label: 'Description',
       description: 'Share as many details as possible',
+      minContent: 100
     },
     {
       name: 'price',
@@ -170,20 +72,6 @@ const CreateProjectModal = ({ open, onClose }) => {
     },
   ];
 
-  const initialValues = {
-    title: '',
-    price: '',
-    categoryId: [
-      {
-        label: 'Select a value',
-        _id: null,
-      },
-    ],
-    skillIds: [],
-    description: '',
-    attachments: [],
-  };
-
   const formik = useFormik({
     initialValues,
     validationSchema: schema,
@@ -196,28 +84,16 @@ const CreateProjectModal = ({ open, onClose }) => {
           })
         );
       let attachments = await getFileStrings(values.attachments);
-      console.log(attachments, 'attachments');
-      // let works = await Promise.all(
-      //   values?.works?.map(async (el, idx) => {
-      //     return {
-      //       ...el,
-      //       attachments: el.attachments
-      //         ? await getFileStrings(el.attachments)
-      //         : [],
-      //     };
-      //   })
-      // );
-      // createUserInfo({
-      //   variables: {
-      //     input: {
-      //       ...values,
-      //       profilePicture: profilePic?.src,
-      //       interestIds: values.interestIds.map((c) => c._id),
-      //       skillIds: values.skillIds.map((s) => s._id),
-      //       works,
-      //     },
-      //   },
-      // });
+      createJob({
+        variables: {
+          input: {
+            ...values,
+            skillIds: values.skillIds.map((s) => s._id),
+            attachments,
+            categoryId: values.categoryId[0]?._id || null,
+          },
+        },
+      });
     },
   });
 
@@ -230,10 +106,8 @@ const CreateProjectModal = ({ open, onClose }) => {
       : formik.setFieldValue('attachments', files);
   };
 
-  console.log(formik);
   const removeAttachment = (attach) => {
     const files = formik.values.attachments.filter((v) => v.name !== attach);
-    // return setForm({ ...form, attachments: files });
     return formik.setFieldValue('attachments', files);
   };
 
@@ -291,6 +165,7 @@ const CreateProjectModal = ({ open, onClose }) => {
                                       value={formik.values[item.name]}
                                       name={item.name}
                                       label={item.label}
+                                      error={formik.errors[item.name]}
                                       variant='xs'
                                       onChange={formik.handleChange}
                                     />
@@ -304,6 +179,7 @@ const CreateProjectModal = ({ open, onClose }) => {
                                       placeholder={item.placeholder}
                                       value={formik.values[item.name]}
                                       name={item.name}
+                                      error={formik.errors[item.name]}
                                       label={item.label}
                                       onChange={formik.handleChange}
                                     />
@@ -316,6 +192,7 @@ const CreateProjectModal = ({ open, onClose }) => {
                                         label={item.label}
                                         options={item.options}
                                         value={formik.values[item.name]}
+                                        error={formik.errors[item.name]}
                                         onChange={(e) => {
                                           formik.setFieldValue(
                                             item.name,
@@ -334,6 +211,7 @@ const CreateProjectModal = ({ open, onClose }) => {
                                       <MultiSelect
                                         options={item.options}
                                         label={item.label}
+                                        error={formik.errors[item.name]}
                                         selected={formik.values[item.name]}
                                         onChange={(e) => {
                                           formik.setFieldValue(item.name, e);
@@ -344,95 +222,12 @@ const CreateProjectModal = ({ open, onClose }) => {
                                 }
                                 if (item.component === 'attachments') {
                                   return (
-                                    <div>
-                                      <label className='block text-sm font-medium text-gray-700'>
-                                        Attachments
-                                      </label>
-                                      <div className='mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md'>
-                                        <div className='space-y-1 text-center'>
-                                          <svg
-                                            className='mx-auto h-12 w-12 text-gray-400'
-                                            stroke='currentColor'
-                                            fill='none'
-                                            viewBox='0 0 48 48'
-                                            aria-hidden='true'
-                                          >
-                                            <path
-                                              d='M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02'
-                                              strokeWidth={2}
-                                              strokeLinecap='round'
-                                              strokeLinejoin='round'
-                                            />
-                                          </svg>
-                                          <div className='flex text-sm text-gray-600'>
-                                            <label
-                                              htmlFor='attachments'
-                                              className='relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500'
-                                            >
-                                              <span>Upload up to 3 files</span>
-                                              <input
-                                                id='attachments'
-                                                multiple
-                                                name='attachments'
-                                                onChange={handleAttachments}
-                                                type='file'
-                                                className='sr-only'
-                                              />
-                                            </label>
-                                          </div>
-                                          <p className='text-xs text-gray-500'>
-                                            PNG, JPG, GIF up to 5MB
-                                          </p>
-                                        </div>
-                                      </div>
-                                      {formik.errors.attachments ? (
-                                        <span className='text-red-400'>
-                                          {formik.errors?.attachments}
-                                        </span>
-                                      ) : null}
-                                      <div className='py-4'>
-                                        {formik.values.attachments
-                                          ? formik.values.attachments.map(
-                                              (attach, idx) => (
-                                                <div key={idx}>
-                                                  <ImagePreview
-                                                    className='w-auto max-h-24 rounded overflow-hidden'
-                                                    file={attach}
-                                                  />
-                                                  <span className='inline-flex rounded-full items-center my-2 py-0.5 pl-2.5 pr-1 text-sm font-medium bg-indigo-100 text-indigo-700'>
-                                                    {attach.name}
-                                                    <button
-                                                      type='button'
-                                                      onClick={() =>
-                                                        removeAttachment(
-                                                          attach.name
-                                                        )
-                                                      }
-                                                      className='flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-indigo-400 hover:bg-indigo-200 hover:text-indigo-500 focus:outline-none focus:bg-indigo-500 focus:text-white'
-                                                    >
-                                                      <span className='sr-only'>
-                                                        Remove large option
-                                                      </span>
-                                                      <svg
-                                                        className='h-2 w-2'
-                                                        stroke='currentColor'
-                                                        fill='none'
-                                                        viewBox='0 0 8 8'
-                                                      >
-                                                        <path
-                                                          strokeLinecap='round'
-                                                          strokeWidth='1.5'
-                                                          d='M1 1l6 6m0-6L1 7'
-                                                        />
-                                                      </svg>
-                                                    </button>
-                                                  </span>
-                                                </div>
-                                              )
-                                            )
-                                          : null}
-                                      </div>
-                                    </div>
+                                    <Attachments
+                                      handleAttachments={handleAttachments}
+                                      errors={formik.errors}
+                                      attachments={formik.values.attachments}
+                                      removeAttachment={removeAttachment}
+                                    />
                                   );
                                 }
                                 return null;
@@ -444,7 +239,7 @@ const CreateProjectModal = ({ open, onClose }) => {
                           <button
                             type='button'
                             onClick={formik.handleSubmit}
-                            className='bg-indigo-600 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                            className='bg-secondary border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
                           >
                             Save
                           </button>
