@@ -8,12 +8,19 @@ export const GET_CREATED_JOBS = gql`
       assigneeId
       price
       createdBy
-      categoryId
-      skillIds
+      category {
+        _id,
+        label
+      }
+      skills {
+        _id,
+        label
+      }
       dueDate
       links
       status
       description
+      applicationsCount
     }
   }
 `;
@@ -27,7 +34,10 @@ export const GET_ASSIGNED_JOBS = gql`
       price
       createdBy
       categoryId
-      skillIds
+      skills {
+        _id,
+        label
+      }
       dueDate
       links
       status
