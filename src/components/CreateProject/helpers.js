@@ -1,5 +1,5 @@
 import ImagePreview from 'components/ImagePreview';
-
+import ViewAttachments from 'components/ViewAttachments';
 export const Input = ({
   value,
   placeholder,
@@ -133,38 +133,14 @@ export const Attachments = ({
       <span className='text-red-400'>{errors?.attachments}</span>
     ) : null}
     <div className='py-4'>
-      {attachments
-        ? attachments.map((attach, idx) => (
-            <div key={idx}>
-              <ImagePreview
-                className='w-auto max-h-24 rounded overflow-hidden'
-                file={attach}
-              />
-              <span className='inline-flex rounded-full items-center my-2 py-0.5 pl-2.5 pr-1 text-sm font-medium bg-indigo-100 text-indigo-700'>
-                {attach.name}
-                <button
-                  type='button'
-                  onClick={() => removeAttachment(attach.name)}
-                  className='flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-indigo-400 hover:bg-indigo-200 hover:text-primary focus:outline-none focus:bg-primary focus:text-white'
-                >
-                  <span className='sr-only'>Remove large option</span>
-                  <svg
-                    className='h-2 w-2'
-                    stroke='currentColor'
-                    fill='none'
-                    viewBox='0 0 8 8'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeWidth='1.5'
-                      d='M1 1l6 6m0-6L1 7'
-                    />
-                  </svg>
-                </button>
-              </span>
-            </div>
-          ))
-        : null}
+      {attachments ? (
+        <ViewAttachments
+          attachments={attachments}
+          withRemoveButton
+          fromMemory
+          removeAttachment={removeAttachment}
+        />
+      ) : null}
     </div>
   </div>
 );

@@ -60,9 +60,11 @@ export default function Projects() {
 
   const data =
     creatorJobs?.getJobsForCreator || businessJobs?.getJobsForBusinessUser;
-    
+
   return (
     <div className='h-full w-full'>
+      <h1 className='text-2xl font-semibold text-gray-900 py-5'>Projects</h1>
+
       <div className='h-full w-full flex justify-center items-center'>
         {!displayEmptyState && <ProjectsList data={data} />}
         {open && (

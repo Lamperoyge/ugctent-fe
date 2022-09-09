@@ -9,11 +9,11 @@ export const GET_CREATED_JOBS = gql`
       price
       createdBy
       category {
-        _id,
+        _id
         label
       }
       skills {
-        _id,
+        _id
         label
       }
       dueDate
@@ -35,13 +35,44 @@ export const GET_ASSIGNED_JOBS = gql`
       createdBy
       categoryId
       skills {
-        _id,
+        _id
         label
       }
       dueDate
       links
       status
       description
+    }
+  }
+`;
+
+export const GET_JOB_BY_ID = gql`
+  query getJobById($id: ID!) {
+    getJobById(id: $id) {
+      _id
+      title
+      assigneeId
+      price
+      creator {
+        firstName
+        lastName
+        userId
+      }
+      category {
+        _id
+        label
+      }
+      skills {
+        _id
+        label
+      }
+      attachments
+      dueDate
+      links
+      status
+      description
+      createdAt
+      updatedAt
     }
   }
 `;

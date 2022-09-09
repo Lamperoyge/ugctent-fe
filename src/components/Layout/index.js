@@ -20,12 +20,7 @@ import { PlusIcon } from '@heroicons/react/solid';
 import Logo from 'components/Shared/Logo';
 
 const navigation = [
-  { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-  { name: 'Team', href: '#', icon: UsersIcon, current: false },
-  { name: 'Projects', href: '#', icon: FolderIcon, current: false },
-  { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-  { name: 'Documents', href: '#', icon: InboxIcon, current: false },
-  { name: 'Reports', href: '#', icon: ChartBarIcon, current: false },
+  { name: 'Projects', href: '/projects', icon: HomeIcon, current: true, },
 ];
 
 export default function SidebarLayout({ children }) {
@@ -106,7 +101,7 @@ export default function SidebarLayout({ children }) {
                   </div>
                   <nav className='mt-5 px-2 space-y-1'>
                     {navigation.map((item) => (
-                      <a
+                      <Link
                         key={item.name}
                         href={item.href}
                         className={classNames(
@@ -126,7 +121,7 @@ export default function SidebarLayout({ children }) {
                           aria-hidden='true'
                         />
                         {item.name}
-                      </a>
+                      </Link>
                     ))}
                     <div className='pt-6 w-full'>
                       <button
@@ -144,7 +139,7 @@ export default function SidebarLayout({ children }) {
                   </nav>
                 </div>
                 <div className='flex-shrink-0 flex border-t border-gray-200 p-4'>
-                  <a href='#' className='flex-shrink-0 group block'>
+                  <Link href={`/profile/${user._id}`} className='flex-shrink-0 group block'>
                     {profilePicture ? (
                       <img
                         className='inline-block h-9 w-9 rounded-full'
@@ -162,7 +157,7 @@ export default function SidebarLayout({ children }) {
                         </svg>
                       </span>
                     )}
-                  </a>
+                  </Link>
                   <div className='ml-3'>
                     <p className='text-sm font-medium text-gray-700 group-hover:text-gray-900'>
                       {user?.userInfo?.firstName}
@@ -190,7 +185,8 @@ export default function SidebarLayout({ children }) {
               </div>
               <nav className='mt-5 flex-1 px-2 bg-white space-y-1'>
                 {navigation.map((item) => (
-                  <a
+<Link href={item.href}>
+<a
                     key={item.name}
                     href={item.href}
                     className={classNames(
@@ -211,6 +207,7 @@ export default function SidebarLayout({ children }) {
                     />
                     {item.name}
                   </a>
+</Link>
                 ))}
                 <div className='pt-12 w-full'>
                   <button
@@ -282,9 +279,6 @@ export default function SidebarLayout({ children }) {
           <main className='flex-1 h-full w-full'>
             <div className='py-6 h-full w-full'>
               <div className='max-w-7xl mx-auto px-4 sm:px-6 md:px-8'>
-                <h1 className='text-2xl font-semibold text-gray-900'>
-                  Projects
-                </h1>
               </div>
               <div className='max-w-7xl mx-auto px-4 sm:px-6 md:px-8 h-full w-full'>
                 <div className='py-4 h-full w-full'>{children}</div>

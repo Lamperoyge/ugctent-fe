@@ -1,7 +1,4 @@
-import {
-  CalendarIcon,
-  UserGroupIcon,
-} from '@heroicons/react/solid';
+import { CalendarIcon, UserGroupIcon } from '@heroicons/react/solid';
 import { BeakerIcon, VideoCameraIcon } from '@heroicons/react/outline';
 
 import { JOB_STATUS_LABELS_AND_COLORS } from 'utils/constants';
@@ -39,16 +36,26 @@ const ProjectsList = ({ data }) => {
                           className='flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400'
                           aria-hidden='true'
                         />
-                        {job?.skills?.map((skill) => (
-                          <span
-                            className='border rounded-full py-1 px-3 text-xs mr-2 font-semibold text-white bg-primaryOrange items-center'
-                            key={skill._id}
-                          >
-                            <span className='block truncate'>
-                              {skill.label}
+                        <div className='flex flex-wrap gap-2 items-baseline'>
+                          {job.skills?.slice(0,2).map((skill) => (
+                            <span
+                              className='border rounded-full py-1 px-3 text-xs mr-2 font-semibold text-white bg-primaryOrange items-center'
+                              key={skill._id}
+                            >
+                              <span className='block truncate'>
+                                {skill.label}
+                              </span>
                             </span>
-                          </span>
-                        ))}
+                          ))}
+                          {job.skills?.length > 2 ?                             <span
+                              className='border rounded-full py-1 px-3 text-xs mr-2 font-semibold text-slate-200 bg-slate-400 items-center'
+                            >
+                              <span className='block truncate'>
+                                + {job.skills.length - 2}
+                              </span>
+                            </span>
+ : null}
+                        </div>
                       </p>
                       <p className='mt-2 flex items-center text-sm text-gray-600 sm:mt-0 sm:ml-6'>
                         <BeakerIcon
@@ -61,10 +68,11 @@ const ProjectsList = ({ data }) => {
                         <span
                           className='flex-shrink-0 mr-1.5 text-gray-400'
                           aria-hidden='true'
-                        >RON</span>
+                        >
+                          RON
+                        </span>
                         {job.price}
                       </p>
-
                     </div>
                     <div className='mt-2 flex items-center text-sm text-gray-500 sm:mt-0'>
                       <UserGroupIcon
