@@ -4,8 +4,7 @@ import { BeakerIcon, VideoCameraIcon } from '@heroicons/react/outline';
 import { JOB_STATUS_LABELS_AND_COLORS } from 'utils/constants';
 import Link from 'next/link';
 
-const ProjectsList = ({ data }) => {
-  return (
+const ProjectsList = ({ data }) => (
     <div className='bg-white shadow overflow-hidden sm:rounded-md w-full'>
       <ul role='list' className='divide-y divide-gray-200'>
         {data?.map((job) => {
@@ -90,6 +89,5 @@ const ProjectsList = ({ data }) => {
       </ul>
     </div>
   );
-};
 
 export default ProjectsList;

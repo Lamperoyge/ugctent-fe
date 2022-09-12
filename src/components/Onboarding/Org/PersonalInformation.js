@@ -29,7 +29,7 @@ export default function PersonalInformation({
           <h3 className='text-lg font-medium leading-6 text-gray-900'>
             Personal Information
           </h3>
-          <p className='mt-1 text-sm text-gray-500'></p>
+          <p className='mt-1 text-sm text-gray-500' />
         </div>
         <div className='mt-5 md:mt-0 md:col-span-2'>
           <form action='#' method='POST' className='flex flex-col gap-6'>

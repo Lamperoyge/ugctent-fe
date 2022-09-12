@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { JobFragment } from 'graphql/fragments/job';
 
 export const GET_CREATED_JOBS = gql`
   query getJobsForBusinessUser($input: GetByIdInput) {
@@ -75,4 +76,13 @@ export const GET_JOB_BY_ID = gql`
       updatedAt
     }
   }
+`;
+
+export const GET_JOBS = gql`
+  query getJobs($input: GetJobsInput) {
+    getJobs(input: $input) {
+      ...JobFragment
+    }
+  }
+  ${JobFragment}
 `;

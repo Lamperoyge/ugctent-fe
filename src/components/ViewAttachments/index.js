@@ -1,5 +1,7 @@
+
 import { useState } from 'react';
 import { Modal } from '@mantine/core';
+import ImagePreview from 'components/ImagePreview';
 
 export default function ViewAttachments({
   attachments,
@@ -11,7 +13,7 @@ export default function ViewAttachments({
 
   return (
     <>
-      <Modal opened={!!img} onClose={() => setImg(null)} >
+      <Modal opened={!!img} onClose={() => setImg(null)}>
         <img src={img} />
       </Modal>
 
@@ -23,11 +25,16 @@ export default function ViewAttachments({
               file={attach}
             />
           ) : (
-            <img
-              className='w-auto max-h-24 rounded overflow-hidden'
-              src={attach}
+            <button
+              className='border-0'
               onClick={() => setImg(attach)}
-            />
+              type='button'
+            >
+              <img
+                className='w-auto max-h-24 rounded overflow-hidden'
+                src={attach}
+              />
+            </button>
           )}
           <span className='inline-flex rounded-full items-center my-2 py-0.5 pl-2.5 pr-1 text-sm font-medium bg-indigo-100 text-indigo-700'>
             {attach.name}

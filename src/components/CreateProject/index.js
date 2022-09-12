@@ -41,7 +41,7 @@ const CreateProjectModal = ({ open, onClose }) => {
       options: skills,
     },
     {
-      //add rich text
+      // add rich text
       name: 'description',
       component: 'textarea',
       rows: 6,
@@ -76,14 +76,14 @@ const CreateProjectModal = ({ open, onClose }) => {
     initialValues,
     validationSchema: schema,
     onSubmit: async (values) => {
-      let getFileStrings = async (attachments) =>
+      const getFileStrings = async (attachments) =>
         await Promise.all(
           attachments.map(async (i) => {
             const data = await uploadPhoto(i);
             return data.src;
           })
         );
-      let attachments = await getFileStrings(values.attachments);
+      const attachments = await getFileStrings(values.attachments);
       createJob({
         variables: {
           input: {

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { GET_JOB_BY_ID } from 'graphql/queries';
@@ -15,8 +16,8 @@ import { classNames } from 'utils/helpers';
 import { useAuth } from 'hooks';
 import Link from 'next/link';
 import StatusChip from 'components/StatusChip';
-import {Attachments} from 'components/CreateProject/helpers'
 import ViewAttachments from 'components/ViewAttachments';
+
 const activity = [
   {
     id: 1,
@@ -57,17 +58,16 @@ const activity = [
   },
 ];
 
-export default function ProjectPage({}) {
+export default function ProjectPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const { data, error, loading } = useQuery(GET_JOB_BY_ID, {
+  const { data } = useQuery(GET_JOB_BY_ID, {
     variables: {
       id: router.query.jobId,
     },
     skip: !router?.query?.jobId,
   });
 
-  console.log(data);
   if (!data?.getJobById) return null;
 
   const job = data?.getJobById;
@@ -141,7 +141,7 @@ export default function ProjectPage({}) {
                           Created on{' '}
                           <time dateTime='2020-12-02'>
                             {new Date(
-                              parseInt(job.createdAt)
+                              parseInt(job.createdAt, 10)
                             ).toLocaleDateString()}
                           </time>
                         </span>
@@ -152,7 +152,7 @@ export default function ProjectPage({}) {
                         <h2 className='text-sm font-medium text-gray-500'>
                           Assignees
                         </h2>
-                        <ul role='list' className='mt-3 space-y-3'>
+                        <ul className='mt-3 space-y-3'>
                           <li className='flex justify-start'>
                             <a href='#' className='flex items-center space-x-3'>
                               <div className='flex-shrink-0'>
@@ -236,7 +236,7 @@ export default function ProjectPage({}) {
                         </h2>
                       </div>
                       <div className='pt-6'>
-                        {/* Activity feed*/}
+                        {/* Activity feed */}
                         <div className='flow-root'>
                           <ul role='list' className='-mb-8'>
                             {activity.map((item, itemIdx) => (
@@ -406,7 +406,7 @@ export default function ProjectPage({}) {
                                     rows={3}
                                     className='shadow-sm block w-full focus:ring-gray-900 focus:border-gray-900 sm:text-sm border border-gray-300 rounded-md'
                                     placeholder='Leave a comment'
-                                    defaultValue={''}
+                                    defaultValue=""
                                   />
                                 </div>
                                 <div className='mt-6 flex items-center justify-end space-x-4'>
@@ -484,9 +484,9 @@ export default function ProjectPage({}) {
                   <h2 className='text-sm font-medium text-gray-500'>
                     Assignees
                   </h2>
-                  <ul role='list' className='mt-3 space-y-3'>
+                  <ul className='mt-3 space-y-3'>
                     <li className='flex justify-start'>
-                      <a href='#' className='flex items-center space-x-3'>
+                      <a className='flex items-center space-x-3'>
                         <div className='flex-shrink-0'>
                           <img
                             className='h-5 w-5 rounded-full'
@@ -504,7 +504,6 @@ export default function ProjectPage({}) {
                 <div>
                   <h2 className='text-sm font-medium text-gray-500'>Skills</h2>
                   <ul
-                    role='list'
                     className='flex mt-2 leading-8 flex-wrap gap-2'
                   >
                     {job.skills?.map((skill) => (
@@ -522,7 +521,6 @@ export default function ProjectPage({}) {
                     Category
                   </h2>
                   <ul
-                    role='list'
                     className='flex mt-2 leading-8 flex-wrap gap-2'
                   >
                     {/* {job?.map((skill) => (

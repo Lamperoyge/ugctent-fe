@@ -15,7 +15,7 @@
 //     description: String
 // }]
 
-//CONTRIBUTOR
+// CONTRIBUTOR
 // firstName: string - required
 // lastName: string - required
 // profilePicture: string - not required
@@ -72,15 +72,15 @@ export const CREATOR_CONFIG = {
 };
 
 export const CONTRIBUTOR_CONFIG = {
-  firstName: {}, //este
-  lastName: {}, //este
-  profilePicture: {}, //+ ESTE
-  website: {}, //+ ESTE
-  bio: {}, //+ESTE
-  city: {}, //este
-  country: {}, //este
-  companyName: {}, //+ ESTE
-  taxId: {}, //este
-  socialLinks: {}, //este
+  firstName: {}, // este
+  lastName: {}, // este
+  profilePicture: {}, // + ESTE
+  website: {}, // + ESTE
+  bio: {}, // +ESTE
+  city: {}, // este
+  country: {}, // este
+  companyName: {}, // + ESTE
+  taxId: {}, // este
+  socialLinks: {}, // este
   categoryId: {}, // ESTE
 };

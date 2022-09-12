@@ -1,0 +1,33 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 2022
+  },
+  "extends": ["next", "next/core-web-vitals"],
+  "rules": {
+    "react/display-name": "warn",
+    "react/require-default-props": "warn",
+    "react/jsx-no-duplicate-props": "warn",
+    "react/no-unused-prop-types": "warn",
+    "react/forbid-prop-types": "warn",
+    "react/static-property-placement": "warn",
+    "react/jsx-no-bind": "off",
+    "react/jsx-no-useless-fragment": "warn",
+    "react/no-array-index-key": "off",
+    "react/destructuring-assignment": "warn",
+    "react/function-component-definition": "off",
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "@next/next/no-img-element": "off",
+    "no-underscore-dangle": "off",
+    "jsx-a11y/alt-text": "off",
+    "consistent-return": "off",
+    "no-unused-expressions": "off"
+  },
+  "settings": { 
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx"],
+        "moduleDirectory": ["node_modules", "src"]
+      }
+    }
+  }
+}

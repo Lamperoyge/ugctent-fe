@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { USER_TYPES } from 'utils/constants';
 import { BeakerIcon, VideoCameraIcon } from '@heroicons/react/outline';
+
 const options = [
   {
     key: USER_TYPES.CREATOR,

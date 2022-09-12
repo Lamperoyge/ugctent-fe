@@ -25,7 +25,7 @@ export default async function handler(req, res) {
   });
 
   const bucket = storage.bucket('ugctent-profile-pictures');
-  const filename = req.query.file + '_' + `${new Date().valueOf()}`;
+  const filename = `${req.query.file  }_` + `${new Date().valueOf()}`;
   const file = bucket.file(filename);
   const options = {
     expires: Date.now() + 1 * 60 * 1000, //  1 minute,

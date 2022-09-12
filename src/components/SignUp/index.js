@@ -4,8 +4,9 @@ import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import Logo from 'components/Shared/Logo';
 import { USER_TYPES } from 'utils/constants';
-import UserTypeSelector from './UserTypeSelector';
 import { useAuth } from 'hooks';
+import UserTypeSelector from './UserTypeSelector';
+
 const USER_TYPES_LABELS = {
   [USER_TYPES.ORG]: 'Join as a business',
   [USER_TYPES.CREATOR]: 'Join as a creator',
@@ -36,11 +37,10 @@ const SignUp = () => {
       placeholder: 'Confirm Password',
     },
     {
-      label: () => {
-        return (
+      label: () => (
           <>
             I accept the{' '}
-            <Link href={'/terms'}>
+            <Link href="/terms">
               <a className='text-secondary hover:text-primary'>
                 Terms of Service
               </a>
@@ -52,8 +52,7 @@ const SignUp = () => {
               </a>
             </Link>
           </>
-        );
-      },
+        ),
       type: 'checkbox',
       name: 'termsAgreement',
     },
@@ -77,8 +76,7 @@ const SignUp = () => {
 
   const handleSubmit = (values) => signUp({ ...values, userType });
   return (
-    <>
-      <div className='min-h-full flex'>
+    <div className='min-h-full flex'>
         <div className='flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24'>
           <div className='mx-auto w-full max-w-sm lg:w-96'>
             <div>
@@ -110,11 +108,9 @@ const SignUp = () => {
                       errors,
                       touched,
                       handleBlur,
-                    }) => {
-                      return (
+                    }) => (
                         <Form onSubmit={handleSubmit} className='space-y-6'>
-                          {config.map((item, idx) => {
-                            return (
+                          {config.map((item, idx) => (
                               <div key={idx}>
                                 {item.type === 'checkbox' ? (
                                   <div className='flex items-center justify-center'>
@@ -156,8 +152,7 @@ const SignUp = () => {
                                   </>
                                 )}
                               </div>
-                            );
-                          })}
+                            ))}
 
                           <div className='text-sm'>
                             <Link href='/login'>
@@ -176,8 +171,7 @@ const SignUp = () => {
                             </button>
                           </div>
                         </Form>
-                      );
-                    }}
+                      )}
                   </Formik>
                 ) : (
                   <UserTypeSelector setUserType={setUserType} />
@@ -194,7 +188,6 @@ const SignUp = () => {
           />
         </div>
       </div>
-    </>
   );
 };
 

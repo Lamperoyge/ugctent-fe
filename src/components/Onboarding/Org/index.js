@@ -1,7 +1,5 @@
 import Stepper from 'components/Shared/Stepper';
 import { useState } from 'react';
-import CompanyProfile from './CompanyProfile';
-import PersonalInformation from './PersonalInformation';
 import { useFormik } from 'formik';
 import { uploadPhoto } from 'services/upload-media';
 import { CREATE_USER_INFO } from 'graphql/mutations';
@@ -10,6 +8,8 @@ import * as yup from 'yup';
 import { useRouter } from 'next/router';
 import { LightSpinner } from 'components/Shared/Spinner';
 import { useAuth } from 'hooks';
+import PersonalInformation from './PersonalInformation';
+import CompanyProfile from './CompanyProfile';
 
 const schema = yup.object({
   companyName: yup.string().required('Please enter your company name'),
@@ -112,7 +112,7 @@ export default function OrgOnboardingForm() {
     validationSchema: schema,
   });
 
-  //TODO refactor
+  // TODO refactor
 
   const moveStepper = (type) => {
     if (type === 'next') {

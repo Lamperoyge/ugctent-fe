@@ -2,13 +2,14 @@ import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from 'contexts';
 import { useQuery } from '@apollo/client';
 import { GET_CATEGORIES, GET_SKILLS, GET_INTERESTS } from 'graphql/queries';
+
 export const useAuth = () => useContext(AuthContext);
 
 export const useGetCategories = () => {
   const { data, error, loading } = useQuery(GET_CATEGORIES, {
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'cache-and-network',
-    nextFetchPolicy: 'cache-first'
+    nextFetchPolicy: 'cache-first',
   });
 
   return {
@@ -50,9 +51,7 @@ export const useImagePreview = (file) => {
     setPreview(objectUrl);
 
     // free memory when ever this component is unmounted
-    return () => {
-      URL.revokeObjectURL(objectUrl);
-    };
+    return () => URL.revokeObjectURL(objectUrl);
   }, [file]);
   return { preview };
 };

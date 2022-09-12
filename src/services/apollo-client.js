@@ -1,5 +1,6 @@
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import offsetLimitPaginationInput from 'utils/helpers/offsetLimitPaginationInput';
 
 const graphqlUri = 'http://localhost:4000/graphql';
 
@@ -18,7 +19,18 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
-const cache = new InMemoryCache();
+const cache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        getJobs: {
+          keyArgs: false,
+          merge: offsetLimitPaginationInput,
+        }
+      }
+    }
+  }
+});
 export default new ApolloClient({
   link: authLink.concat(httpLink),
   cache,

@@ -7,9 +7,7 @@ import { useState, useEffect } from 'react';
 import { EMAIL_SIGN_UP, EMAIL_SIGN_IN } from 'graphql/mutations';
 import { EXCLUDED_PATHS } from 'utils/constants';
 
-export const getAuthHeader = () => {
-  return localStorage.getItem('ugctent-token') || null;
-};
+export const getAuthHeader = () => localStorage.getItem('ugctent-token') || null;
 
 export const logout = async () => {
   try {
@@ -28,7 +26,7 @@ export const storeAuthHeader = async (token) => {
 };
 
 const Auth = ({ children }) => {
-  //TODO test me more
+  // TODO test me more
   const router = useRouter();
   const localStorageToken = typeof window !== 'undefined' && getAuthHeader();
   const [token, setToken] = useState(localStorageToken);
@@ -110,6 +108,7 @@ const Auth = ({ children }) => {
       EXCLUDED_PATHS.includes(router.pathname) &&
       data?.getLoggedInUser
     ) {
+      // eslint-disable-next-line no-unused-expressions
       data?.getLoggedInUser?.isOnboarded
         ? router.push('/')
         : router.push('/onboarding');

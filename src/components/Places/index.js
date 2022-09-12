@@ -59,7 +59,7 @@ function SearchLocationInput({
         country={country}
         disabled={disabled}
         id={name}
-        autoComplete={'city'}
+        autoComplete="city"
         className='mt-1 focus:ring-secondary focus:border-secondary block w-full shadow-sm sm:text-sm border-gray-300 rounded-md'
       />
     </>

@@ -21,9 +21,9 @@ export default function Portfolio({values, setFieldValue}) {
     setEditWork({...values.works.find((i, idx) => idx === id), id})
   };
 
-  //refactor me
+  // refactor me
   const handleEdit = (newValues) => {
-    const id = editWork.id
+    const {id} = editWork
     setFieldValue('works', values.works.map((work, idx) => {
       if(idx === id) {
         return newValues

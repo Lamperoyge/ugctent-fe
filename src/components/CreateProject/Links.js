@@ -1,6 +1,7 @@
 import validator from 'validator';
 import { XIcon, PlusIcon } from '@heroicons/react/outline';
 import { useState } from 'react';
+
 const LINK_KEYS = {
   URL: 'url',
   DISPLAY_NAME: 'displayName',

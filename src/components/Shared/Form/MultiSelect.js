@@ -20,16 +20,14 @@ export default function Multiselect({
           <div className='mt-1 relative'>
             <Listbox.Button className='flex min-h-10 flex-wrap gap-2 relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm'>
               {selected.length ? (
-                selected?.map((s, idx) => {
-                  return (
+                selected?.map((s, idx) => (
                     <span
                       className='border rounded-full py-1 px-3 font-semibold text-white bg-primaryOrange items-center'
                       key={idx}
                     >
                       <span className='block truncate'>{s.label}</span>
                     </span>
-                  );
-                })
+                  ))
               ) : (
                 <span className='border rounded-full py-1 px-3 font-semibold text-slate-700 bg-slate-300	items-center opacity-30'>
                   <span className='block truncate'>Select value</span>

@@ -58,3 +58,5 @@ export const JOB_STATUS_LABELS_AND_COLORS = {
     chipColor: 'bg-slate-100'
   }
 };
+
+export const LIMIT = 10;

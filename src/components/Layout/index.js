@@ -1,27 +1,15 @@
 import { Fragment, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Dialog, Transition } from '@headlessui/react';
-import {
-  CalendarIcon,
-  ChartBarIcon,
-  FolderIcon,
-  HomeIcon,
-  InboxIcon,
-  MenuIcon,
-  UsersIcon,
-  XIcon,
-} from '@heroicons/react/outline';
+import { HomeIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
 import { classNames } from 'utils/helpers';
-import { EXCLUDED_PATHS } from 'utils/constants';
+import { EXCLUDED_PATHS, USER_TYPES } from 'utils/constants';
 import { useAuth } from 'hooks';
 import Link from 'next/link';
 import CreateProjectModal from 'components/CreateProject';
 import { PlusIcon } from '@heroicons/react/solid';
 import Logo from 'components/Shared/Logo';
-
-const navigation = [
-  { name: 'Projects', href: '/projects', icon: HomeIcon, current: true, },
-];
+import { logout } from 'components/Auth';
 
 export default function SidebarLayout({ children }) {
   const { user } = useAuth();
@@ -29,19 +17,41 @@ export default function SidebarLayout({ children }) {
   const profilePicture = user?.userInfo?.profilePicture;
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const ORG_NAVIGATION = [
+    {
+      name: 'Projects',
+      href: '/projects',
+      icon: HomeIcon,
+      current: router.asPath.includes('projects'),
+    },
+  ];
 
-  //TODO : CHANGE THIS - really just no time and too lazy to move to constants
+  const CREATOR_NAVIGATION = [
+    {
+      name: 'Explore',
+      href: '/explore',
+      icon: HomeIcon,
+      current:
+        router.asPath.includes('projects') || router.asPath.includes('explore'),
+    },
+  ];
+
+  const navigation =
+    user?.userType === USER_TYPES.ORG ? ORG_NAVIGATION : CREATOR_NAVIGATION;
+  // TODO : CHANGE THIS - really just no time and too lazy to move to constants
   if (
     EXCLUDED_PATHS.includes(router.pathname) ||
     router.pathname.includes('/onboarding')
   )
     return children;
+
+  const onModalClose = () => setNewProjectModalOpen(false);
   return (
     <>
       {isNewProjectModalOpen && (
         <CreateProjectModal
           open={isNewProjectModalOpen}
-          onClose={() => setNewProjectModalOpen(false)}
+          onClose={onModalClose}
         />
       )}
       <div>
@@ -138,8 +148,19 @@ export default function SidebarLayout({ children }) {
                     </div>
                   </nav>
                 </div>
+                <button
+                  type='button'
+                  onClick={logout}
+                  className='inline-flex items-center w-full justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-400 bg-gray-100 hover:bg-red-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
+                >
+                  Log out
+                </button>
+
                 <div className='flex-shrink-0 flex border-t border-gray-200 p-4'>
-                  <Link href={`/profile/${user._id}`} className='flex-shrink-0 group block'>
+                  <Link
+                    href={`/profile/${user._id}`}
+                    className='flex-shrink-0 group block'
+                  >
                     {profilePicture ? (
                       <img
                         className='inline-block h-9 w-9 rounded-full'
@@ -184,30 +205,30 @@ export default function SidebarLayout({ children }) {
                 <Logo className='h-8 w-auto' src='/black-orange.svg' />
               </div>
               <nav className='mt-5 flex-1 px-2 bg-white space-y-1'>
-                {navigation.map((item) => (
-<Link href={item.href}>
-<a
-                    key={item.name}
-                    href={item.href}
-                    className={classNames(
-                      item.current
-                        ? 'bg-gray-100 text-gray-900'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                      'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
-                    )}
-                  >
-                    <item.icon
+                {navigation.map((item, idx) => (
+                  <Link href={item.href} key={idx}>
+                    <a
+                      key={item.name}
+                      href={item.href}
                       className={classNames(
                         item.current
-                          ? 'text-gray-500'
-                          : 'text-gray-400 group-hover:text-gray-500',
-                        'mr-3 flex-shrink-0 h-6 w-6'
+                          ? 'bg-gray-100 text-gray-900'
+                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                        'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
                       )}
-                      aria-hidden='true'
-                    />
-                    {item.name}
-                  </a>
-</Link>
+                    >
+                      <item.icon
+                        className={classNames(
+                          item.current
+                            ? 'text-gray-500'
+                            : 'text-gray-400 group-hover:text-gray-500',
+                          'mr-3 flex-shrink-0 h-6 w-6'
+                        )}
+                        aria-hidden='true'
+                      />
+                      {item.name}
+                    </a>
+                  </Link>
                 ))}
                 <div className='pt-12 w-full'>
                   <button
@@ -224,13 +245,21 @@ export default function SidebarLayout({ children }) {
                 </div>
               </nav>
             </div>
+            <button
+              type='button'
+              onClick={logout}
+              className='inline-flex items-center w-full justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-400 bg-gray-100 hover:bg-red-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
+            >
+              Log out
+            </button>
+
             <div className='flex-shrink-0 flex border-t border-gray-200 p-4'>
               <Link
                 href={`/profile/${user?.userInfo?.userId}`}
                 className='flex-shrink-0 w-full group block'
                 passHref
               >
-                <a>
+                <a href={`/profile/${user?.userInfo?.userId}`}>
                   <div className='flex items-center'>
                     <div>
                       {profilePicture ? (
@@ -278,8 +307,7 @@ export default function SidebarLayout({ children }) {
           </div>
           <main className='flex-1 h-full w-full'>
             <div className='py-6 h-full w-full'>
-              <div className='max-w-7xl mx-auto px-4 sm:px-6 md:px-8'>
-              </div>
+              <div className='max-w-7xl mx-auto px-4 sm:px-6 md:px-8' />
               <div className='max-w-7xl mx-auto px-4 sm:px-6 md:px-8 h-full w-full'>
                 <div className='py-4 h-full w-full'>{children}</div>
               </div>

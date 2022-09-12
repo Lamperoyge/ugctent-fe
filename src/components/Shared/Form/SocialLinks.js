@@ -21,8 +21,7 @@ const SOCIALS = [
   },
 ];
 
-const SocialLinks = ({ onChange, values, name }) => {
-  return (
+const SocialLinks = ({ onChange, values, name }) => (
     <div className='grid grid-cols-3 gap-6'>
       <div className='col-span-3 sm:col-span-2'>
         <label
@@ -50,6 +49,5 @@ const SocialLinks = ({ onChange, values, name }) => {
       </div>
     </div>
   );
-};
 
 export default SocialLinks;

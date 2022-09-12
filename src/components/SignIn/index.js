@@ -4,6 +4,7 @@ import { Formik, Form } from 'formik';
 import Logo from 'components/Shared/Logo';
 import { useAuth } from 'hooks';
 import { SmallSpinner } from 'components/Shared/Spinner';
+
 const SignIn = () => {
   const { signIn, signInError, signInLoading } = useAuth();
   const config = [
@@ -36,8 +37,7 @@ const SignIn = () => {
 
   const handleSubmit = (values) => signIn({ ...values });
   return (
-    <>
-      <div className='min-h-full flex'>
+    <div className='min-h-full flex'>
         <div className='flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24'>
           <div className='mx-auto w-full max-w-sm lg:w-96'>
             <div>
@@ -66,11 +66,9 @@ const SignIn = () => {
                     errors,
                     touched,
                     handleBlur,
-                  }) => {
-                    return (
+                  }) => (
                       <Form onSubmit={handleSubmit} className='space-y-6'>
-                        {config.map((item, idx) => {
-                          return (
+                        {config.map((item, idx) => (
                             <div key={idx}>
                               <label className='block text-sm font-medium text-gray-700'>
                                 {item.label}
@@ -90,8 +88,7 @@ const SignIn = () => {
                                 )}
                               </div>
                             </div>
-                          );
-                        })}
+                          ))}
                         <div className='text-sm'>
                           <Link href='/forgot-password'>
                             <a className='font-medium text-secondary hover:text-primary'>
@@ -118,8 +115,7 @@ const SignIn = () => {
                           </button>
                         </div>
                       </Form>
-                    );
-                  }}
+                    )}
                 </Formik>
               </div>
             </div>
@@ -133,7 +129,6 @@ const SignIn = () => {
           />
         </div>
       </div>
-    </>
   );
 };
 

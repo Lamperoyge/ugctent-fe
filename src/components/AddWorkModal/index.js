@@ -112,7 +112,7 @@ export default function AddWork({
                         <div className='grid grid-cols-3 gap-6'>
                           <div className='col-span-3 sm:col-span-2'>
                             <label
-                              htmlFor={'clientName'}
+                              htmlFor="clientName"
                               className='block text-sm font-medium text-gray-700'
                             >
                               Client name

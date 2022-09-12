@@ -1,7 +1,5 @@
 import SignIn from 'components/SignIn';
 
-const LoginPage = () => {
-  return <SignIn />;
-};
+const LoginPage = () => <SignIn />;
 
 export default LoginPage;

@@ -1,8 +1,6 @@
 import { useState } from 'react';
 
 import PersonalInformation from 'components/Onboarding/Org/PersonalInformation';
-import Portfolio from './Portfolio';
-import UserProfile from './UserProfile';
 import { useFormik } from 'formik';
 import { uploadPhoto } from 'services/upload-media';
 import { CREATE_USER_INFO } from 'graphql/mutations';
@@ -12,9 +10,11 @@ import { LightSpinner } from 'components/Shared/Spinner';
 import Stepper from 'components/Shared/Stepper';
 import { useAuth } from 'hooks';
 import { useRouter } from 'next/router';
+import UserProfile from './UserProfile';
+import Portfolio from './Portfolio';
 
 const schema = yup.object({
-  //personal
+  // personal
   firstName: yup.string().required(),
   lastName: yup.string().required(),
   city: yup.string(),
@@ -51,7 +51,7 @@ const schema = yup.object({
   }),
   website: yup.string(),
 
-  //portfolio
+  // portfolio
   works: yup.array().of(
     yup.object({
       title: yup.string(),
@@ -128,9 +128,9 @@ const CreatorOnboardingForm = () => {
       const profilePic = values?.profilePicture
         ? await uploadPhoto(values.profilePicture)
         : null;
-      //TODO refactor me
+      // TODO refactor me
 
-      let getFileStrings = async (attachments) =>
+      const getFileStrings = async (attachments) =>
         await Promise.all(
           attachments.map(async (i) => {
             const data = await uploadPhoto(i);
@@ -138,15 +138,13 @@ const CreatorOnboardingForm = () => {
           })
         );
 
-      let works = await Promise.all(
-        values?.works?.map(async (el, idx) => {
-          return {
+      const works = await Promise.all(
+        values?.works?.map(async (el, idx) => ({
             ...el,
             attachments: el.attachments
               ? await getFileStrings(el.attachments)
               : [],
-          };
-        })
+          }))
       );
       console.log(values);
       createUserInfo({
