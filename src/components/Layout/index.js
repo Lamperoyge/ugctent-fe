@@ -1,7 +1,12 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Dialog, Transition } from '@headlessui/react';
-import { HomeIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
+import {
+  CurrencyDollarIcon,
+  HomeIcon,
+  MenuIcon,
+  XIcon,
+} from '@heroicons/react/outline';
 import { classNames } from 'utils/helpers';
 import { EXCLUDED_PATHS, USER_TYPES } from 'utils/constants';
 import { useAuth } from 'hooks';
@@ -10,13 +15,49 @@ import CreateProjectModal from 'components/CreateProject';
 import { PlusIcon } from '@heroicons/react/solid';
 import Logo from 'components/Shared/Logo';
 import { logout } from 'components/Auth';
+import HeaderAlert from 'components/HeaderAlert';
+import { useLazyQuery } from '@apollo/client';
+import { GET_STRIPE_DASHBOARD_LINK } from 'graphql/queries';
+
+const MissingStripeAnnouncement = () => (
+  <>
+    <span className='md:hidden'>Verify your account!</span>
+    <span className='hidden md:inline'>
+      Please verify your account to be able to apply for jobs and receive
+      payments.
+    </span>{' '}
+  </>
+);
+
+const NavItemWrapper = ({ as = 'link', ...props }) => {
+  if (as === 'link') {
+    return <Link href={props.href}>{props.children}</Link>;
+  }
+  if (as === 'button') {
+    return (
+      <button onClick={props.action} className='border-0 w-full'>
+        {props.children}
+      </button>
+    );
+  }
+  return props.children;
+};
 
 export default function SidebarLayout({ children }) {
   const { user } = useAuth();
   const [isNewProjectModalOpen, setNewProjectModalOpen] = useState(false);
+  const [getStripeDashboardLink] = useLazyQuery(GET_STRIPE_DASHBOARD_LINK, {
+    onCompleted: (data) => {
+      window.open(data.getStripeDashboardLink);
+    },
+  });
+  const [displayAnnouncement, setDisplayAnnouncement] = useState(
+    user?.userInfo?.isStripeVerified === false
+  );
   const profilePicture = user?.userInfo?.profilePicture;
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const ORG_NAVIGATION = [
     {
       name: 'Projects',
@@ -34,6 +75,13 @@ export default function SidebarLayout({ children }) {
       current:
         router.asPath.includes('projects') || router.asPath.includes('explore'),
     },
+    {
+      name: 'Financials',
+      action: getStripeDashboardLink,
+      icon: CurrencyDollarIcon,
+      current: false,
+      as: 'button',
+    },
   ];
 
   const navigation =
@@ -46,12 +94,24 @@ export default function SidebarLayout({ children }) {
     return children;
 
   const onModalClose = () => setNewProjectModalOpen(false);
+
+  const handleAlertDismiss = () => setDisplayAnnouncement(false);
   return (
     <>
       {isNewProjectModalOpen && (
         <CreateProjectModal
           open={isNewProjectModalOpen}
           onClose={onModalClose}
+        />
+      )}
+      {displayAnnouncement && (
+        <HeaderAlert
+          btnTitle={'Verify now'}
+          ctaAction={() => {
+            handleAlertDismiss();
+            router.push('/verify', undefined, { shallow: true });
+          }}
+          renderContent={() => <MissingStripeAnnouncement />}
         />
       )}
       <div>
@@ -111,15 +171,11 @@ export default function SidebarLayout({ children }) {
                   </div>
                   <nav className='mt-5 px-2 space-y-1'>
                     {navigation.map((item) => (
-                      <Link
+                      <NavItemWrapper
                         key={item.name}
                         href={item.href}
-                        className={classNames(
-                          item.current
-                            ? 'bg-gray-100 text-gray-900'
-                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                          'group flex items-center px-2 py-2 text-base font-medium rounded-md'
-                        )}
+                        as={item.as}
+                        action={item.action}
                       >
                         <item.icon
                           className={classNames(
@@ -131,7 +187,7 @@ export default function SidebarLayout({ children }) {
                           aria-hidden='true'
                         />
                         {item.name}
-                      </Link>
+                      </NavItemWrapper>
                     ))}
                     <div className='pt-6 w-full'>
                       <button
@@ -206,7 +262,12 @@ export default function SidebarLayout({ children }) {
               </div>
               <nav className='mt-5 flex-1 px-2 bg-white space-y-1'>
                 {navigation.map((item, idx) => (
-                  <Link href={item.href} key={idx}>
+                  <NavItemWrapper
+                    href={item.href}
+                    key={idx}
+                    as={item.as}
+                    action={item.action}
+                  >
                     <a
                       key={item.name}
                       href={item.href}
@@ -228,7 +289,7 @@ export default function SidebarLayout({ children }) {
                       />
                       {item.name}
                     </a>
-                  </Link>
+                  </NavItemWrapper>
                 ))}
                 <div className='pt-12 w-full'>
                   <button

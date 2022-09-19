@@ -32,3 +32,11 @@ export const CREATE_USER_INFO = gql`
     }
   }
 `;
+
+export const CONNECT_STRIPE = gql`
+  mutation createUserInfoStripe {
+    createUserInfoStripe {
+      url
+    }
+  }
+`;
