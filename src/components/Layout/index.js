@@ -44,7 +44,7 @@ const NavItemWrapper = ({ as = 'link', ...props }) => {
 };
 
 export default function SidebarLayout({ children }) {
-  const { user } = useAuth();
+  const { user, isStripeVerified } = useAuth();
   const [isNewProjectModalOpen, setNewProjectModalOpen] = useState(false);
   const [getStripeDashboardLink] = useLazyQuery(GET_STRIPE_DASHBOARD_LINK, {
     onCompleted: (data) => {
@@ -52,7 +52,7 @@ export default function SidebarLayout({ children }) {
     },
   });
   const [displayAnnouncement, setDisplayAnnouncement] = useState(
-    user?.userInfo?.isStripeVerified === false
+    isStripeVerified === false && user?.type === USER_TYPES.CREATOR
   );
   const profilePicture = user?.userInfo?.profilePicture;
   const router = useRouter();
@@ -368,8 +368,8 @@ export default function SidebarLayout({ children }) {
           </div>
           <main className='flex-1 h-full w-full'>
             <div className='py-6 h-full w-full'>
-              <div className='max-w-7xl mx-auto px-4 sm:px-6 md:px-8' />
-              <div className='max-w-7xl mx-auto px-4 sm:px-6 md:px-8 h-full w-full'>
+              <div className='mx-auto px-4 sm:px-6 md:px-8' />
+              <div className='mx-auto px-4 sm:px-6 md:px-8 h-full w-full'>
                 <div className='py-4 h-full w-full'>{children}</div>
               </div>
             </div>

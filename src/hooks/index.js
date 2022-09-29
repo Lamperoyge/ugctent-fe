@@ -1,8 +1,18 @@
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from 'contexts';
-import { useQuery } from '@apollo/client';
-import { GET_CATEGORIES, GET_SKILLS, GET_INTERESTS } from 'graphql/queries';
-
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import {
+  GET_CATEGORIES,
+  GET_SKILLS,
+  GET_INTERESTS,
+  GET_JOB_APPLICATIONS,
+  GET_JOB_APPLICATION_BY_ID,
+} from 'graphql/queries';
+import {
+  CREATE_JOB_APPLICATION,
+  APPROVE_JOB_APPLICATION,
+  REJECT_JOB_APPLICATION,
+} from 'graphql/mutations';
 export const useAuth = () => useContext(AuthContext);
 
 export const useGetCategories = () => {
@@ -54,4 +64,70 @@ export const useImagePreview = (file) => {
     return () => URL.revokeObjectURL(objectUrl);
   }, [file]);
   return { preview };
+};
+
+export const useJobApplications = () => {
+  const [
+    getJobApplicationById,
+    {
+      data: jobApplication,
+      loading: jobApplicationLoading,
+      error: jobApplicationError,
+    },
+  ] = useLazyQuery(GET_JOB_APPLICATION_BY_ID, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
+  });
+
+  const [
+    getJobApplications,
+    {
+      data: jobApplications,
+      error: jobApplicationsError,
+      loading: jobApplicationsLoading,
+      fetchMore: fetchMoreJobApplications,
+      refetch: refetchJobApplications,
+    },
+  ] = useLazyQuery(GET_JOB_APPLICATIONS, {
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+  });
+
+  const [createJobApplication] = useMutation(CREATE_JOB_APPLICATION, {
+    refetchQueries: ['getJobById'],
+  });
+
+  const [approveJobApplication] = useMutation(APPROVE_JOB_APPLICATION, {
+    refetchQueries: [
+      { query: GET_JOB_APPLICATIONS },
+      { query: GET_JOB_APPLICATION_BY_ID },
+      'getJobById',
+    ],
+  });
+
+  const [rejectJobApplication] = useMutation(REJECT_JOB_APPLICATION, {
+    refetchQueries: [
+      { query: GET_JOB_APPLICATIONS },
+      { query: GET_JOB_APPLICATION_BY_ID },
+      'getJobById',
+    ],
+  });
+
+  return {
+    getJobApplicationById,
+    jobApplication,
+    jobApplicationLoading,
+    jobApplicationError,
+    getJobApplications,
+    jobApplications,
+    jobApplicationsError,
+    jobApplicationsLoading,
+    createJobApplication,
+    approveJobApplication,
+    rejectJobApplication,
+    fetchMoreJobApplications,
+    refetchJobApplications,
+  };
 };

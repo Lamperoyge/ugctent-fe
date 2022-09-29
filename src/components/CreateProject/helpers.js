@@ -57,6 +57,7 @@ export const TextArea = ({
   onChange,
   error,
   minContent,
+  onBlur
 }) => (
   <div className='col-span-3'>
     <label htmlFor={name} className='block text-sm font-medium text-gray-700'>
@@ -67,6 +68,7 @@ export const TextArea = ({
         id={name}
         name={name}
         rows={rows}
+        onBlur={onBlur}
         className='shadow-sm focus:ring-primary focus:border-primary mt-1 block w-full sm:text-sm border border-gray-300 rounded-md'
         placeholder={placeholder}
         value={value}
