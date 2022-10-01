@@ -76,9 +76,9 @@ export default function ProjectPage() {
 
   const job = data?.getJobById;
 
-  const canEdit = job?.creator?._id === user?._id;
+  const canEdit = job?.creator?.userId === user?._id;
 
-  const canApply = job?.creator?._id !== user?._id && isStripeVerified;
+  const canApply = job?.creator?.userId !== user?._id && isStripeVerified;
 
   const toggleCreateApplicationModal = () => {
     if (job.userApplication.hasUserApplied) {
@@ -92,6 +92,7 @@ export default function ProjectPage() {
     }
   };
 
+  console.log(job)
   return (
     <>
       <CreateJobApplication
@@ -113,7 +114,7 @@ export default function ProjectPage() {
                         </h1>
                         <p className='mt-2 text-sm text-gray-500'>
                           created by{' '}
-                          <Link href={`/profile/${job.creator?._id}`}>
+                          <Link href={`/profile/${job.creator?.userId}`}>
                             <a className='font-medium text-gray-900'>
                               {job.creator?.firstName} {job.creator?.lastName}
                             </a>
@@ -150,7 +151,7 @@ export default function ProjectPage() {
                             </span>
                           </button>
                         )}
-                        {!canApply && (
+                        {!canApply && job?.creator?.userId !== user?._id && (
                           <button
                             type='button'
                             className='inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-bold rounded-md text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900'

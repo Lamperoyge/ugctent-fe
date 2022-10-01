@@ -101,16 +101,14 @@ export const useJobApplications = () => {
 
   const [approveJobApplication] = useMutation(APPROVE_JOB_APPLICATION, {
     refetchQueries: [
-      { query: GET_JOB_APPLICATIONS },
-      { query: GET_JOB_APPLICATION_BY_ID },
+      'getJobApplicationById',
       'getJobById',
     ],
   });
 
   const [rejectJobApplication] = useMutation(REJECT_JOB_APPLICATION, {
     refetchQueries: [
-      { query: GET_JOB_APPLICATIONS },
-      { query: GET_JOB_APPLICATION_BY_ID },
+      'getJobApplicationById',
       'getJobById',
     ],
   });

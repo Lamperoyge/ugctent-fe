@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { UserFragment } from 'graphql/fragments/user';
+import { UserFragment, UserInfoFragment } from 'graphql/fragments/user';
 
 export const GET_LOGGED_IN_USER = gql`
   query {
@@ -27,4 +27,17 @@ export const GET_LOGGED_IN_USER = gql`
       }
     }
   }
+`;
+
+export const GET_USER_BY_ID = gql`
+  query getUserById($id: ID!) {
+    getUserById(id: $id) {
+      _id,
+      userType
+      userInfo {
+        ...UserInfoFragment
+      }
+    }
+  }
+  ${UserInfoFragment}
 `;

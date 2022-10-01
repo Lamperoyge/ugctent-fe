@@ -18,6 +18,7 @@ export const UserInfoFragment = gql`
     lastName
     interestIds
     companyName
+    userId
     works {
       title
       clientName
