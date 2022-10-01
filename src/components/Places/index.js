@@ -10,7 +10,6 @@ async function handlePlaceSelect(handleChange) {
 function handleScriptLoad(autoCompleteRef, country, handleChange) {
   let sessionToken = new google.maps.places.AutocompleteSessionToken();
 
-  console.log(sessionToken);
   autoComplete = new window.google.maps.places.Autocomplete(
     autoCompleteRef.current,
     {
@@ -56,7 +55,6 @@ function SearchLocationInput({
         type='text'
         name={name}
         ref={autoCompleteRef}
-        country={country}
         disabled={disabled}
         id={name}
         autoComplete="city"

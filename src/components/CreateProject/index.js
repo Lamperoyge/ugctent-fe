@@ -48,7 +48,7 @@ const CreateProjectModal = ({ open, onClose }) => {
       placeholder: 'I want to create TikTok videos for my company',
       label: 'Description',
       description: 'Share as many details as possible',
-      minContent: 100
+      minContent: 100,
     },
     {
       name: 'price',
@@ -187,7 +187,10 @@ const CreateProjectModal = ({ open, onClose }) => {
                                 }
                                 if (item.component === 'select') {
                                   return (
-                                    <div className='col-span-1 max-w-1/2'>
+                                    <div
+                                      className='col-span-1 max-w-1/2'
+                                      key={idx}
+                                    >
                                       <Select
                                         label={item.label}
                                         options={item.options}
@@ -207,7 +210,7 @@ const CreateProjectModal = ({ open, onClose }) => {
                                 }
                                 if (item.component === 'multipleSelect') {
                                   return (
-                                    <div className='max-w-1/2'>
+                                    <div className='max-w-1/2' key={idx}>
                                       <MultiSelect
                                         options={item.options}
                                         label={item.label}
@@ -224,6 +227,7 @@ const CreateProjectModal = ({ open, onClose }) => {
                                   return (
                                     <Attachments
                                       handleAttachments={handleAttachments}
+                                      key={idx}
                                       errors={formik.errors}
                                       attachments={formik.values.attachments}
                                       removeAttachment={removeAttachment}

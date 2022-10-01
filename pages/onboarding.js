@@ -26,7 +26,7 @@ const OnboardingPage = () => {
             <div className='flex flex-col items-center leading-7 text-center text-gray-900 border-0 border-gray-200'>
               <Logo />
               <h2 className='box-border m-0 my-4 text-3xl font-semibold leading-tight tracking-tight text-white border-solid sm:text-4xl md:text-5xl'>
-                Welcome! Let's set up your profile
+                {"Welcome! Let's set up your profile"}
               </h2>
             </div>
           </div>

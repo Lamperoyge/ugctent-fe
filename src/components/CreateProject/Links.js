@@ -60,11 +60,10 @@ function LinksComponent(props) {
     }
   };
 
-  console.log(fields);
   return (
     <div>
       {fields?.map((field, idx) => (
-        <div>
+        <div key={idx}>
           <input
             onChange={(e) =>
               handleInputChange(e.target.value, idx, LINK_KEYS.DISPLAY_NAME)
@@ -76,7 +75,6 @@ function LinksComponent(props) {
             onChange={(e) =>
               handleInputChange(e.target.value, idx, LINK_KEYS.URL)
             }
-            error={!!errors[idx]}
           />
           <button
             className='rounded cursor-pointer h-12 w-12 flex items-center justify-center'

@@ -100,7 +100,7 @@ const SignIn = () => {
                         <div className='text-sm'>
                           <Link href='/signup'>
                             <a className='font-medium text-secondary hover:text-primary'>
-                              Don't have an account? Sign up!
+                              {"Don't have an account? Sign up!"}
                             </a>
                           </Link>
                         </div>
