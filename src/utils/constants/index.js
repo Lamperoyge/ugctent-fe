@@ -35,28 +35,33 @@ export const JOB_STATUS_LABELS_AND_COLORS = {
   [JOB_STATUS.CREATED]: {
     label: 'Created',
     textColor: 'text-cyan-800',
-    chipColor: 'bg-cyan-100'
+    chipColor: 'bg-cyan-100',
   },
   [JOB_STATUS.IN_PROGRESS]: {
     label: 'In Progress',
     textColor: 'text-yellow-800',
-    chipColor: 'bg-yellow-100'
+    chipColor: 'bg-yellow-100',
   },
   [JOB_STATUS.IN_REVIEW]: {
     label: 'In Review',
     textColor: 'text-blue-800',
-    chipColor: 'bg-blue-100'
+    chipColor: 'bg-blue-100',
   },
   [JOB_STATUS.COMPLETED]: {
     label: 'Completed',
     textColor: 'text-green-800',
-    chipColor: 'bg-green-100'
+    chipColor: 'bg-green-100',
   },
   [JOB_STATUS.ARCHIVED]: {
     label: 'Archived',
     textColor: 'text-slate-800',
-    chipColor: 'bg-slate-100'
-  }
+    chipColor: 'bg-slate-100',
+  },
 };
 
 export const LIMIT = 10;
+
+export const COMMENT_ENTITY_TYPES = {
+  JOB: 'job',
+  JOB_APPLICATION: 'jobApplication',
+};

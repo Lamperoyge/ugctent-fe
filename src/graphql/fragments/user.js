@@ -8,3 +8,34 @@ export const UserFragment = gql`
     userType
   }
 `;
+
+export const UserInfoFragment = gql`
+  fragment UserInfoFragment on UserInfo {
+    _id
+    bio
+    firstName
+    profilePicture
+    lastName
+    interestIds
+    companyName
+    works {
+      title
+      clientName
+      attachments
+      description
+    }
+    taxId
+    contactName
+    socialLinks {
+      youtube
+      facebook
+      instagram
+      tiktok
+    }
+    skillIds
+    categoryIds
+    website
+    city
+    country
+  }
+`;

@@ -51,9 +51,7 @@ export default function SidebarLayout({ children }) {
       window.open(data.getStripeDashboardLink);
     },
   });
-  const [displayAnnouncement, setDisplayAnnouncement] = useState(
-    isStripeVerified === false && user?.type === USER_TYPES.CREATOR
-  );
+  const [displayAnnouncement, setDisplayAnnouncement] = useState(!isStripeVerified && user?.userType === USER_TYPES.CREATOR);
   const profilePicture = user?.userInfo?.profilePicture;
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -102,16 +100,6 @@ export default function SidebarLayout({ children }) {
         <CreateProjectModal
           open={isNewProjectModalOpen}
           onClose={onModalClose}
-        />
-      )}
-      {displayAnnouncement && (
-        <HeaderAlert
-          btnTitle={'Verify now'}
-          ctaAction={() => {
-            handleAlertDismiss();
-            router.push('/verify', undefined, { shallow: true });
-          }}
-          renderContent={() => <MissingStripeAnnouncement />}
         />
       )}
       <div>
@@ -367,6 +355,16 @@ export default function SidebarLayout({ children }) {
             </button>
           </div>
           <main className='flex-1 h-full w-full'>
+            {displayAnnouncement && (
+              <HeaderAlert
+                btnTitle={'Verify now'}
+                ctaAction={() => {
+                  handleAlertDismiss();
+                  router.push('/verify', undefined, { shallow: true });
+                }}
+                renderContent={() => <MissingStripeAnnouncement />}
+              />
+            )}
             <div className='py-6 h-full w-full'>
               <div className='mx-auto px-4 sm:px-6 md:px-8' />
               <div className='mx-auto px-4 sm:px-6 md:px-8 h-full w-full'>

@@ -1,8 +1,20 @@
 import { gql } from '@apollo/client';
+import { UserInfoFragment } from 'graphql/fragments/user';
+import { JobFragment } from 'graphql/fragments/job';
 
 export const GET_JOB_APPLICATIONS = gql`
-  query getJobApplications($jobId: ID!, $status: String, $limit: Int, $offset: Int) {
-    getJobApplications(jobId: $jobId, status: $status, limit: $limit, offset: $offset) {
+  query getJobApplications(
+    $jobId: ID!
+    $status: String
+    $limit: Int
+    $offset: Int
+  ) {
+    getJobApplications(
+      jobId: $jobId
+      status: $status
+      limit: $limit
+      offset: $offset
+    ) {
       _id
       jobId
       status
@@ -25,16 +37,18 @@ export const GET_JOB_APPLICATION_BY_ID = gql`
     getJobApplicationById(id: $id) {
       _id
       jobId
+      createdAt
       status
       price
+      job {
+        ...JobFragment
+      }
       message
       creator {
-        firstName
-        lastName
-        userId
-        profilePicture
-        bio
+        ...UserInfoFragment
       }
     }
   }
+  ${UserInfoFragment}
+  ${JobFragment}
 `;

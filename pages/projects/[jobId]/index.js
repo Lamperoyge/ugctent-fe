@@ -80,8 +80,17 @@ export default function ProjectPage() {
 
   const canApply = job?.creator?._id !== user?._id && isStripeVerified;
 
-  const toggleCreateApplicationModal = () =>
-    setIsCreateApplicationModalOpen((prevState) => !prevState);
+  const toggleCreateApplicationModal = () => {
+    if (job.userApplication.hasUserApplied) {
+      return router.push(
+        `/projects/${job._id}/applications/${job?.userApplication?._id}`,
+        undefined,
+        { shallow: true }
+      );
+    } else {
+      setIsCreateApplicationModalOpen((prevState) => !prevState);
+    }
+  };
 
   return (
     <>
@@ -127,7 +136,6 @@ export default function ProjectPage() {
                         {canApply && (
                           <button
                             type='button'
-                            disabled={job?.hasUserApplied}
                             onClick={toggleCreateApplicationModal}
                             className='inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-bold rounded-md text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900'
                           >
@@ -136,8 +144,8 @@ export default function ProjectPage() {
                               aria-hidden='true'
                             />
                             <span>
-                              {job?.hasUserApplied
-                                ? 'You have applied'
+                              {job?.userApplication?.hasUserApplied
+                                ? 'View application'
                                 : 'Apply'}
                             </span>
                           </button>
@@ -262,7 +270,9 @@ export default function ProjectPage() {
                     </div>
                   </div>
                 </div>
-                {user?._id === job.creator?.userId && <ApplicationsList jobId={job._id}/>}
+                {user?._id === job.creator?.userId && (
+                  <ApplicationsList jobId={job._id} />
+                )}
               </div>
               <aside className='hidden xl:block xl:pl-8'>
                 <h2 className='sr-only'>Details</h2>
