@@ -52,3 +52,9 @@ export const GET_JOB_APPLICATION_BY_ID = gql`
   ${UserInfoFragment}
   ${JobFragment}
 `;
+
+export const GET_PAYMENT_INTENT = gql`
+  query getPaymentIntent($jobApplicationId: ID!) {
+    getPaymentIntent(jobApplicationId: $jobApplicationId) 
+  }
+`;

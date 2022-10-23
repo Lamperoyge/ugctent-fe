@@ -27,13 +27,14 @@ export const GET_CREATED_JOBS = gql`
 `;
 
 export const GET_ASSIGNED_JOBS = gql`
-  query getJobsForCreator($input: GetByIdInput) {
+  query getJobsForCreator($input: GetJobsInput) {
     getJobsForCreator(input: $input) {
       _id
       title
       assigneeId
       price
       createdBy
+      updatedAt
       categoryId
       skills {
         _id

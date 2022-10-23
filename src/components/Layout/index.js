@@ -5,6 +5,7 @@ import {
   CurrencyDollarIcon,
   HomeIcon,
   MenuIcon,
+  PuzzleIcon,
   XIcon,
 } from '@heroicons/react/outline';
 import { classNames } from 'utils/helpers';
@@ -19,7 +20,6 @@ import HeaderAlert from 'components/HeaderAlert';
 import { useLazyQuery } from '@apollo/client';
 import { GET_STRIPE_DASHBOARD_LINK } from 'graphql/queries';
 import { Navbar, MissingStripeAnnouncement, NavItemWrapper } from './Helpers';
-
 
 export default function SidebarLayout({ children }) {
   const { user, isStripeVerified } = useAuth();
@@ -38,18 +38,24 @@ export default function SidebarLayout({ children }) {
 
   const ORG_NAVIGATION = [
     {
-      name: 'Projects',
-      href: '/projects',
+      name: 'Dashboard',
+      href: '/dashboard',
       icon: HomeIcon,
-      current: router.asPath.includes('projects'),
+      current: router.asPath.includes('dashboard') || router.asPath.includes('projects'),
     },
   ];
 
   const CREATOR_NAVIGATION = [
     {
+      name: 'Dashboard',
+      href: '/dashboard',
+      icon: HomeIcon,
+      current: router.asPath.includes('dashboard'),
+    },
+    {
       name: 'Explore',
       href: '/explore',
-      icon: HomeIcon,
+      icon: PuzzleIcon,
       current:
         router.asPath.includes('projects') || router.asPath.includes('explore'),
     },
@@ -152,7 +158,7 @@ export default function SidebarLayout({ children }) {
 
                 <div className='flex-shrink-0 flex border-t border-gray-200 p-4'>
                   <Link
-                    href={`/profile/${user._id}`}
+                    href={`/profile/${user?._id}`}
                     className='flex-shrink-0 group block'
                   >
                     {profilePicture ? (
@@ -327,4 +333,3 @@ export default function SidebarLayout({ children }) {
     </>
   );
 }
-

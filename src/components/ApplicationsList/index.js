@@ -54,7 +54,7 @@ const ApplicationsList = ({ jobId }) => {
         <main className='pt-8 pb-16'>
           <div className='w-full mx-auto'>
             <div className=''>
-              <h2 className='text-lg font-medium text-gray-900'>jobApplications</h2>
+              <h2 className='text-lg font-medium text-gray-900'>Job Applications - TODO</h2>
 
               {/* Tabs */}
               <div className='sm:hidden'>

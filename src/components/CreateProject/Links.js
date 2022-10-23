@@ -1,6 +1,7 @@
 import validator from 'validator';
 import { XIcon, PlusIcon } from '@heroicons/react/outline';
 import { useState } from 'react';
+import { Input } from 'components/CreateProject/helpers';
 
 const LINK_KEYS = {
   URL: 'url',
@@ -13,7 +14,7 @@ export const EMPTY_LINK_FIELD = {
 };
 
 function LinksComponent(props) {
-  const { value: fields, onChange } = props;
+  const { values: fields, onChange } = props;
   const [errors, setErrors] = useState([]);
 
   const addField = (idx) => onChange([...fields, EMPTY_LINK_FIELD]);
@@ -24,8 +25,8 @@ function LinksComponent(props) {
   };
 
   const handleInputChange = (value, idx, type) => {
-    if (props.value && props.value[idx]) {
-      const newFields = props.value.map((item, index) => {
+    if (fields && fields[idx]) {
+      const newFields = fields.map((item, index) => {
         if (index === idx) {
           return { ...item, [type]: value };
         }
@@ -60,69 +61,54 @@ function LinksComponent(props) {
     }
   };
 
+  console.log('fields', props.values);
   return (
-    <div>
+    <div className='col-span-3'>
+            <label
+        className='py-3 block text-sm font-medium text-gray-700'
+      >
+        Links
+      </label>
+
       {fields?.map((field, idx) => (
-        <div key={idx}>
-          <input
-            onChange={(e) =>
-              handleInputChange(e.target.value, idx, LINK_KEYS.DISPLAY_NAME)
-            }
-          />
+        <div key={idx} className='flex justify-between gap-2 items-center justify-center'>
+          <div className='w-3/5 flex col-flex'>
+            <Input
+              name={LINK_KEYS.DISPLAY_NAME}
+              label='Display name'
+              variant='md'
+              onChange={(e) =>
+                handleInputChange(e.target.value, idx, LINK_KEYS.DISPLAY_NAME)
+              }
+              type="url"
+              value={field[LINK_KEYS.DISPLAY_NAME]}
+              placeholder='Submission 1'
+            />
+          </div>
           <span />
-          <input
-            onBlur={(e) => validateUrl(e, idx)}
-            onChange={(e) =>
-              handleInputChange(e.target.value, idx, LINK_KEYS.URL)
-            }
-          />
+          <div className='w-full'>
+            <Input
+              onBlur={(e) => validateUrl(e, idx)}
+              name={LINK_KEYS.URL}
+              variant='md'
+              type="url"
+              label='URL'
+              onChange={(e) =>
+                handleInputChange(e.target.value, idx, LINK_KEYS.URL)
+              }
+              value={field[LINK_KEYS.URL]}
+            />
+          </div>
           <button
-            className='rounded cursor-pointer h-12 w-12 flex items-center justify-center'
+            className='rounded cursor-pointer mt-6 h-12 w-12 flex items-center justify-center'
             type='button'
             onClick={(e) => handleField(e, idx)}
           >
-            {idx !== fields.length - 1 ? <XIcon /> : <PlusIcon />}
+            {idx !== fields.length - 1 ? <XIcon className="text-gray-500"/> : <PlusIcon className='text-gray-500'/>}
           </button>
         </div>
       ))}
     </div>
-    // <div className='flex flex-wrap items-center gap-4'>
-    //   {fields?.map((field, idx) => (
-    //     <div className='flex space-between items-center gap-2 w-1/3' key={idx}>
-    //       <div style={{ width: '20%' }}>
-    //         <input
-    //           placeholder='Title of link'
-    //           className='h-12 rounded border-2 p-4'
-    //           value={field[LINK_KEYS.DISPLAY_NAME]}
-    //           onChange={(e) =>
-    //             handleInputChange(e.target.value, idx, LINK_KEYS.DISPLAY_NAME)
-    //           }
-    //         />
-    //         <span />
-    //       </div>
-    //       <div style={{ flex: 1 }}>
-    //         <input
-    //           placeholder='URL link'
-    //           className='h-12 rounded border-2 p-4'
-    //           value={field[LINK_KEYS.URL]}
-    // onBlur={(e) => validateUrl(e, idx)}
-    // onChange={(e) =>
-    //   handleInputChange(e.target.value, idx, LINK_KEYS.URL)
-    // }
-    // error={!!errors[idx]}
-    //           type='url'
-    //         />
-    //       </div>
-    // <button
-    //   className='rounded cursor-pointer h-12 w-12 flex items-center justify-center'
-    //   type='button'
-    //   onClick={(e) => handleField(e, idx)}
-    // >
-    //   {idx !== fields.length - 1 ? <XIcon /> : <PlusIcon />}
-    // </button>
-    //     </div>
-    //   ))}
-    // </div>
   );
 }
 

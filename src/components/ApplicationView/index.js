@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import {
   InvalidApplication,
@@ -15,16 +15,25 @@ import {
   JOB_APPLICATION_STATUS_COLORS,
   JOB_APPLICATION_STATUS_LABELS,
 } from 'utils/constants';
+import {useAuth} from 'hooks';
+import StripeComponent from 'components/Stripe';
 
 function ApplicationHeader({ application }) {
+  const {user} = useAuth();
+  const [clientSecret, setClientSecret] = useState(false)
+
   const hasRightForActions =
-    application.status === JOB_APPLICATION_STATUS.IN_REVIEW;
+    application.status === JOB_APPLICATION_STATUS.IN_REVIEW && user?._id !== application?.creator?.userId;
 
-  const { approveJobApplication, rejectJobApplication } = useJobApplications();
+  const { approveJobApplication, rejectJobApplication, getPaymentIntent } = useJobApplications();
 
-  const handleApprove = () =>
-    approveJobApplication({ variables: { jobApplicationId: application._id } });
+  // const handleApprove = () => setIsPaymentProcessInitiated(true);
+  //   approveJobApplication({ variables: { jobApplicationId: application._id } });
 
+  const handleApprove = async () => {
+    const secret = await getPaymentIntent(application._id)
+    setClientSecret(secret)
+  }
   const handleReject = () =>
     rejectJobApplication({ variables: { jobApplicationId: application._id } });
 
@@ -81,7 +90,8 @@ function ApplicationHeader({ application }) {
           </button>
         </div>
       )}
-      {hasRightForActions && (
+      {!!clientSecret && <StripeComponent clientSecret={clientSecret}/>}
+      {hasRightForActions && !clientSecret && (
         <div className='mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3'>
           <button
             type='button'
@@ -160,7 +170,6 @@ export default function ApplicationView() {
 
   const application = jobApplication.getJobApplicationById;
 
-  console.log(application);
 
   const applicationPanelData = [
     {

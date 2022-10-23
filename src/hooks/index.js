@@ -7,12 +7,16 @@ import {
   GET_INTERESTS,
   GET_JOB_APPLICATIONS,
   GET_JOB_APPLICATION_BY_ID,
+  GET_PAYMENT_INTENT,
 } from 'graphql/queries';
 import {
   CREATE_JOB_APPLICATION,
   APPROVE_JOB_APPLICATION,
   REJECT_JOB_APPLICATION,
+  CREATE_JOB_SUBMISSION
 } from 'graphql/mutations';
+import apolloClient from 'services/apollo-client';
+
 export const useAuth = () => useContext(AuthContext);
 
 export const useGetCategories = () => {
@@ -99,13 +103,24 @@ export const useJobApplications = () => {
     refetchQueries: ['getJobById'],
   });
 
-  const [approveJobApplication] = useMutation(APPROVE_JOB_APPLICATION, {
-    refetchQueries: [
-      'getJobApplicationById',
-      'getJobById',
-    ],
-  });
 
+  const [approveJobApplication] = useMutation(APPROVE_JOB_APPLICATION, {
+refetchQueries: [
+  'getJobApplicationById',
+  'getJobById',
+],
+});
+  const getPaymentIntent = async (jobApplicationId) => {
+
+    const {data} = await apolloClient.query({
+      query: GET_PAYMENT_INTENT,
+      cachePolicy: 'no-cache',
+      variables: {
+        jobApplicationId,
+      }
+    })
+    return data?.getPaymentIntent
+  }
   const [rejectJobApplication] = useMutation(REJECT_JOB_APPLICATION, {
     refetchQueries: [
       'getJobApplicationById',
@@ -127,5 +142,15 @@ export const useJobApplications = () => {
     rejectJobApplication,
     fetchMoreJobApplications,
     refetchJobApplications,
+    getPaymentIntent
   };
 };
+
+export const useJobSubmissions = () => {
+  const [createJobSubmission] = useMutation(CREATE_JOB_SUBMISSION, {
+    refetchQueries: ['getJobById'],
+  });
+  return {
+    createJobSubmission,
+  };
+}

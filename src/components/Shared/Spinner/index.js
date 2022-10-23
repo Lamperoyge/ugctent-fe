@@ -20,9 +20,9 @@ export const SmallSpinner = () => (
   </div>
 );
 
-export const LightSpinner = () => (
+export const LightSpinner = ({size = 'h5 w-5'}) => (
   <svg
-    className='animate-spin -ml-1 mr-3 h-5 w-5 text-primaryOrange'
+    className={`animate-spin text-primaryOrange ${size}`}
     xmlns='http://www.w3.org/2000/svg'
     fill='none'
     viewBox='0 0 24 24'

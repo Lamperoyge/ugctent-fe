@@ -17,7 +17,7 @@ const ExplorePageComponent = () => {
         input: {
           limit: LIMIT,
           offset: 0,
-          skillIds: user?.userInfo?.skillIds,
+          // skillIds: user?.userInfo?.skillIds,
           // categoryIds: user?.userInfo?.interestIds
         },
       },

@@ -5,7 +5,6 @@ import apollo from 'services/apollo-client';
 import Auth from 'components/Auth';
 import Layout from 'components/Layout';
 import { MantineProvider } from '@mantine/core';
-
 function MyApp({ Component, pageProps }) {
   return (
     <ApolloProvider client={apollo}>

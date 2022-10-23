@@ -146,7 +146,6 @@ const CreatorOnboardingForm = () => {
               : [],
           }))
       );
-      console.log(values);
       createUserInfo({
         variables: {
           input: {

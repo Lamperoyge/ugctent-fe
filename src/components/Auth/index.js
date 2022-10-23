@@ -6,6 +6,7 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { useState, useEffect } from 'react';
 import { EMAIL_SIGN_UP, EMAIL_SIGN_IN } from 'graphql/mutations';
 import { EXCLUDED_PATHS } from 'utils/constants';
+import PageSpinner from 'components/PageSpinner';
 
 export const getAuthHeader = () => localStorage.getItem('ugctent-token') || null;
 
@@ -96,7 +97,7 @@ const Auth = ({ children }) => {
   }
 
   if (tokenLoading) {
-    return <div>spinner...</div>;
+    return <PageSpinner />
   }
   if (!tokenLoading) {
     if (!EXCLUDED_PATHS.includes(router.pathname) && !token) {
@@ -110,7 +111,7 @@ const Auth = ({ children }) => {
     ) {
       // eslint-disable-next-line no-unused-expressions
       data?.getLoggedInUser?.isOnboarded
-        ? router.push('/')
+        ? router.push('/dashboard')
         : router.push('/onboarding');
       return null;
     }

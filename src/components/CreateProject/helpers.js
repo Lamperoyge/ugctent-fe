@@ -37,7 +37,7 @@ export const Input = ({
           value={value}
           placeholder={placeholder}
           autoComplete={name}
-          className={`focus:ring-primary focus:border-primary flex-grow block w-full min-w-0 rounded-none rounded-r-md sm:text-sm border-gray-300 ${
+          className={`focus:ring-primary focus:border-primary flex-grow block w-full min-w-0 rounded-md sm:text-sm border-gray-300 ${
             rest.withCurrency ? 'pl-12' : ''
           }`}
         />

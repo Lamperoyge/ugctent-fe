@@ -20,45 +20,8 @@ import StatusChip from 'components/StatusChip';
 import ViewAttachments from 'components/ViewAttachments';
 import CreateJobApplication from 'components/CreateJobApplication';
 import ApplicationsList from 'components/ApplicationsList';
-const activity = [
-  {
-    id: 1,
-    type: 'comment',
-    person: { name: 'Eduardo Benz', href: '#' },
-    imageUrl:
-      'https://images.unsplash.com/photo-1520785643438-5bf77931f493?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80',
-    comment:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tincidunt nunc ipsum tempor purus vitae id. Morbi in vestibulum nec varius. Et diam cursus quis sed purus nam. ',
-    date: '6d ago',
-  },
-  {
-    id: 2,
-    type: 'assignment',
-    person: { name: 'Hilary Mahy', href: '#' },
-    assigned: { name: 'Kristin Watson', href: '#' },
-    date: '2d ago',
-  },
-  {
-    id: 3,
-    type: 'tags',
-    person: { name: 'Hilary Mahy', href: '#' },
-    tags: [
-      { name: 'Bug', href: '#', color: 'bg-rose-500' },
-      { name: 'Accessibility', href: '#', color: 'bg-indigo-500' },
-    ],
-    date: '6h ago',
-  },
-  {
-    id: 4,
-    type: 'comment',
-    person: { name: 'Jason Meyers', href: '#' },
-    imageUrl:
-      'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80',
-    comment:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tincidunt nunc ipsum tempor purus vitae id. Morbi in vestibulum nec varius. Et diam cursus quis sed purus nam. Scelerisque amet elit non sit ut tincidunt condimentum. Nisl ultrices eu venenatis diam.',
-    date: '2h ago',
-  },
-];
+import { JOB_STATUS } from 'utils/constants';
+import CreateSubmission from 'components/Submissions';
 
 export default function ProjectPage() {
   const [isCreateApplicationModalOpen, setIsCreateApplicationModalOpen] =
@@ -78,10 +41,10 @@ export default function ProjectPage() {
 
   const canEdit = job?.creator?.userId === user?._id;
 
-  const canApply = job?.creator?.userId !== user?._id && isStripeVerified;
+  const canApply = job?.creator?.userId !== user?._id && isStripeVerified && job?.status === JOB_STATUS.CREATED; 
 
   const toggleCreateApplicationModal = () => {
-    if (job.userApplication.hasUserApplied) {
+    if (job?.userApplication?.hasUserApplied) {
       return router.push(
         `/projects/${job._id}/applications/${job?.userApplication?._id}`,
         undefined,
@@ -151,7 +114,7 @@ export default function ProjectPage() {
                             </span>
                           </button>
                         )}
-                        {!canApply && job?.creator?.userId !== user?._id && (
+                        {!canApply && job?.creator?.userId !== user?._id && job?.status === JOB_STATUS.CREATED && (
                           <button
                             type='button'
                             className='inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-bold rounded-md text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900'
@@ -274,6 +237,9 @@ export default function ProjectPage() {
                 {user?._id === job.creator?.userId && (
                   <ApplicationsList jobId={job._id} />
                 )}
+                <div className="w-full flex justify-center items-center h-full">
+                {user?._id === job?.assigneeId && user?._id !== job?.creator?._id && <CreateSubmission jobId={job._id}/>}
+                </div>
               </div>
               <aside className='hidden xl:block xl:pl-8'>
                 <h2 className='sr-only'>Details</h2>
