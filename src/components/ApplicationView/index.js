@@ -60,16 +60,21 @@ function ApplicationHeader({ application }) {
             <h1 className='text-2xl font-bold text-gray-900'>
               {application.creator.firstName} {application.creator.lastName}
             </h1>
-            <Link href={`/profile/${application.creator.userId}`}>
-              <a className='text-sm font-medium text-secondary hover:text-primary'>
+            <Link
+              href={`/profile/${application.creator.userId}`}
+              className='text-sm font-medium text-secondary hover:text-primary'>
+              
                 View profile
-              </a>
+              
             </Link>
           </span>
           <p className='text-sm font-medium text-gray-500'>
             Applied for{' '}
-            <Link href={`/projects/${application.job._id}`} passHref>
-              <a className='text-gray-900'>{application.job.title}</a>
+            <Link
+              href={`/projects/${application.job._id}`}
+              passHref
+              className='text-gray-900'>
+              {application.job.title}
             </Link>{' '}
             on{' '}
             <time dateTime='2020-08-25'>

@@ -40,16 +40,16 @@ const SignUp = () => {
       label: () => (
           <>
             I accept the{' '}
-            <Link href="/terms">
-              <a className='text-secondary hover:text-primary'>
+            <Link href="/terms" className='text-secondary hover:text-primary'>
+              
                 Terms of Service
-              </a>
+              
             </Link>{' '}
             and have read the{' '}
-            <Link href='/privacy-policy'>
-              <a className='text-secondary hover:text-primary'>
+            <Link href='/privacy-policy' className='text-secondary hover:text-primary'>
+              
                 Privacy Policy
-              </a>
+              
             </Link>
           </>
         ),
@@ -155,10 +155,10 @@ const SignUp = () => {
                             ))}
 
                           <div className='text-sm'>
-                            <Link href='/login'>
-                              <a className='font-medium text-secondary hover:text-primary'>
+                            <Link href='/login' className='font-medium text-secondary hover:text-primary'>
+                              
                                 Have an account? Sign in!
-                              </a>
+                              
                             </Link>
                           </div>
 

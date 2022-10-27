@@ -13,8 +13,7 @@ const ProjectsList = ({ data }) => (
             <li key={job._id} className='cursor-pointer hover:bg-slate-100'>
               <Link
                 href={`/projects/${job._id}`}
-                className='block hover:bg-gray-50'
-              >
+                className='block hover:bg-gray-50'>
                 <div className='px-4 py-4 sm:px-6'>
                   <div className='flex items-center justify-between'>
                     <p className='text-sm font-medium text-secondary truncate'>

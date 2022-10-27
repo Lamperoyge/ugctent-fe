@@ -50,7 +50,7 @@ export const MissingStripeAnnouncement = () => (
 
 export const NavItemWrapper = ({ as = 'link', ...props }) => {
   if (as === 'link') {
-    return <Link href={props.href}>{props.children}</Link>;
+    return <Link href={props.href} legacyBehavior>{props.children}</Link>;
   }
   if (as === 'button') {
     return (

@@ -90,18 +90,20 @@ const SignIn = () => {
                             </div>
                           ))}
                         <div className='text-sm'>
-                          <Link href='/forgot-password'>
-                            <a className='font-medium text-secondary hover:text-primary'>
+                          <Link
+                            href='/forgot-password'
+                            className='font-medium text-secondary hover:text-primary'>
+                            
                               Forgot your password?
-                            </a>
+                            
                           </Link>
                         </div>
 
                         <div className='text-sm'>
-                          <Link href='/signup'>
-                            <a className='font-medium text-secondary hover:text-primary'>
-                              {"Don't have an account? Sign up!"}
-                            </a>
+                          <Link href='/signup' className='font-medium text-secondary hover:text-primary'>
+
+                            {"Don't have an account? Sign up!"}
+
                           </Link>
                         </div>
 
