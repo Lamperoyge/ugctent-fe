@@ -2,7 +2,15 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  basePath: "/dashboard"
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/dashboard",
+        permanent: true,
+      },
+    ];
+  }
 };
 
 module.exports = nextConfig;

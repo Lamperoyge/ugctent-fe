@@ -4,8 +4,8 @@ import { classNames } from 'utils/helpers';
 import { useAuth } from 'hooks';
 import ProfilePicture from 'components/ProfilePicture';
 import { useQuery } from '@apollo/client';
-import { GET_ASSIGNED_JOBS } from 'graphql/queries';
-import { LIMIT } from 'utils/constants';
+import { GET_ASSIGNED_JOBS, GET_CREATED_JOBS } from 'graphql/queries';
+import { LIMIT, USER_TYPES } from 'utils/constants';
 import ProjectList from './ProjectsList';
 
 const cards = [
@@ -35,17 +35,33 @@ const statusStyles = {
 export default function Dashboard() {
   const auth = useAuth();
   const user = auth?.user;
-  const { data, loading, error } = useQuery(GET_ASSIGNED_JOBS, {
+  const { data: assignedJobs, loading: assignedJobsLoading, error: assignedJobsError } = useQuery(GET_ASSIGNED_JOBS, {
     variables: {
       input: {
         limit: LIMIT,
         offset: 0,
       },
     },
-    skip: !user?._id,
+    skip: !user?._id || user?.userType === USER_TYPES.ORG || !user?.userType,
   });
 
-  console.log(data, loading);
+  const {
+    data: businessJobs,
+    error: businessJobsError,
+    loading: businessLoading,
+  } = useQuery(GET_CREATED_JOBS, {
+    variables: {
+      input: {
+        userId: user?._id,
+        limit: 10,
+        offset: 0,
+      },
+    },
+    skip: !user?._id || user?.userType === USER_TYPES.CREATOR || !user?.userType,
+  });
+
+  const data = user?.userType === USER_TYPES.CREATOR ? assignedJobs?.getJobsForCreator : businessJobs?.getJobsForBusinessUser;
+  
   return (
     <div className='min-h-full'>
       {/* Static sidebar for desktop */}
@@ -146,11 +162,10 @@ export default function Dashboard() {
                 </li>
               ))}
             </ul>
-
           </div>
 
           {/* Activity table (small breakpoint and up) */}
-                <ProjectList data={data?.getJobsForCreator}/>
+          <ProjectList data={data} />
         </div>
       </main>
     </div>

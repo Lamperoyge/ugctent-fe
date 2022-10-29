@@ -22,6 +22,7 @@ export const GET_CREATED_JOBS = gql`
       status
       description
       applicationsCount
+      updatedAt
     }
   }
 `;
