@@ -26,6 +26,10 @@ const cache = new InMemoryCache({
         getJobs: {
           keyArgs: false,
           merge: offsetLimitPaginationInput,
+        },
+        getSubmissionsForJob: {
+          keyArgs: false,
+          merge: offsetLimitPaginationInput,
         }
       }
     }

@@ -55,6 +55,12 @@ export const GET_JOB_BY_ID = gql`
       _id
       title
       assigneeId
+      assignee {
+        firstName
+        lastName
+        userId
+        profilePicture
+      }
       price
       creator {
         firstName
@@ -69,6 +75,8 @@ export const GET_JOB_BY_ID = gql`
         _id
         label
       }
+      submissionsCount
+      applicationsCount
       attachments
       dueDate
       links
