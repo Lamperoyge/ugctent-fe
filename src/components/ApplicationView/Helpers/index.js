@@ -2,10 +2,10 @@ import { LightSpinner } from 'components/Shared/Spinner';
 import Link from 'next/link';
 import { XCircleIcon } from '@heroicons/react/solid';
 
-export const InvalidApplication = ({ jobId }) => (
+export const InvalidApplication = ({ jobId, entity ="application" }) => (
   <div className='w-full h-full flex justify-center items-center flex-col gap-4'>
     <span className='font-bold text-gray-600'>
-      Woops! Something went wrong. This application is either invalid or you do
+      Woops! Something went wrong. This {entity} is either invalid or you do
       not have rights to view
     </span>
     <XCircleIcon className='text-red-400 w-24 h-24' />

@@ -64,6 +64,7 @@ export const LIMIT = 10;
 export const COMMENT_ENTITY_TYPES = {
   JOB: 'job',
   JOB_APPLICATION: 'jobApplication',
+  SUBMISSION: 'submission'
 };
 
 

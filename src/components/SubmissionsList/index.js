@@ -11,8 +11,10 @@ import {
 import Link from 'next/link';
 import InfiniteScroll from 'components/InfiniteScroll';
 import { useState } from 'react';
+import SubmissionView from 'components/SubmissionView';
 
 const SubmissionsList = ({ jobId }) => {
+  const [activeSubmissionId, setActiveSubmissionId] = useState(null)
   const [hasMore, setHasMore] = useState(false);
   const { data, previousData, fetchMore, loading, variables } = useQuery(
     GET_SUBMISSIONS_FOR_JOB,
@@ -48,8 +50,12 @@ const SubmissionsList = ({ jobId }) => {
       setHasMore(data?.getSubmissionsForJob?.length >= LIMIT);
     });
 
+    const handleClose = () => setActiveSubmissionId(null)
+
   return (
-    <main className='pt-8 pb-16'>
+    <>
+    <SubmissionView submissionId={activeSubmissionId} onClose={handleClose} isOpen={!!activeSubmissionId}/>
+      <main className='pt-8 pb-16'>
       <div className='w-full mx-auto'>
         <div className=''>
           <h2 className='text-lg font-medium text-gray-900'>Submissions</h2>
@@ -63,8 +69,8 @@ const SubmissionsList = ({ jobId }) => {
           ) : (
             <InfiniteScroll onLoadMore={handleFetchMore} hasMore={hasMore}>
               {data?.getSubmissionsForJob?.map((submission) => (
-                <Link href={`/projects/${jobId}/submissions/${submission._id}`}>
-                  <li key={submission._id}>
+
+                  <li key={submission._id} onClick={() => setActiveSubmissionId(submission._id)}>
                     <div className='flex items-center py-5 px-4 sm:py-6 sm:px-0 hover:bg-gray-100 cursor-pointer'>
                       <div className='min-w-0 flex-1 flex items-center'>
                         <div className='flex-shrink-0'>
@@ -120,20 +126,20 @@ const SubmissionsList = ({ jobId }) => {
                         </div>
                       </div>
                       <div>
-                        <ChevronRightIcon
-                          className='h-5 w-5 text-gray-400 group-hover:text-gray-700'
-                          aria-hidden='true'
-                        />
+                          <ChevronRightIcon
+                            className='h-5 w-5 text-gray-400 group-hover:text-gray-700'
+                            aria-hidden='true'
+                          />
                       </div>
                     </div>
                   </li>
-                </Link>
               ))}
             </InfiniteScroll>
           )}
         </ul>
       </div>
     </main>
+    </>
   );
 };
 
