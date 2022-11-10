@@ -66,7 +66,7 @@ export default function Comments({entityId, entityType}) {
                         </div>
                         <div className='mt-2 text-xs space-x-2'>
                           <span className='text-gray-400 font-sm'>
-                            {new Date(parseInt(comment.createdAt, 10)).toLocaleDateString()}
+                            {new Date(parseInt(comment.createdAt, 10)).toLocaleDateString()} at {new Date(parseInt(comment.createdAt, 10)).toLocaleTimeString()}
                           </span>{' '}
                         </div>
                       </div>

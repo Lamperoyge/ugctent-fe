@@ -7,32 +7,114 @@ import {
 import Link from 'next/link';
 import ProfilePicture from 'components/ProfilePicture';
 import Comments from 'components/Comments';
-import { COMMENT_ENTITY_TYPES } from 'utils/constants';
+import { COMMENT_ENTITY_TYPES, SUBMISSION_STATUS_COLORS, SUBMISSION_STATUS_LABELS } from 'utils/constants';
 import { useAuth } from 'hooks';
 import { useSubmission } from 'hooks/submissions';
 import { Drawer, Button, Group } from '@mantine/core';
+import { LinkIcon } from '@heroicons/react/outline';
 
 const SubmissionView = ({ submissionId, isOpen, onClose }) => {
-
   const { submission, submissionError, submissionLoading, getSubmission } =
     useSubmission();
 
-    console.log(submission)
+  console.log(submission);
   useEffect(() => {
     if (submissionId && isOpen) getSubmission(submissionId);
   }, [submissionId, isOpen]);
-
+  
   if (submissionLoading) return <LoadingState />;
+  if(!submission) return null
+
+  const statusColor = SUBMISSION_STATUS_COLORS[submission?.status];
+
+  const borderColor = `border-${statusColor}-400`;
+
+  const textColor = `text-${statusColor}-400`;
 
   return (
     <>
       <Drawer
         opened={isOpen}
-        padding="xl"
-        size="xl"
+        padding='xl'
+        overlayOpacity={0.55}
+        lockScroll={true}
+        overlayBlur={3}
         onClose={onClose}
-        title={"View submission"}
-      ></Drawer>
+        title={'View submission'}
+      >
+        <div className="relative h-full">
+          <section className='py-10 flex flex-col gap-4 h-full overflow-auto relative'>
+            <div className='flex flex-col gap-4 w-full'>
+            <div>
+                <dt className='text-md font-medium text-gray-500'>
+                  Submitted on
+                </dt>
+                <dd className='mt-1 text-md text-gray-800 font-small'>
+                {new Date(
+                                    parseInt(submission?.createdAt, 10)
+                                  ).toLocaleDateString()}
+                </dd>
+
+</div>
+            <div>
+                <dt className='text-md font-medium text-gray-500'>
+                  Status
+                </dt>
+                <button
+            className={`px-2 py-1 bg-white border-2 rounded-md border-${statusColor}-400 text-${statusColor}-400`}
+            disabled
+          >
+            {SUBMISSION_STATUS_LABELS[submission.status]}
+          </button>
+
+              </div>
+              <div>
+                <dt className='text-md font-medium text-gray-500'>
+                  Submission title
+                </dt>
+                <dd className='mt-1 text-lg text-gray-900 font-medium'>
+                  {submission?.title}
+                </dd>
+              </div>
+              <div>
+                <dt className='text-md font-medium text-gray-500'>
+                  Submission description
+                </dt>
+                <dd className='mt-1 text-lg text-gray-900 font-medium'>
+                  {submission?.description}
+                </dd>
+              </div>
+              <div>
+                <dt className='text-md font-medium text-gray-500'>
+                  Submission links
+                </dt>
+                {submission?.links?.map((link, index) => (
+                  <dd
+                    key={`${link?.url}-${index}`}
+                    className='mt-1 text-lg text-blue-600 font-medium'
+                  >
+                    <a
+                      href={link?.url}
+                      target='_blank'
+                      rel='noreferrer'
+                      className='flex gap-2 items-center'
+                    >
+                      <LinkIcon className='h-5 w-5' /> {link?.displayName}
+                    </a>
+                  </dd>
+                ))}
+              </div>
+            </div>
+            <Comments
+              entityId={submission?._id}
+              entityType={COMMENT_ENTITY_TYPES.SUBMISSION}
+            />
+          </section>
+        </div>
+          <div className=''>
+            <Button className='bg-red-300'>Accept</Button>
+          </div>
+      </Drawer>
     </>
   );
 };
