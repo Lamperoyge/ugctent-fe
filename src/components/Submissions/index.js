@@ -98,7 +98,7 @@ const CreateSubmission = ({jobId}) => {
               
             }
             if(item.component === 'links') {
-                return <Links onChange={(links) => formik.setFieldValue('links', links)} values={formik.values.links}/>
+                return <Links key={idx} onChange={(links) => formik.setFieldValue('links', links)} values={formik.values.links}/>
               }
              else if (item.component === 'textarea') {
               return (

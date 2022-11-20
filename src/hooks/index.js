@@ -77,6 +77,8 @@ export const useJobApplications = () => {
       data: jobApplication,
       loading: jobApplicationLoading,
       error: jobApplicationError,
+      startPolling: jobApplicationStartPolling,
+      stopPolling: jobApplicationStopPolling,
     },
   ] = useLazyQuery(GET_JOB_APPLICATION_BY_ID, {
     fetchPolicy: 'cache-and-network',
@@ -142,7 +144,9 @@ refetchQueries: [
     rejectJobApplication,
     fetchMoreJobApplications,
     refetchJobApplications,
-    getPaymentIntent
+    getPaymentIntent,
+    jobApplicationStartPolling,
+    jobApplicationStopPolling,
   };
 };
 

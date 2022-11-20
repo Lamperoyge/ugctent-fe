@@ -12,25 +12,6 @@ const cards = [
   { name: 'Total gained', href: '#', icon: ScaleIcon, amount: 'RON 30,659.45' },
   // More items...
 ];
-const transactions = [
-  {
-    id: 1,
-    name: 'Payment to Molly Sanders',
-    href: '#',
-    amount: '$20,000',
-    currency: 'USD',
-    status: 'success',
-    date: 'July 11, 2020',
-    datetime: '2020-07-11',
-  },
-  // More transactions...
-];
-
-const statusStyles = {
-  success: 'bg-green-100 text-green-800',
-  processing: 'bg-yellow-100 text-yellow-800',
-  failed: 'bg-gray-100 text-gray-800',
-};
 
 export default function Dashboard() {
   const auth = useAuth();
@@ -119,11 +100,11 @@ export default function Dashboard() {
           </div>
 
           <h2 className='max-w-6xl mx-auto mt-8 px-4 text-lg leading-6 font-medium text-gray-900 sm:px-6 lg:px-8'>
-            Assigned projects
+            {user?.userType === USER_TYPES.CREATOR ? 'Assigned Jobs' : 'Created Jobs'}
           </h2>
 
           {/* Activity list (smallest breakpoint only) */}
-          <div className='shadow sm:hidden'>
+          {/* <div className='shadow sm:hidden'>
             <ul
               role='list'
               className='mt-2 divide-y divide-gray-200 overflow-hidden shadow sm:hidden'
@@ -162,7 +143,7 @@ export default function Dashboard() {
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
 
           {/* Activity table (small breakpoint and up) */}
           <ProjectList data={data} />

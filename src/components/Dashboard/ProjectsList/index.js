@@ -20,6 +20,10 @@ const ProjectList = ({data}) => {
                         Status
                       </th>
                       <th className='px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                        Applications
+                      </th>
+
+                      <th className='px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider'>
                         Last update
                       </th>
                     </tr>
@@ -49,6 +53,9 @@ const ProjectList = ({data}) => {
                         <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
                         <StatusChip status={project.status} />
 
+                        </td>
+                        <td className='px-6 py-4 text-right whitespace-nowrap text-sm text-gray-500'>
+                            {project?.applicationsCount} applied
                         </td>
                         <td className='px-6 py-4 text-right whitespace-nowrap text-sm text-gray-500'>
                           <time dateTime={new Date(parseInt(project.updatedAt, 10))}>

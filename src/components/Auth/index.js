@@ -54,12 +54,15 @@ const Auth = ({ children }) => {
     onError: (e) => console.log(e),
   });
 
+  console.log(tokenLoading, 'tokenLoading');
   const [getLoggedInUser, { data, error }] = useLazyQuery(GET_LOGGED_IN_USER, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
     notifyOnNetworkStatusChange: true,
     onCompleted: () => {
+      console.log('imhere?');
       setTokenLoading(false);
+      console.log('im after token loading');
     },
     onError: () => setTokenLoading(false),
   });

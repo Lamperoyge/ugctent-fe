@@ -17,9 +17,11 @@ import StatusChip from 'components/StatusChip';
 import ViewAttachments from 'components/ViewAttachments';
 import CreateJobApplication from 'components/CreateJobApplication';
 import ApplicationsList from 'components/ApplicationsList';
-import { JOB_STATUS } from 'utils/constants';
+import { JOB_APPLICATION_PAYMENT_STATUS, JOB_STATUS } from 'utils/constants';
 import CreateSubmission from 'components/Submissions';
 import SubmissionsList from 'components/SubmissionsList';
+import ProfilePicture from 'components/ProfilePicture';
+import { CurrencyDollarIcon } from '@heroicons/react/outline';
 export default function ProjectPage() {
   const [isCreateApplicationModalOpen, setIsCreateApplicationModalOpen] =
     useState(false);
@@ -242,12 +244,11 @@ export default function ProjectPage() {
                     </div>
                   </div>
                 </div>
-                {user?._id === job.creator?.userId &&
-                  !job?.submissionsCount && (
+                {user?._id === job.creator?.userId && !job.assigneeId && (
                     <ApplicationsList jobId={job._id} />
                   )}
-                {canViewAssignedTask && job?.submissionsCount && (
-                  <SubmissionsList jobId={job._id} />
+                {canViewAssignedTask && (
+                  <SubmissionsList jobId={job._id} assignee={job.assigneeId}/>
                 )}
                 <div className='w-full flex justify-center items-center h-full'>
                   {user?._id === job?.assigneeId &&
@@ -299,28 +300,35 @@ export default function ProjectPage() {
                       </span>
                     </div>
                   )}
+                  <div className="flex items-center space-x-2">
+                            <CurrencyDollarIcon className="h-5 w-5 text-gray-400" aria-hidden="true"/>
+                            <span className="text-gray-900 text-sm font-medium">
+                              {[JOB_STATUS.IN_PROGRESS, JOB_STATUS.IN_REVIEW, JOB_STATUS.COMPLETED].includes(job?.status) ? "Paid" : "Not paid"} 
+                            </span> 
+                            <span className='text-gray-900 text-sm font-medium'>
+                      {job?.price} RON
+                    </span>
+
+                  </div>
                 </div>
                 <div className='mt-6 border-t border-gray-200 py-6 space-y-8'>
                   <div>
                     <h2 className='text-sm font-medium text-gray-500'>
-                      Assignees
+                      Assignee
                     </h2>
                     <ul className='mt-3 space-y-3'>
                       <li className='flex justify-start'>
-                        <a className='flex items-center space-x-3'>
-                          <div className='flex-shrink-0'>
-                            <img
-                              className='h-5 w-5 rounded-full'
-                              src='https://images.unsplash.com/photo-1520785643438-5bf77931f493?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80'
-                              alt=''
-                            />
+                        <div className='flex items-center space-x-3'>
+                            {job?.assignee ?                           <div className='flex-shrink-0'>
+                            <ProfilePicture src={job?.assignee?.profilePicture} size="h-10 w-10"/>
                           </div>
+ : null}
                           <div className='text-sm font-medium text-gray-900'>
                             {job?.assignee
                               ? `${job?.assignee?.firstName} ${job?.assignee?.lastName}`
                               : 'Not assigned'}
                           </div>
-                        </a>
+                        </div>
                       </li>
                     </ul>
                   </div>

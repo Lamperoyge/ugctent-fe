@@ -8,8 +8,9 @@ import Link from 'next/link';
 import ProfilePicture from 'components/ProfilePicture';
 import ApplicationDataViewPanel from 'components/ApplicationDataViewPanel';
 import Comments from 'components/Comments';
-import { COMMENT_ENTITY_TYPES } from 'utils/constants';
+import { COMMENT_ENTITY_TYPES, JOB_APPLICATION_PAYMENT_STATUS } from 'utils/constants';
 import { useJobApplications } from 'hooks';
+import {GET_PAYMENT_INTENT_INFO} from 'graphql/queries'
 import {
   JOB_APPLICATION_STATUS,
   JOB_APPLICATION_STATUS_COLORS,
@@ -17,18 +18,17 @@ import {
 } from 'utils/constants';
 import {useAuth} from 'hooks';
 import StripeComponent from 'components/Stripe';
+import { useLazyQuery } from '@apollo/client';
 
 function ApplicationHeader({ application }) {
   const {user} = useAuth();
   const [clientSecret, setClientSecret] = useState(false)
 
+
   const hasRightForActions =
     application.status === JOB_APPLICATION_STATUS.IN_REVIEW && user?._id !== application?.creator?.userId;
 
-  const { approveJobApplication, rejectJobApplication, getPaymentIntent } = useJobApplications();
-
-  // const handleApprove = () => setIsPaymentProcessInitiated(true);
-  //   approveJobApplication({ variables: { jobApplicationId: application._id } });
+  const { rejectJobApplication, getPaymentIntent } = useJobApplications();
 
   const handleApprove = async () => {
     const secret = await getPaymentIntent(application._id)
@@ -43,6 +43,8 @@ function ApplicationHeader({ application }) {
 
   const textColor = `text-${statusColor}-400`;
 
+  const onClose = () => setClientSecret(false);
+    
   return (
     <div className='mx-auto px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:px-8'>
       <div className='flex items-center space-x-5'>
@@ -85,7 +87,7 @@ function ApplicationHeader({ application }) {
           </p>
         </div>
       </div>
-      {!hasRightForActions && (
+      {!hasRightForActions && JOB_APPLICATION_PAYMENT_STATUS.PROCESSING !== application?.paymentStatus && (
         <div className='mt-5 flex lg:mt-0 lg:ml-4'>
           <button
             className={`px-4 py-2 bg-transparent border-2 rounded-md ${borderColor} ${textColor}`}
@@ -95,7 +97,19 @@ function ApplicationHeader({ application }) {
           </button>
         </div>
       )}
-      {!!clientSecret && <StripeComponent clientSecret={clientSecret}/>}
+      {![JOB_APPLICATION_PAYMENT_STATUS.PAID, JOB_APPLICATION_PAYMENT_STATUS.UNPAID].includes(application?.paymentStatus) && hasRightForActions && (
+        <div className='mt-5 flex lg:mt-0 lg:ml-4'>
+        <button
+            className={`px-4 py-2 bg-transparent border-2 rounded-md ${borderColor} ${textColor}`}
+            disabled
+          >
+            {JOB_APPLICATION_STATUS_LABELS[application.status]}
+          </button>
+
+        </div>
+      )}
+
+      {!!clientSecret && <StripeComponent clientSecret={clientSecret} application={application} handleClose={onClose}/>}
       {hasRightForActions && !clientSecret && (
         <div className='mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3'>
           <button
@@ -154,8 +168,23 @@ export default function ApplicationView() {
     jobApplication,
     jobApplicationError: error,
     jobApplicationLoading: loading,
+    jobApplicationStartPolling,
+    jobApplicationStopPolling,
   } = useJobApplications();
 
+  useEffect(() => {
+    const isPaymentIntent = new URLSearchParams(window.location.search).get('payment_intent');
+    if(isPaymentIntent) {
+      jobApplicationStartPolling(800)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (jobApplication?.paymentStatus !== JOB_APPLICATION_PAYMENT_STATUS.UNPAID) {
+      jobApplicationStopPolling()
+    }
+  })
+  
   useEffect(() => {
     if (router.query.applicationId) {
       getJobApplicationById({

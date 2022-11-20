@@ -11,12 +11,13 @@ export default function ViewAttachments({
 }) {
   const [img, setImg] = useState(null);
 
+  console.log(attachments)
   return (
     <>
       <Modal opened={!!img} onClose={() => setImg(null)}>
         <img src={img} />
       </Modal>
-
+    
       {attachments.map((attach, idx) => (
         <div key={idx}>
           {fromMemory ? (
@@ -36,7 +37,7 @@ export default function ViewAttachments({
               />
             </button>
           )}
-          <span className='inline-flex rounded-full items-center my-2 py-0.5 pl-2.5 pr-1 text-sm font-medium bg-indigo-100 text-indigo-700'>
+         {attach?.name &&  <span className='inline-flex rounded-full items-center my-2 py-0.5 pl-2.5 pr-1 text-sm font-medium bg-indigo-100 text-indigo-700'>
             {attach.name}
             {withRemoveButton && (
               <button
@@ -59,7 +60,7 @@ export default function ViewAttachments({
                 </svg>
               </button>
             )}
-          </span>
+          </span>}
         </div>
       ))}
     </>

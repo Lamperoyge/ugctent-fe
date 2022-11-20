@@ -3,6 +3,7 @@ import { GET_SUBMISSIONS_FOR_JOB } from 'graphql/queries';
 import { LIMIT, JOB_SUBMISSION_STATUS } from 'utils/constants';
 import Tabs from 'components/Tabs';
 import { LightSpinner } from 'components/Shared/Spinner';
+import { PuzzleIcon } from '@heroicons/react/outline';
 import {
   CheckCircleIcon,
   ChevronRightIcon,
@@ -12,10 +13,12 @@ import Link from 'next/link';
 import InfiniteScroll from 'components/InfiniteScroll';
 import { useState } from 'react';
 import SubmissionView from 'components/SubmissionView';
+import { useAuth } from 'hooks';
 
-const SubmissionsList = ({ jobId }) => {
-  const [activeSubmissionId, setActiveSubmissionId] = useState(null)
+const SubmissionsList = ({ jobId, assignee }) => {
+  const [activeSubmissionId, setActiveSubmissionId] = useState(null);
   const [hasMore, setHasMore] = useState(false);
+  const user = useAuth()
   const { data, previousData, fetchMore, loading, variables } = useQuery(
     GET_SUBMISSIONS_FOR_JOB,
 
@@ -50,27 +53,47 @@ const SubmissionsList = ({ jobId }) => {
       setHasMore(data?.getSubmissionsForJob?.length >= LIMIT);
     });
 
-    const handleClose = () => setActiveSubmissionId(null)
+  const handleClose = () => setActiveSubmissionId(null);
 
   return (
     <>
-    <SubmissionView submissionId={activeSubmissionId} onClose={handleClose} isOpen={!!activeSubmissionId}/>
+      <SubmissionView
+        submissionId={activeSubmissionId}
+        onClose={handleClose}
+        isOpen={!!activeSubmissionId}
+      />
       <main className='pt-8 pb-16'>
-      <div className='w-full mx-auto'>
-        <div className=''>
-          <h2 className='text-lg font-medium text-gray-900'>Submissions</h2>
-        </div>
-        <ul
-          role='list'
-          className='mt-5 border-t border-gray-200 divide-y divide-gray-200 sm:mt-0 sm:border-t-0'
-        >
-          {loading && !data?.getSubmissionsForJob?.length ? (
-            <LightSpinner />
-          ) : (
-            <InfiniteScroll onLoadMore={handleFetchMore} hasMore={hasMore}>
-              {data?.getSubmissionsForJob?.map((submission) => (
+        <div className='w-full mx-auto'>
+          <div className=''>
+            <h2 className='text-lg font-medium text-gray-900'>Submissions</h2>
+          </div>
+          <ul
+            role='list'
+            className='mt-5 border-t border-gray-200 divide-y divide-gray-200 sm:mt-0 sm:border-t-0'
+          >
+            {!loading && data?.getSubmissionsForJob?.length === 0 ? (
+              <div className='w-full h-full flex justify-center items-center flex-col gap-4'>
+                <span className='font-medium text-gray-400'>
+                  No submissions yet.
+                </span>
+                <PuzzleIcon 
+className='text-gray-300 w-12 h-12 font-medium'
 
-                  <li key={submission._id} onClick={() => setActiveSubmissionId(submission._id)}>
+                />
+{user?._id === assignee ?                 <button className='font-bold inline-flex items-center px-4 py-2 my-4 border border-transparent shadow-sm text-sm rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'>
+                  Create submission
+                </button> : null}
+              </div>
+            ) : null}
+            {loading && !data?.getSubmissionsForJob?.length ? (
+              <LightSpinner />
+            ) : (
+              <InfiniteScroll onLoadMore={handleFetchMore} hasMore={hasMore}>
+                {data?.getSubmissionsForJob?.map((submission) => (
+                  <li
+                    key={submission._id}
+                    onClick={() => setActiveSubmissionId(submission._id)}
+                  >
                     <div className='flex items-center py-5 px-4 sm:py-6 sm:px-0 hover:bg-gray-100 cursor-pointer'>
                       <div className='min-w-0 flex-1 flex items-center'>
                         <div className='flex-shrink-0'>
@@ -126,19 +149,19 @@ const SubmissionsList = ({ jobId }) => {
                         </div>
                       </div>
                       <div>
-                          <ChevronRightIcon
-                            className='h-5 w-5 text-gray-400 group-hover:text-gray-700'
-                            aria-hidden='true'
-                          />
+                        <ChevronRightIcon
+                          className='h-5 w-5 text-gray-400 group-hover:text-gray-700'
+                          aria-hidden='true'
+                        />
                       </div>
                     </div>
                   </li>
-              ))}
-            </InfiniteScroll>
-          )}
-        </ul>
-      </div>
-    </main>
+                ))}
+              </InfiniteScroll>
+            )}
+          </ul>
+        </div>
+      </main>
     </>
   );
 };
