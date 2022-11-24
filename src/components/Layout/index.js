@@ -90,7 +90,7 @@ export default function SidebarLayout({ children }) {
           onClose={onModalClose}
         />
       )}
-      <div>
+      <div className="h-full">
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
             as='div'
