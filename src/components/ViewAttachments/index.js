@@ -37,7 +37,7 @@ export default function ViewAttachments({
               />
             </button>
           )}
-         {attach?.name &&  <span className='inline-flex rounded-full items-center my-2 py-0.5 pl-2.5 pr-1 text-sm font-medium bg-indigo-100 text-indigo-700'>
+         {attach?.name &&  <span className='inline-flex rounded-full items-center my-2 py-0.5 pl-2.5 pr-1 text-sm font-medium bg-indigo-100 text-primary'>
             {attach.name}
             {withRemoveButton && (
               <button

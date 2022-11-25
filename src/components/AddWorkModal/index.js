@@ -160,7 +160,7 @@ export default function AddWork({
                                   className='w-auto max-h-24 rounded overflow-hidden'
                                   file={attach}
                                 />
-                                <span className='inline-flex rounded-full items-center my-2 py-0.5 pl-2.5 pr-1 text-sm font-medium bg-indigo-100 text-indigo-700'>
+                                <span className='inline-flex rounded-full items-center my-2 py-0.5 pl-2.5 pr-1 text-sm font-medium bg-indigo-100 text-primary'>
                                   {attach.name}
                                   <button
                                     type='button'
@@ -241,7 +241,7 @@ export default function AddWork({
                         <button
                           type='button'
                           onClick={handleSubmit}
-                          className='inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
+                          className='inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
                         >
                           Save
                         </button>

@@ -152,7 +152,7 @@ refetchQueries: [
 
 export const useJobSubmissions = () => {
   const [createJobSubmission] = useMutation(CREATE_JOB_SUBMISSION, {
-    refetchQueries: ['getJobById'],
+    refetchQueries: ['getJobById', 'getSubmissionsForJob'],
   });
   return {
     createJobSubmission,

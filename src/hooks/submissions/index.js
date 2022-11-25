@@ -1,5 +1,6 @@
 import { GET_SUBMISSIONS_FOR_JOB, GET_SUBMISSION_BY_ID } from 'graphql/queries';
-import { useLazyQuery } from '@apollo/client';
+import {APPROVE_JOB_SUBMISSION, REJECT_JOB_SUBMISSION} from 'graphql/mutations';
+import { useLazyQuery, useMutation } from '@apollo/client';
 
 export const useSubmission = () => {
   const [getSubmissionById, { data, error, loading }] = useLazyQuery(GET_SUBMISSION_BY_ID, {
@@ -8,7 +9,13 @@ export const useSubmission = () => {
     notifyOnNetworkStatusChange: true,
   });
 
+  const [approveJobSubmission] = useMutation(APPROVE_JOB_SUBMISSION, {
+    refetchQueries: ['getSubmissionById'],
+  });
 
+  const [rejectJobSubmission] = useMutation(REJECT_JOB_SUBMISSION, {
+    refetchQueries: ['getSubmissionsForJob'],
+  });
   // TODO - Add Approve / Reject / Req changes
 
   const getSubmission = (id) => {
@@ -24,5 +31,7 @@ export const useSubmission = () => {
     submissionError: error,
     submissionLoading: loading,
     getSubmission,
+    approveJobSubmission,
+    rejectJobSubmission
   };
 };

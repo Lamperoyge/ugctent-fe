@@ -258,6 +258,7 @@ export default function ApplicationView() {
               {/* Comments*/}
               <Comments
                 entityId={router.query.applicationId}
+                disabled={!isApplicationInReview}
                 entityType={COMMENT_ENTITY_TYPES.JOB_APPLICATION}
               />
             </div>

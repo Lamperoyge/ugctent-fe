@@ -17,6 +17,12 @@ export const GET_COMMENTS = gql`
       _id
       content
       createdAt
+      priceSuggestion {
+        _id
+        price
+        status
+        createdBy
+      }
       creator {
         ...UserInfoFragment
       }

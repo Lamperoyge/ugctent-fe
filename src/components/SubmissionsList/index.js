@@ -11,14 +11,15 @@ import {
 } from '@heroicons/react/solid';
 import Link from 'next/link';
 import InfiniteScroll from 'components/InfiniteScroll';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SubmissionView from 'components/SubmissionView';
 import { useAuth } from 'hooks';
 
 const SubmissionsList = ({ jobId, assignee }) => {
   const [activeSubmissionId, setActiveSubmissionId] = useState(null);
   const [hasMore, setHasMore] = useState(false);
-  const user = useAuth()
+  const user = useAuth();
+
   const { data, previousData, fetchMore, loading, variables } = useQuery(
     GET_SUBMISSIONS_FOR_JOB,
 
@@ -76,13 +77,12 @@ const SubmissionsList = ({ jobId, assignee }) => {
                 <span className='font-medium text-gray-400'>
                   No submissions yet.
                 </span>
-                <PuzzleIcon 
-className='text-gray-300 w-12 h-12 font-medium'
-
-                />
-{user?._id === assignee ?                 <button className='font-bold inline-flex items-center px-4 py-2 my-4 border border-transparent shadow-sm text-sm rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'>
-                  Create submission
-                </button> : null}
+                <PuzzleIcon className='text-gray-300 w-12 h-12 font-medium' />
+                {user?._id === assignee ? (
+                  <button className='font-bold inline-flex items-center px-4 py-2 my-4 border border-transparent shadow-sm text-sm rounded-md text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'>
+                    Create submission
+                  </button>
+                ) : null}
               </div>
             ) : null}
             {loading && !data?.getSubmissionsForJob?.length ? (

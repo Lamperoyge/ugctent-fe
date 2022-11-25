@@ -17,11 +17,12 @@ import StatusChip from 'components/StatusChip';
 import ViewAttachments from 'components/ViewAttachments';
 import CreateJobApplication from 'components/CreateJobApplication';
 import ApplicationsList from 'components/ApplicationsList';
-import { JOB_APPLICATION_PAYMENT_STATUS, JOB_STATUS } from 'utils/constants';
+import { JOB_STATUS } from 'utils/constants';
 import CreateSubmission from 'components/Submissions';
 import SubmissionsList from 'components/SubmissionsList';
 import ProfilePicture from 'components/ProfilePicture';
 import { CurrencyDollarIcon } from '@heroicons/react/outline';
+
 export default function ProjectPage() {
   const [isCreateApplicationModalOpen, setIsCreateApplicationModalOpen] =
     useState(false);
@@ -38,7 +39,7 @@ export default function ProjectPage() {
 
   const job = data?.getJobById;
 
-  const canEdit = job?.creator?.userId === user?._id;
+  const canEdit = job?.creator?.userId === user?._id && job?.status === JOB_STATUS.CREATED;
 
   const canApply =
     job?.creator?.userId !== user?._id &&

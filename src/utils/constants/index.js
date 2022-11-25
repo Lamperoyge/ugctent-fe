@@ -108,3 +108,9 @@ export const PAYMENT_STATUS_LABELS = {
   [JOB_APPLICATION_PAYMENT_STATUS.PROCESSING]: 'Payment is processing',
   [JOB_APPLICATION_PAYMENT_STATUS.FAILED]: 'Payment failed',
 };
+
+export const JOB_APLPICATION_PRICE_SUGGEST_STATUS = {
+  ACCEPTED: 'accepted',
+  REJECTED: 'rejected',
+  CREATED: 'created',
+}

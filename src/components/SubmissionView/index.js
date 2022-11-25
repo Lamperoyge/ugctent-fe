@@ -7,23 +7,32 @@ import {
 import Link from 'next/link';
 import ProfilePicture from 'components/ProfilePicture';
 import Comments from 'components/Comments';
-import { COMMENT_ENTITY_TYPES, SUBMISSION_STATUS_COLORS, SUBMISSION_STATUS_LABELS } from 'utils/constants';
+import {
+  COMMENT_ENTITY_TYPES,
+  JOB_SUBMISSION_STATUS,
+  SUBMISSION_STATUS_COLORS,
+  SUBMISSION_STATUS_LABELS,
+} from 'utils/constants';
 import { useAuth } from 'hooks';
 import { useSubmission } from 'hooks/submissions';
-import { Drawer, Button, Group } from '@mantine/core';
+import { Modal, Button, Group } from '@mantine/core';
 import { LinkIcon } from '@heroicons/react/outline';
 
 const SubmissionView = ({ submissionId, isOpen, onClose }) => {
-  const { submission, submissionError, submissionLoading, getSubmission } =
-    useSubmission();
+  const {
+    submission,
+    submissionError,
+    submissionLoading,
+    getSubmission,
+    approveJobSubmission,
+  } = useSubmission();
 
-  console.log(submission);
   useEffect(() => {
     if (submissionId && isOpen) getSubmission(submissionId);
   }, [submissionId, isOpen]);
-  
-  if (submissionLoading) return <LoadingState />;
-  if(!submission) return null
+
+  if (submissionLoading && !submission) return <LoadingState />;
+  if (!submission) return null;
 
   const statusColor = SUBMISSION_STATUS_COLORS[submission?.status];
 
@@ -33,7 +42,7 @@ const SubmissionView = ({ submissionId, isOpen, onClose }) => {
 
   return (
     <>
-      <Drawer
+      <Modal
         opened={isOpen}
         padding='xl'
         overlayOpacity={0.55}
@@ -42,31 +51,33 @@ const SubmissionView = ({ submissionId, isOpen, onClose }) => {
         onClose={onClose}
         title={'View submission'}
       >
-        <div className="relative h-full">
+        <div className='relative h-full'>
           <section className='py-10 flex flex-col gap-4 h-full overflow-auto relative'>
             <div className='flex flex-col gap-4 w-full'>
-            <div>
+              <div>
                 <dt className='text-md font-medium text-gray-500'>
                   Submitted on
                 </dt>
                 <dd className='mt-1 text-md text-gray-800 font-small'>
-                {new Date(
-                                    parseInt(submission?.createdAt, 10)
-                                  ).toLocaleDateString()}
+                  {new Date(
+                    parseInt(submission?.createdAt, 10)
+                  ).toLocaleDateString()}
                 </dd>
-
-</div>
-            <div>
-                <dt className='text-md font-medium text-gray-500'>
-                  Status
-                </dt>
-                <button
-            className={`px-2 py-1 bg-white border-2 rounded-md border-${statusColor}-400 text-${statusColor}-400`}
-            disabled
-          >
-            {SUBMISSION_STATUS_LABELS[submission.status]}
-          </button>
-
+              </div>
+              <div>
+                <dt className='text-md font-medium text-gray-500'>Status</dt>
+                <span
+                  className={`inline-flex border border-${statusColor}-400 items-center px-3 py-0.5 rounded-full text-sm font-bold bg-${statusColor}-100 text-${statusColor}-800`}
+                >
+                  <svg
+                    className={`-ml-1 mr-1.5 h-2 w-2 text-${statusColor}-400`}
+                    fill='currentColor'
+                    viewBox='0 0 8 8'
+                  >
+                    <circle cx={4} cy={4} r={3} />
+                  </svg>
+                  {SUBMISSION_STATUS_LABELS[submission.status]}{' '}
+                </span>
               </div>
               <div>
                 <dt className='text-md font-medium text-gray-500'>
@@ -111,10 +122,23 @@ const SubmissionView = ({ submissionId, isOpen, onClose }) => {
             />
           </section>
         </div>
+        {submission?.status !== JOB_SUBMISSION_STATUS.ACCEPTED && (
           <div className=''>
-            <Button className='bg-red-300'>Accept</Button>
+            <Button
+              className='bg-red-300'
+              onClick={() =>
+                approveJobSubmission({
+                  variables: {
+                    submissionId: submission._id,
+                  },
+                })
+              }
+            >
+              Accept
+            </Button>
           </div>
-      </Drawer>
+        )}
+      </Modal>
     </>
   );
 };
