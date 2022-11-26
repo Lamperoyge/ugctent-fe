@@ -12,7 +12,7 @@ export const Input = ({
   ...rest
 }) => {
   const variantClass = {
-    xs: 'max-w-1/2',
+    xs: 'max-w-full sm:max-w-1/2',
     md: 'col-span-3 sm:col-span-1',
   };
   return (

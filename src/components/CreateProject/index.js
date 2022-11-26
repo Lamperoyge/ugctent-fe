@@ -155,7 +155,7 @@ const CreateProjectModal = ({ open, onClose }) => {
                           </div>
 
                           <div className='flex justify-center items-center'>
-                            <div className='flex flex-col w-3/4 space-y-6'>
+                            <div className='flex flex-col w-full sm:w-3/4 space-y-6'>
                               {formConfig.map((item, idx) => {
                                 if (item.component === 'input') {
                                   return (
@@ -189,7 +189,7 @@ const CreateProjectModal = ({ open, onClose }) => {
                                 if (item.component === 'select') {
                                   return (
                                     <div
-                                      className='col-span-1 max-w-1/2'
+                                      className='col-span-1 sm:max-w-1/2'
                                       key={idx}
                                     >
                                       <Select
@@ -211,7 +211,7 @@ const CreateProjectModal = ({ open, onClose }) => {
                                 }
                                 if (item.component === 'multipleSelect') {
                                   return (
-                                    <div className='max-w-1/2' key={idx}>
+                                    <div className='sm:max-w-1/2' key={idx}>
                                       <MultiSelect
                                         options={item.options}
                                         label={item.label}

@@ -2,10 +2,10 @@ import Link from 'next/link';
 import { classNames } from 'utils/helpers';
 import { PlusIcon } from '@heroicons/react/solid';
 
-export function Navbar({ classNames, setNewProjectModalOpen }) {
+export function Navbar({ navigation, classNames, setNewProjectModalOpen }) {
   return (
     <nav className='mt-5 px-2 space-y-1'>
-      {navigation.map((item) => (
+      {navigation?.map((item) => (
         <NavItemWrapper
           key={item.name}
           href={item.href}
