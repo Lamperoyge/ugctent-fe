@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_COMMENTS } from 'graphql/queries';
 import {
   CREATE_COMMENT,
@@ -6,16 +6,21 @@ import {
   ACCEPT_PRICE_SUGGESTION,
   REJECT_PRICE_SUGGESTION,
 } from 'graphql/mutations';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ProfilePicture from 'components/ProfilePicture';
+import Link from 'next/link';
 import {
   COMMENT_ENTITY_TYPES,
   JOB_APLPICATION_PRICE_SUGGEST_STATUS,
+  LIMIT,
 } from 'utils/constants';
 import { Input } from 'components/CreateProject/helpers';
+import InfiniteScroll from 'components/InfiniteScroll';
+import ContentComponent from './Content';
 
 export default function Comments({ entityId, entityType, disabled = false }) {
   const [isSuggestionModalOpen, setIsSuggestionsModalOpen] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
   const [suggestionModalData, setSuggestionModalData] = useState('200');
   const [createPriceSuggestions] = useMutation(CREATE_PRICE_SUGGESTION, {
     refetchQueries: [
@@ -25,6 +30,7 @@ export default function Comments({ entityId, entityType, disabled = false }) {
   const [acceptPriceSuggestion] = useMutation(ACCEPT_PRICE_SUGGESTION, {
     refetchQueries: [
       { query: GET_COMMENTS, variables: { entityId, entityType } },
+      'getJobApplicationById',
     ],
   });
 
@@ -51,12 +57,32 @@ export default function Comments({ entityId, entityType, disabled = false }) {
     setIsSuggestionsModalOpen(false);
   };
 
-  const { data, loading, error } = useQuery(GET_COMMENTS, {
-    variables: {
-      entityId,
-      entityType,
-    },
-  });
+  const [getComments, { data, loading, error, previousData, fetchMore }] =
+    useLazyQuery(GET_COMMENTS, {
+      variables: {
+        entityId,
+        entityType,
+        limit: LIMIT,
+        offset: 0,
+      },
+    });
+
+  useEffect(() => {
+    getComments().then(({ data }) => {
+      if (!previousData && data?.getCommentsByEntityId?.length === LIMIT)
+        setHasMore(true);
+    });
+  }, []);
+
+  const handleFetchMore = () => {
+    fetchMore({
+      variables: {
+        offset: data?.getCommentsByEntityId?.length,
+      },
+    }).then(({ data }) => {
+      setHasMore(data?.getCommentsByEntityId?.length >= LIMIT);
+    });
+  };
 
   const handleCreate = (e) => {
     e.preventDefault();
@@ -74,13 +100,21 @@ export default function Comments({ entityId, entityType, disabled = false }) {
   const toggleSuggestionModal = () =>
     setIsSuggestionsModalOpen((prevState) => !prevState);
 
-    const handleApprove = (id) => {
-      acceptPriceSuggestion({
-        variables: {
-          priceSuggestionId: id,
-        }
-      })
-    }
+  const handleApprove = (id) => {
+    acceptPriceSuggestion({
+      variables: {
+        priceSuggestionId: id,
+      },
+    });
+  };
+
+  const handleDecline = (id) =>
+    rejectPriceSuggestion({
+      variables: {
+        priceSuggestionId: id,
+      },
+    });
+
   return (
     <section aria-labelledby='notes-title'>
       <div className='bg-white shadow sm:rounded-lg sm:overflow-hidden'>
@@ -91,61 +125,75 @@ export default function Comments({ entityId, entityType, disabled = false }) {
             </h2>
           </div>
           <div className='px-4 py-6 sm:px-6 max-h-96 overflow-auto flex flex-col-reverse'>
-            <ul role='list'>
-              {!loading && !error && !data?.getCommentsByEntityId?.length && (
-                <div>No messages yet</div>
-              )}
+            {!loading && !error && !data?.getCommentsByEntityId?.length && (
+              <div>No messages yet</div>
+            )}
+            <div>
               <div className='space-y-8'>
-                {data?.getCommentsByEntityId?.map((comment) => (
-                  <li key={comment._id}>
-                    <div className='flex space-x-3'>
-                      <div className='flex-shrink-0'>
-                        <ProfilePicture
-                          src={comment.creator.profilePicture}
-                          size={'h-10 w-10'}
-                        />
-                      </div>
-                      <div>
-                        <div className='text-sm'>
-                          <a href='#' className='font-medium text-gray-900'>
-                            {comment.creator.firstName}{' '}
-                            {comment.creator.lastName}
-                          </a>
-                        </div>
-                        <div className='mt-1 text-sm text-gray-700'>
-                          <p>{comment.content}</p>
-                        </div>
-                        <div className='mt-2 text-xs space-x-2'>
-                          <span className='text-gray-400 font-sm'>
-                            {new Date(
-                              parseInt(comment.createdAt, 10)
-                            ).toLocaleDateString()}{' '}
-                            at{' '}
-                            {new Date(
-                              parseInt(comment.createdAt, 10)
-                            ).toLocaleTimeString()}
-                          </span>{' '}
-                        </div>
-                        {comment?.priceSuggestion?.status ===
-                        JOB_APLPICATION_PRICE_SUGGEST_STATUS.CREATED ? (
-                          <div className='flex gap-4 py-4 w-1/3'>
-                            <button
-                              onClick={() => handleApprove(comment?.priceSuggestion?._id)}
-                              className={`cursor-pointer inline-flex border items-center px-3 py-0.5 rounded-full text-sm font-bold bg-green-100 text-green-800 hover:bg-green-200`}
-                            >
-                              Accept
-                            </button>
-                            <button
-                              className={`cursor-pointer inline-flex border items-center px-3 py-0.5 rounded-full text-sm font-bold bg-red-100 text-red-800 hover:bg-red-200`}
-                            >
-                              Decline
-                            </button>
+                <InfiniteScroll
+                  onLoadMore={handleFetchMore}
+                  hasMore={hasMore}
+                  reverseScroll
+                >
+                  <ul className="gap-8 flex-col-reverse flex">
+                    {data?.getCommentsByEntityId?.map((comment) => (
+                      <li key={comment._id}>
+                        <div className='flex space-x-3'>
+                          <div className='flex-shrink-0'>
+                            <ProfilePicture
+                              src={comment.creator.profilePicture}
+                              size={'h-10 w-10'}
+                            />
                           </div>
-                        ) : null}
-                      </div>
-                    </div>
-                  </li>
-                ))}
+                          <div>
+                            <div className='text-sm'>
+                              <Link href={`/profile/${comment.creator._id}`} className='font-medium text-gray-900'>
+                                {comment.creator.firstName}{' '}
+                                {comment.creator.lastName}
+                              </Link>
+                            </div>
+                            <div className='mt-1 text-sm text-gray-700'>
+                              <ContentComponent content={comment.content} />
+                            </div>
+                            <div className='mt-2 text-xs space-x-2'>
+                              <span className='text-gray-400 font-sm'>
+                                {new Date(
+                                  parseInt(comment.createdAt, 10)
+                                ).toLocaleDateString()}{' '}
+                                at{' '}
+                                {new Date(
+                                  parseInt(comment.createdAt, 10)
+                                ).toLocaleTimeString()}
+                              </span>{' '}
+                            </div>
+                            {comment?.priceSuggestion?.status ===
+                            JOB_APLPICATION_PRICE_SUGGEST_STATUS.CREATED ? (
+                              <div className='flex gap-4 py-4 w-1/3'>
+{comment?.priceSuggestion?.createdBy !== comment?.creator?.userId ?                                 <button
+                                  onClick={() =>
+                                    handleApprove(comment?.priceSuggestion?._id)
+                                  }
+                                  className={`cursor-pointer inline-flex border items-center px-3 py-0.5 rounded-full text-sm font-bold bg-green-100 text-green-800 hover:bg-green-200`}
+                                >
+                                  Accept
+                                </button> : null}
+                                <button
+                                  type='button'
+                                  onClick={() =>
+                                    handleDecline(comment?.priceSuggestion?._id)
+                                  }
+                                  className={`cursor-pointer inline-flex border items-center px-3 py-0.5 rounded-full text-sm font-bold bg-red-100 text-red-800 hover:bg-red-200`}
+                                >
+                                  {comment?.priceSuggestion?.createdBy === comment?.creator?.userId ? 'Revoke' : 'Decline'}
+                                </button>
+                              </div>
+                            ) : null}
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </InfiniteScroll>
                 {entityType === COMMENT_ENTITY_TYPES.JOB_APPLICATION &&
                 !disabled &&
                 !isSuggestionModalOpen ? (
@@ -188,7 +236,7 @@ export default function Comments({ entityId, entityType, disabled = false }) {
                   </div>
                 )}
               </div>
-            </ul>
+            </div>
           </div>
         </div>
         <div className='bg-gray-50 px-4 py-6 sm:px-6'>

@@ -199,7 +199,7 @@ export default function ApplicationView() {
     return <InvalidApplication jobId={router.query.jobId} />;
   }
 
-  if (loading) return <LoadingState />;
+  if (loading && !jobApplication) return <LoadingState />;
   if (!jobApplication) return null;
 
   const application = jobApplication.getJobApplicationById;

@@ -1,5 +1,6 @@
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import { offsetLimitPagination } from '@apollo/client/utilities';
 import offsetLimitPaginationInput from 'utils/helpers/offsetLimitPaginationInput';
 
 const graphqlUri = 'http://localhost:4000/graphql';
@@ -30,7 +31,8 @@ const cache = new InMemoryCache({
         getSubmissionsForJob: {
           keyArgs: false,
           merge: offsetLimitPaginationInput,
-        }
+        },
+        getCommentsByEntityId: offsetLimitPagination()
       }
     }
   }
