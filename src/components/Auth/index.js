@@ -8,7 +8,8 @@ import { EMAIL_SIGN_UP, EMAIL_SIGN_IN } from 'graphql/mutations';
 import { EXCLUDED_PATHS } from 'utils/constants';
 import PageSpinner from 'components/PageSpinner';
 
-export const getAuthHeader = () => localStorage.getItem('ugctent-token') || null;
+export const getAuthHeader = () =>
+  localStorage.getItem('ugctent-token') || null;
 
 export const logout = async () => {
   try {
@@ -43,6 +44,7 @@ const Auth = ({ children }) => {
     onError: (e) => console.log(e),
   });
 
+
   const [
     emailSignIn,
     { data: emailSignInData, loading: signInLoading, error: signInError },
@@ -54,15 +56,12 @@ const Auth = ({ children }) => {
     onError: (e) => console.log(e),
   });
 
-  console.log(tokenLoading, 'tokenLoading');
   const [getLoggedInUser, { data, error }] = useLazyQuery(GET_LOGGED_IN_USER, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only',
     notifyOnNetworkStatusChange: true,
     onCompleted: () => {
-      console.log('imhere?');
       setTokenLoading(false);
-      console.log('im after token loading');
     },
     onError: () => setTokenLoading(false),
   });
@@ -100,7 +99,7 @@ const Auth = ({ children }) => {
   }
 
   if (tokenLoading) {
-    return <PageSpinner />
+    return <PageSpinner />;
   }
   if (!tokenLoading) {
     if (!EXCLUDED_PATHS.includes(router.pathname) && !token) {

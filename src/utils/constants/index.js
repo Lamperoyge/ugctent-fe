@@ -114,3 +114,21 @@ export const JOB_APLPICATION_PRICE_SUGGEST_STATUS = {
   REJECTED: 'rejected',
   CREATED: 'created',
 }
+
+export const NOTIFICATION_ENTITY_TYPES = {
+  JOB: 'job',
+  JOB_APPLICATION: 'jobApplication',
+  SUBMISSION: 'submission',
+  COMMENT: 'comment'
+}
+
+export const NOTIFICATION_TYPES = {
+  JOB_APPLICATION_RECEIVED: 'jobApplicationReceived',
+  JOB_APPLICATION_ACCEPTED: 'jobApplicationAccepted',
+  JOB_APPLICATION_REJECTED: 'jobApplicationRejected',
+  JOB_STATUS_CHANGED: 'jobStatusChanged',
+  JOB_SUBMISSION_RECEIVED: 'jobSubmissionReceived',
+  JOB_SUBMISSION_ACCEPTED: 'jobSubmissionAccepted',
+  JOB_SUBMISSION_REJECTED: 'jobSubmissionRejected',
+  JOB_SUBMISSION_COMMENT_RECEIVED: 'jobSubmissionCommentReceived',
+};

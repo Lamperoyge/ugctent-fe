@@ -16,21 +16,14 @@
 */
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import {
-  BellIcon,
-  CalendarIcon,
-  ChartBarIcon,
-  FolderIcon,
   HomeIcon,
-  InboxIcon,
   MenuAlt2Icon,
-  UsersIcon,
 } from '@heroicons/react/outline';
 import { SearchIcon } from '@heroicons/react/solid';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useState } from 'react';
 import { useRouter } from 'next/router';
 import {
   CurrencyDollarIcon,
-  MenuIcon,
   PuzzleIcon,
   XIcon,
 } from '@heroicons/react/outline';
@@ -45,13 +38,8 @@ import { logout } from 'components/Auth';
 import HeaderAlert from 'components/HeaderAlert';
 import { useLazyQuery } from '@apollo/client';
 import { GET_STRIPE_DASHBOARD_LINK } from 'graphql/queries';
-import { Navbar, MissingStripeAnnouncement, NavItemWrapper } from './Helpers';
-
-const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: '#' },
-];
+import { MissingStripeAnnouncement } from './Helpers';
+import Notifications from 'components/Notifications';
 
 export default function Example({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -80,6 +68,12 @@ export default function Example({ children }) {
     },
   ];
 
+  const userNavigation = [
+    { name: 'Your Profile', href: `/profile/${user?._id}` },
+    { name: 'Sign out', onClick: logout },
+  ];
+  
+  
   const CREATOR_NAVIGATION = [
     {
       name: 'Dashboard',
@@ -190,7 +184,7 @@ export default function Example({ children }) {
                   <div className='px-2'>
                     <nav className='space-y-2'>
                       {navigation?.map((item) => (
-                        <Link
+                        item?.href ? <Link
                           key={item.name}
                           href={item.href}
                           className={classNames(
@@ -210,7 +204,7 @@ export default function Example({ children }) {
                             aria-hidden='true'
                           />
                           {item.name}
-                        </Link>
+                        </Link>: null
                       ))}
                     </nav>
                   </div>
@@ -248,7 +242,7 @@ export default function Example({ children }) {
               <div className='flex-1 px-2 pb-4'>
                 <nav className='space-y-2'>
                   {navigation?.map((item) => (
-                    <Link
+                    item?.href ? <Link
                       key={item.name}
                       href={item.href}
                       className={classNames(
@@ -268,7 +262,7 @@ export default function Example({ children }) {
                         aria-hidden='true'
                       />
                       {item.name}
-                    </Link>
+                    </Link> : null
                   ))}
                 </nav>
                 <button
@@ -316,14 +310,7 @@ export default function Example({ children }) {
                   </form>
                 </div>
                 <div className='ml-4 flex items-center md:ml-6'>
-                  <button
-                    type='button'
-                    className='bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-                  >
-                    <span className='sr-only'>View notifications</span>
-                    <BellIcon className='h-6 w-6' aria-hidden='true' />
-                  </button>
-
+                          <Notifications />
                   {/* Profile dropdown */}
                   <Menu as='div' className='ml-3 relative'>
                     <div>
@@ -331,8 +318,8 @@ export default function Example({ children }) {
                         <span className='sr-only'>Open user menu</span>
                         <img
                           className='h-8 w-8 rounded-full'
-                          src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-                          alt=''
+                          src={profilePicture}
+                          alt='Profile picture'
                         />
                       </Menu.Button>
                     </div>
@@ -349,7 +336,7 @@ export default function Example({ children }) {
                         {userNavigation.map((item) => (
                           <Menu.Item key={item.name}>
                             {({ active }) => (
-                              <a
+                              item.href ? <Link
                                 href={item.href}
                                 className={classNames(
                                   active ? 'bg-gray-100' : '',
@@ -357,7 +344,9 @@ export default function Example({ children }) {
                                 )}
                               >
                                 {item.name}
-                              </a>
+                              </Link> : <button className="block text-left hover:bg-gray-100 py-2 px-4 text-sm text-gray-700 w-full">
+                                {item.name}
+                              </button>
                             )}
                           </Menu.Item>
                         ))}
