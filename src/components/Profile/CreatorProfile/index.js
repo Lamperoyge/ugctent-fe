@@ -1,18 +1,26 @@
+import { useState } from "react";
+
 import {
   StarIcon,
   MapIcon,
   BookmarkIcon,
-  ChatIcon,
   UserCircleIcon,
   MenuIcon,
   GlobeIcon,
 } from "@heroicons/react/solid";
 
+import PanelContainer from "components/PanelContainer";
 import ProfileSection from "./ProfileSection";
 import ProfileSectionTitle from "./ProfileSection/ProfileSectionTitle";
 
+const TABS_ENUM = {
+  ABOUT: "about",
+  WORK: "work",
+};
+
+const activeTabStyle = "border-b-2 border-orange-500 mb-[-2px]";
+
 const CreatorProfilePage = ({ data }) => {
-  console.log(data);
   const {
     profilePicture,
     bio,
@@ -23,21 +31,47 @@ const CreatorProfilePage = ({ data }) => {
     website,
     socialLinks,
   } = data && data.userInfo;
-  console.log(Object.keys(socialLinks));
+
+  const [visibleTab, setVisibleTab] = useState(TABS_ENUM.ABOUT);
+
+  const isAboutVisible = visibleTab === TABS_ENUM.ABOUT;
+  const isWorkVisible = visibleTab === TABS_ENUM.WORK;
+
   return (
-    <div className="grid grid-cols-5 grid-rows-2 h-full w-full px-20 py-10 gap-x-20 gap-y-10">
-      <img
-        src={profilePicture}
-        className="w-full h-full object-cover row-start-1 row-end-1 col-start-1 col-end-3"
-        alt="Profile image of the user"
-      />
-      <div className="flex flex-col justify-between w-full row-start-1 row-end-1 col-start-3 col-span-5 w-full">
+    <div className="grid grid-cols-6 grid-rows-5 h-full w-full px-20 py-10 gap-x-20 gap-y-10">
+      <PanelContainer extraClassName="flex flex-col justify-center items-center md:row-start-1 md:row-span-2 md:col-start-1 md:col-end-3 col-end-6">
+        <h1 className="font-sans font-semibold text-3xl">
+          {firstName} {lastName}
+        </h1>
+        <h2 className="text-orange-500 font-medium">Product Designer</h2>
+        <img
+          src={profilePicture}
+          className="object-cover rounded-full aspect-square overflow-hidden mt-5"
+          alt="Profile image of the user"
+        />
+      </PanelContainer>
+
+      <PanelContainer extraClassName="flex flex-col justify-between w-full row-start-2 md:row-start-1 row-end-2 md:row-span-2 md:col-start-3 md:col-span-6 row-start-2 row-end-2 col-start-1 col-span-6 w-full">
         <div className="flex-col w-full">
           <div className="flex justify-between items-center w-full">
+            <div className="flex flex-col">
+              <ProfileSectionTitle>Rankings</ProfileSectionTitle>
+              <div className="flex items-center">
+                <span className="text-3xl text-slate-500">8.6</span>
+                <div className="flex pl-2">
+                  {[1, 2, 3, 4, 5].map((val) => (
+                    <StarIcon
+                      className={
+                        val !== 5
+                          ? "text-orange-500 h-8 w-8"
+                          : "text-slate-500 h-8 w-8 opacity-30"
+                      }
+                    ></StarIcon>
+                  ))}
+                </div>
+              </div>
+            </div>
             <div className="flex w-full">
-              <h1 className="font-sans font-semibold text-4xl">
-                {firstName} {lastName}
-              </h1>
               {city && (
                 <span className="flex items-center pl-10">
                   <MapIcon className="h-5 w-5"></MapIcon>
@@ -50,64 +84,7 @@ const CreatorProfilePage = ({ data }) => {
               <span className="pl-1">Bookmark</span>
             </span>
           </div>
-
-          <h2 className="text-orange-500 font-medium">Product Designer</h2>
         </div>
-
-        <div className="flex flex-col">
-          <ProfileSectionTitle>Rankings</ProfileSectionTitle>
-          <div className="flex items-center">
-            <span className="text-3xl text-slate-500">8.6</span>
-            <div className="flex pl-2">
-              {[1, 2, 3, 4, 5].map((val) => (
-                <StarIcon
-                  className={
-                    val !== 5
-                      ? "text-orange-500 h-8 w-8"
-                      : "text-slate-500 h-8 w-8 opacity-30"
-                  }
-                ></StarIcon>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <button className="flex items-center">
-          <ChatIcon className="w-8 h-8 text-slate-500"></ChatIcon>
-          <span className="text-slate-500 font-semibold text-base pl-2">
-            Send message
-          </span>
-        </button>
-
-        <div className="flex border-solid border-b-2">
-          <button className="flex items-center border-b-2 border-orange-500 px-3">
-            <UserCircleIcon className="w-8 h-8 text-slate-500"></UserCircleIcon>
-            <span className="text-slate-500 font-semibold text-xl px-2">
-              About
-            </span>
-          </button>
-
-          <button className="flex items-center py-2 ml-8 text-slate-500 opacity-50">
-            <MenuIcon className="w-8 h-8" />
-            <span className="font-semibold text-xl pl-2">Work</span>
-          </button>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-20 row-start-2 row-end-2 col-start-1 col-end-3 h-full">
-        <ProfileSection hasTitleLine={true} title="Bio">
-          <p className="text-slate-700">{bio}</p>
-        </ProfileSection>
-        <ProfileSection hasTitleLine={true} title="Skills">
-          <p className="flex flex-col text-sm text-slate-700">
-            {skillIds.map((id) => (
-              <span class>{id}</span>
-            ))}
-          </p>
-        </ProfileSection>
-      </div>
-
-      <div className="flex flex-col gap-20 row-start-2 row-end-2 col-start-3 col-span-5 w-full">
         <ProfileSection title="Contact Information">
           <div class="flex flex-col gap-5">
             <div className="flex text-slate-900">
@@ -147,11 +124,50 @@ const CreatorProfilePage = ({ data }) => {
             </div>
           </div>
         </ProfileSection>
+      </PanelContainer>
+
+      <PanelContainer extraClassName="flex flex-col gap-20 row-start-3 row-end-4 md:row-start-3 md:row-span-5 col-start-1 col-end-3 sm:row-start-3 h-full">
+        <ProfileSection hasTitleLine={true} title="Bio">
+          <p className="text-slate-700">{bio}</p>
+        </ProfileSection>
+        <ProfileSection hasTitleLine={true} title="Skills">
+          <p className="flex flex-col text-sm text-slate-700">
+            {skillIds.map((id) => (
+              <span class>{id}</span>
+            ))}
+          </p>
+        </ProfileSection>
+      </PanelContainer>
+
+      <PanelContainer extraClassName="flex flex-col gap-5 row-start-3 row-end-4 md:row-start-3 md:row-span-5 col-start-3 col-span-6 w-full">
+        <div className="flex border-solid border-b-2">
+          <button
+            onClick={() => setVisibleTab(TABS_ENUM.ABOUT)}
+            className={`flex items-center p-3 text-slate-500 ${
+              isAboutVisible ? activeTabStyle : ""
+            }`}
+          >
+            <UserCircleIcon className="w-8 h-8 text-slate-500"></UserCircleIcon>
+            <span className="text-slate-500 font-semibold text-xl px-2">
+              About
+            </span>
+          </button>
+
+          <button
+            onClick={() => setVisibleTab(TABS_ENUM.WORK)}
+            className={`flex items-center p-3 text-slate-500 ${
+              isWorkVisible ? activeTabStyle : ""
+            }`}
+          >
+            <MenuIcon className="w-8 h-8" />
+            <span className="font-semibold text-xl pl-2">Work</span>
+          </button>
+        </div>
 
         <ProfileSection title="Basic Information">
           <p className="text-slate-700">Sal coae</p>
         </ProfileSection>
-      </div>
+      </PanelContainer>
     </div>
   );
 };
