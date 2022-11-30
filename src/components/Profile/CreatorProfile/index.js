@@ -6,21 +6,76 @@ import {
   BookmarkIcon,
   UserCircleIcon,
   MenuIcon,
-  GlobeIcon,
 } from "@heroicons/react/solid";
+import { FaFacebook, FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa";
 
 import PanelContainer from "components/PanelContainer";
-import ProfileSection from "./ProfileSection";
-import ProfileSectionTitle from "./ProfileSection/ProfileSectionTitle";
+import ProfileSection from "../ProfileSection";
+import ProfileSectionTitle from "../ProfileSection/ProfileSectionTitle";
+import WorkSection from "./WorkSection";
 
-const TABS_ENUM = {
+const TABS = {
   ABOUT: "about",
   WORK: "work",
+};
+
+const PLATFORMS = {
+  FACEBOOK: "facebook",
+  INSTAGRAM: "instagram",
+  TIKTOK: "tiktok",
+  YOUTUBE: "youtube",
 };
 
 const activeTabStyle = "border-b-2 border-orange-500 mb-[-2px]";
 
 const CreatorProfilePage = ({ data }) => {
+  const mockData = {
+    ...data,
+    userInfo: {
+      ...data.userInfo,
+      socialLinks: {
+        instagram: "www.google.com",
+        facebook: "www.google.com",
+        tiktok: "www.google.com",
+        youtube: "www.google.com",
+        __typename__: "",
+      },
+      works: [
+        {
+          company: "Amazon",
+          jobTitle: "Product Manager",
+          startDate: "01/07/2020",
+          endDate: "01/10/2022",
+          jobDescription: "Cea mai misto firma smr",
+        },
+        {
+          company: "Amazon",
+          jobTitle: "Product Manager",
+          startDate: "01/07/2020",
+          endDate: "01/10/2022",
+          jobDescription:
+            "Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma sm Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma sm Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma sm Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smCea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr",
+        },
+        {
+          company: "Amazon",
+          jobTitle: "Product Manager",
+          startDate: "01/07/2020",
+          endDate: "01/10/2022",
+          jobDescription:
+            "Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma sm Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma sm Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma sm Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smCea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr",
+        },
+        {
+          company: "Amazon",
+          jobTitle: "Product Manager",
+          startDate: "01/07/2020",
+          endDate: "01/10/2022",
+          jobDescription:
+            "Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma sm Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma sm Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma sm Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smCea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr",
+        },
+      ],
+    },
+  };
+
   const {
     profilePicture,
     bio,
@@ -30,15 +85,31 @@ const CreatorProfilePage = ({ data }) => {
     skillIds,
     website,
     socialLinks,
-  } = data && data.userInfo;
+    works,
+  } = mockData && mockData.userInfo;
 
-  const [visibleTab, setVisibleTab] = useState(TABS_ENUM.ABOUT);
+  const [visibleTab, setVisibleTab] = useState(TABS.ABOUT);
 
-  const isAboutVisible = visibleTab === TABS_ENUM.ABOUT;
-  const isWorkVisible = visibleTab === TABS_ENUM.WORK;
+  const isAboutVisible = visibleTab === TABS.ABOUT;
+  const isWorkVisible = visibleTab === TABS.WORK;
+
+  const getPlatformIcon = (platform) => {
+    switch (platform) {
+      case PLATFORMS.FACEBOOK:
+        return <FaFacebook className="text-slate-600 w-7 h-7"></FaFacebook>;
+      case PLATFORMS.INSTAGRAM:
+        return <FaInstagram className="text-slate-600 w-7 h-7"></FaInstagram>;
+      case PLATFORMS.TIKTOK:
+        return <FaTiktok className="text-slate-600 w-7 h-7"></FaTiktok>;
+      case PLATFORMS.YOUTUBE:
+        return <FaYoutube className="text-slate-600 w-7 h-7"></FaYoutube>;
+      default:
+        return;
+    }
+  };
 
   return (
-    <div className="grid grid-cols-6 grid-rows-5 h-full w-full px-20 py-10 gap-x-20 gap-y-10">
+    <div className="grid grid-cols-6 grid-rows-5 h-full w-full px-10 xl:px-16 py-10 gap-x-10 2xl:gap-x-14 gap-y-8">
       <PanelContainer extraClassName="flex flex-col justify-center items-center md:row-start-1 md:row-span-2 md:col-start-1 md:col-end-3 col-end-6">
         <h1 className="font-sans font-semibold text-3xl">
           {firstName} {lastName}
@@ -79,10 +150,10 @@ const CreatorProfilePage = ({ data }) => {
                 </span>
               )}
             </div>
-            <span className="flex items-center text-slate-300 opacity-90 cursor-pointer">
+            <button className="flex items-center text-slate-300 opacity-90 cursor-pointer  hover:text-orange-500">
               <BookmarkIcon className="h-7 w-7"></BookmarkIcon>
-              <span className="pl-1">Bookmark</span>
-            </span>
+              <span className="pl-1 font-semibold">Bookmark</span>
+            </button>
           </div>
         </div>
         <ProfileSection title="Contact Information">
@@ -113,10 +184,14 @@ const CreatorProfilePage = ({ data }) => {
               <div className="w-16">Platforms:</div>
               <div className="flex ml-10">
                 {Object.keys(socialLinks).map(
-                  (platform) =>
+                  (platform, idx) =>
                     socialLinks[platform] && (
-                      <a className="ml-2" href={socialLinks[platform]}>
-                        <GlobeIcon className="text-slate-600 w-7 h-7"></GlobeIcon>
+                      <a
+                        target="_blank"
+                        className={`${idx === 0 ? "ml-0" : "ml-5"}`}
+                        href={socialLinks[platform]}
+                      >
+                        {getPlatformIcon(platform)}
                       </a>
                     )
                 )}
@@ -142,7 +217,7 @@ const CreatorProfilePage = ({ data }) => {
       <PanelContainer extraClassName="flex flex-col gap-5 row-start-3 row-end-4 md:row-start-3 md:row-span-5 col-start-3 col-span-6 w-full">
         <div className="flex border-solid border-b-2">
           <button
-            onClick={() => setVisibleTab(TABS_ENUM.ABOUT)}
+            onClick={() => setVisibleTab(TABS.ABOUT)}
             className={`flex items-center p-3 text-slate-500 ${
               isAboutVisible ? activeTabStyle : ""
             }`}
@@ -154,7 +229,7 @@ const CreatorProfilePage = ({ data }) => {
           </button>
 
           <button
-            onClick={() => setVisibleTab(TABS_ENUM.WORK)}
+            onClick={() => setVisibleTab(TABS.WORK)}
             className={`flex items-center p-3 text-slate-500 ${
               isWorkVisible ? activeTabStyle : ""
             }`}
@@ -164,9 +239,13 @@ const CreatorProfilePage = ({ data }) => {
           </button>
         </div>
 
-        <ProfileSection title="Basic Information">
-          <p className="text-slate-700">Sal coae</p>
-        </ProfileSection>
+        {isAboutVisible && (
+          <ProfileSection title="Basic Information">
+            <p className="text-slate-700">Sal coae</p>
+          </ProfileSection>
+        )}
+
+        {isWorkVisible && <WorkSection works={works}></WorkSection>}
       </PanelContainer>
     </div>
   );
