@@ -13,18 +13,7 @@ import PanelContainer from "components/PanelContainer";
 import ProfileSection from "../ProfileSection";
 import ProfileSectionTitle from "../ProfileSection/ProfileSectionTitle";
 import WorkSection from "./WorkSection";
-
-const TABS = {
-  ABOUT: "about",
-  WORK: "work",
-};
-
-const PLATFORMS = {
-  FACEBOOK: "facebook",
-  INSTAGRAM: "instagram",
-  TIKTOK: "tiktok",
-  YOUTUBE: "youtube",
-};
+import { PROFILE_SOCIAL_TYPES, PROFILE_TABS } from "utils/constants";
 
 const activeTabStyle = "border-b-2 border-orange-500 mb-[-2px]";
 
@@ -88,20 +77,20 @@ const CreatorProfilePage = ({ data }) => {
     works,
   } = mockData && mockData.userInfo;
 
-  const [visibleTab, setVisibleTab] = useState(TABS.ABOUT);
+  const [visibleTab, setVisibleTab] = useState(PROFILE_TABS.ABOUT);
 
-  const isAboutVisible = visibleTab === TABS.ABOUT;
-  const isWorkVisible = visibleTab === TABS.WORK;
+  const isAboutVisible = visibleTab === PROFILE_TABS.ABOUT;
+  const isWorkVisible = visibleTab === PROFILE_TABS.WORK;
 
   const getPlatformIcon = (platform) => {
     switch (platform) {
-      case PLATFORMS.FACEBOOK:
+      case PROFILE_SOCIAL_TYPES.FACEBOOK:
         return <FaFacebook className="text-slate-600 w-7 h-7"></FaFacebook>;
-      case PLATFORMS.INSTAGRAM:
+      case PROFILE_SOCIAL_TYPES.INSTAGRAM:
         return <FaInstagram className="text-slate-600 w-7 h-7"></FaInstagram>;
-      case PLATFORMS.TIKTOK:
+      case PROFILE_SOCIAL_TYPES.TIKTOK:
         return <FaTiktok className="text-slate-600 w-7 h-7"></FaTiktok>;
-      case PLATFORMS.YOUTUBE:
+      case PROFILE_SOCIAL_TYPES.YOUTUBE:
         return <FaYoutube className="text-slate-600 w-7 h-7"></FaYoutube>;
       default:
         return;
@@ -128,14 +117,14 @@ const CreatorProfilePage = ({ data }) => {
             <div className="flex flex-col">
               <ProfileSectionTitle>Rankings</ProfileSectionTitle>
               <div className="flex items-center">
-                <span className="text-3xl text-slate-500">8.6</span>
+                <span className="text-xl text-slate-500">8.6</span>
                 <div className="flex pl-2">
                   {[1, 2, 3, 4, 5].map((val) => (
                     <StarIcon
                       className={
                         val !== 5
-                          ? "text-orange-500 h-8 w-8"
-                          : "text-slate-500 h-8 w-8 opacity-30"
+                          ? "text-orange-500 h-6 w-6"
+                          : "text-slate-500 h-6 w-6 opacity-30"
                       }
                     ></StarIcon>
                   ))}
@@ -217,7 +206,7 @@ const CreatorProfilePage = ({ data }) => {
       <PanelContainer extraClassName="flex flex-col gap-5 row-start-3 row-end-4 md:row-start-3 md:row-span-5 col-start-3 col-span-6 w-full">
         <div className="flex border-solid border-b-2">
           <button
-            onClick={() => setVisibleTab(TABS.ABOUT)}
+            onClick={() => setVisibleTab(PROFILE_TABS.ABOUT)}
             className={`flex items-center p-3 text-slate-500 ${
               isAboutVisible ? activeTabStyle : ""
             }`}
@@ -229,7 +218,7 @@ const CreatorProfilePage = ({ data }) => {
           </button>
 
           <button
-            onClick={() => setVisibleTab(TABS.WORK)}
+            onClick={() => setVisibleTab(PROFILE_TABS.WORK)}
             className={`flex items-center p-3 text-slate-500 ${
               isWorkVisible ? activeTabStyle : ""
             }`}
