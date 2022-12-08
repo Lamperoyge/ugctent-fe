@@ -131,4 +131,5 @@ export const NOTIFICATION_TYPES = {
   JOB_SUBMISSION_ACCEPTED: 'jobSubmissionAccepted',
   JOB_SUBMISSION_REJECTED: 'jobSubmissionRejected',
   JOB_SUBMISSION_COMMENT_RECEIVED: 'jobSubmissionCommentReceived',
+  JOB_STATUS_COMPLETED: 'jobStatusCompleted'
 };

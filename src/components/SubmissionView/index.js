@@ -49,12 +49,35 @@ const SubmissionView = ({ submissionId, isOpen, onClose }) => {
         lockScroll={true}
         overlayBlur={3}
         onClose={onClose}
-        title={'View submission'}
       >
         <div className='relative h-full'>
-          <section className='py-10 flex flex-col gap-4 h-full overflow-auto relative'>
+          <section className='flex flex-col gap-4 h-full overflow-auto relative'>
             <div className='flex flex-col gap-4 w-full'>
+                <dt className='text-md font-medium text-gray-500'>
+                  Submitted by
+                </dt>
+                <div className="text-md font-small text-gray-800 flex gap-2 space-between items-center">
+                  {submission.creator.profilePicture ? (
+                    <img
+                      className='h-12 w-12 rounded-full group-hover:opacity-75'
+                      src={submission.creator.profilePicture}
+                      alt=''
+                    />
+                  ) : (
+                    <span className='inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100'>
+                      <svg
+                        className='h-full w-full text-gray-300'
+                        fill='currentColor'
+                        viewBox='0 0 24 24'
+                      >
+                        <path d='M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z' />
+                      </svg>
+                    </span>
+                  )}
+                  {`${submission?.creator?.firstName} ${submission?.creator?.lastName}`}
+                </div>
               <div>
+
                 <dt className='text-md font-medium text-gray-500'>
                   Submitted on
                 </dt>

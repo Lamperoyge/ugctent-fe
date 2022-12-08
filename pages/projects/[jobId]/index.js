@@ -3,13 +3,11 @@ import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { GET_JOB_BY_ID } from 'graphql/queries';
-import { Fragment } from 'react';
 import {
   BellIcon,
   CalendarIcon,
   ChatAltIcon,
   PencilIcon,
-  UserCircleIcon as UserCircleIconSolid,
 } from '@heroicons/react/solid';
 import { useAuth } from 'hooks';
 import Link from 'next/link';
@@ -21,7 +19,7 @@ import { JOB_STATUS } from 'utils/constants';
 import CreateSubmission from 'components/Submissions';
 import SubmissionsList from 'components/SubmissionsList';
 import ProfilePicture from 'components/ProfilePicture';
-import { CurrencyDollarIcon } from '@heroicons/react/outline';
+import { CheckIcon, CurrencyDollarIcon, TrashIcon } from '@heroicons/react/outline';
 
 export default function ProjectPage() {
   const [isCreateApplicationModalOpen, setIsCreateApplicationModalOpen] =
@@ -32,6 +30,8 @@ export default function ProjectPage() {
     variables: {
       id: router.query.jobId,
     },
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     skip: !router?.query?.jobId,
   });
 
@@ -41,6 +41,7 @@ export default function ProjectPage() {
 
   const canEdit = job?.creator?.userId === user?._id && job?.status === JOB_STATUS.CREATED;
 
+  console.log(job, 'job')
   const canApply =
     job?.creator?.userId !== user?._id &&
     isStripeVerified &&
@@ -61,7 +62,11 @@ export default function ProjectPage() {
     }
   };
 
-  console.log(job);
+  const canCompleteJob = job?.creator?.userId === user?._id && job?.status === JOB_STATUS.IN_PROGRESS;
+
+  const canArchive = job?.creator?.userId === user?._id && job?.status === JOB_STATUS.CREATED;
+
+
   return (
     <>
       <CreateJobApplication
@@ -104,6 +109,33 @@ export default function ProjectPage() {
                             <span>Edit</span>
                           </button>
                         )}
+                        {canArchive && 
+                          <button
+                            type='button'
+                            className='inline-flex justify-center px-4 py-2 border border-red-400 shadow-sm text-sm font-medium rounded-md text-red-400 bg-white hover:bg-red-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-300'
+                          >
+                            <TrashIcon
+                              className='-ml-1 mr-2 h-5 w-5 text-inherit'
+                              aria-hidden='true'
+                            />
+                            <span>Archive</span>
+                          </button>
+
+                        }
+                        {canCompleteJob && 
+                          <button
+                            type='button'
+                            className='inline-flex justify-center px-4 py-2 border border-green-400 shadow-sm text-sm font-medium rounded-md text-green-400 bg-white hover:bg-green-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-400'
+                          >
+                            <CheckIcon
+                              className='-ml-1 mr-2 h-5 w-5 text-inherit'
+                              aria-hidden='true'
+                            />
+                            <span>Complete</span>
+                          </button>
+
+
+                        }
                         {canApply && (
                           <button
                             type='button'
