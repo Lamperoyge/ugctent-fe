@@ -46,23 +46,21 @@ export const renderSubmissionsComponent = (item, formik, idx) => {
     }
 };
 
-export const renderItemComponent = (item, formik, idx) => {
-    console.log("===5", item, formik, idx);
-    return (
-        <Input
-            {...item}
-            key={idx}
-            placeholder={item.placeholder}
-            value={formik?.values[item.name]}
-            name={item.name}
-            onBlur={formik?.handleBlur}
-            label={item.label}
-            error={formik?.touched[item.name] && formik?.errors[item.name]}
-            variant="xs"
-            onChange={formik?.handleChange}
-        />
-    );
-};
+export const renderItemComponent = (item, formik, idx) => (
+    <Input
+        {...item}
+        key={idx}
+        placeholder={item.placeholder}
+        value={formik?.values[item.name]}
+        name={item.name}
+        onBlur={formik?.handleBlur}
+        label={item.label}
+        error={formik?.touched[item.name] && formik?.errors[item.name]}
+        variant="xs"
+        onChange={formik?.handleChange}
+    />
+);
+
 
 const renderTextAreaComponent = (item, formik, idx) => (
     <TextArea
@@ -78,12 +76,11 @@ const renderTextAreaComponent = (item, formik, idx) => (
     />
 );
 
-const renderLinkComponent = (formik, idx) => {
-    return (
-        <Links
-            key={idx}
-            onChange={(links) => formik.setFieldValue("links", links)}
-            values={formik.values.links}
-        />
-    );
-};
+const renderLinkComponent = (formik, idx) => (
+    <Links
+        key={idx}
+        onChange={(links) => formik.setFieldValue("links", links)}
+        values={formik.values.links}
+    />
+);
+
