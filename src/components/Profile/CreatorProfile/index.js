@@ -3,9 +3,10 @@ import { useState } from "react";
 import {
   StarIcon,
   MapIcon,
-  BookmarkIcon,
   UserCircleIcon,
   MenuIcon,
+  XCircleIcon,
+  PencilIcon,
 } from "@heroicons/react/solid";
 import { FaFacebook, FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa";
 
@@ -64,6 +65,8 @@ const CreatorProfilePage = ({ data }) => {
       ],
     },
   };
+  console.log(mockData);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const {
     profilePicture,
@@ -98,8 +101,8 @@ const CreatorProfilePage = ({ data }) => {
   };
 
   return (
-    <div className="grid grid-cols-6 grid-rows-5 h-full w-full px-10 xl:px-16 py-10 gap-x-10 2xl:gap-x-14 gap-y-8">
-      <PanelContainer extraClassName="flex flex-col justify-center items-center md:row-start-1 md:row-span-2 md:col-start-1 md:col-end-3 col-end-6">
+    <div className="grid grid-cols-6 grid-rows-profileLayoutMobile lg:grid-rows-profileLayout h-full w-full px-10 xl:px-16 py-10 gap-x-10 lg:gap-x-1 2xl:gap-x-14 gap-y-8">
+      <PanelContainer extraClassName="flex flex-col justify-center items-center row-start-1 row-span-2 col-start-1 col-span-6 lg:row-start-1 lg:row-span-2 lg:col-start-1 lg:col-span-2">
         <h1 className="font-sans font-semibold text-3xl">
           {firstName} {lastName}
         </h1>
@@ -111,7 +114,7 @@ const CreatorProfilePage = ({ data }) => {
         />
       </PanelContainer>
 
-      <PanelContainer extraClassName="flex flex-col justify-between w-full row-start-2 md:row-start-1 row-end-2 md:row-span-2 md:col-start-3 md:col-span-6 row-start-2 row-end-2 col-start-1 col-span-6 w-full">
+      <PanelContainer extraClassName="flex flex-col justify-between w-full row-start-5 row-span-2 col-start-1 col-span-6 lg:row-start-1 lg:row-span-2 lg:col-start-3 lg:col-span-4 w-full">
         <div className="flex-col w-full">
           <div className="flex justify-between items-center w-full">
             <div className="flex flex-col">
@@ -139,14 +142,30 @@ const CreatorProfilePage = ({ data }) => {
                 </span>
               )}
             </div>
-            <button className="flex items-center text-slate-300 opacity-90 cursor-pointer  hover:text-orange-500">
-              <BookmarkIcon className="h-7 w-7"></BookmarkIcon>
-              <span className="pl-1 font-semibold">Bookmark</span>
-            </button>
+
+            {!isEditMode && (
+              <button
+                onClick={() => setIsEditMode(true)}
+                type="button"
+                className="inline-flex items-center justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+              >
+                <PencilIcon className="h-5 w-5 mr-2"></PencilIcon> Edit
+              </button>
+            )}
+
+            {isEditMode && (
+              <button
+                onClick={() => setIsEditMode(false)}
+                type="button"
+                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+              >
+                <XCircleIcon className="h-5 w-5 mr-2"></XCircleIcon> Cancel
+              </button>
+            )}
           </div>
         </div>
         <ProfileSection title="Contact Information">
-          <div class="flex flex-col gap-5">
+          <div className="flex flex-col gap-5">
             <div className="flex text-slate-900">
               <div className="w-16">Website:</div>
               <a
@@ -190,7 +209,7 @@ const CreatorProfilePage = ({ data }) => {
         </ProfileSection>
       </PanelContainer>
 
-      <PanelContainer extraClassName="flex flex-col gap-20 row-start-3 row-end-4 md:row-start-3 md:row-span-5 col-start-1 col-end-3 sm:row-start-3 h-full">
+      <PanelContainer extraClassName="flex flex-col gap-20 row-start-3 row-span-2 col-start-1 col-span-6 lg:col-span-2 lg:row-start-3 lg:row-span-5 h-full">
         <ProfileSection hasTitleLine={true} title="Bio">
           <p className="text-slate-700">{bio}</p>
         </ProfileSection>
@@ -203,7 +222,7 @@ const CreatorProfilePage = ({ data }) => {
         </ProfileSection>
       </PanelContainer>
 
-      <PanelContainer extraClassName="flex flex-col gap-5 row-start-3 row-end-4 md:row-start-3 md:row-span-5 col-start-3 col-span-6 w-full">
+      <PanelContainer extraClassName="flex flex-col gap-5 row-start-8 row-span-3 col-start-1 col-span-6 lg:col-start-3 lg:col-span-4 lg:row-start-3 lg:row-span-5 w-full">
         <div className="flex border-solid border-b-2">
           <button
             onClick={() => setVisibleTab(PROFILE_TABS.ABOUT)}
