@@ -92,6 +92,7 @@ export const Attachments = ({
   errors,
   attachments,
   removeAttachment,
+  limit = 5000000
 }) => (
   <div>
     <label className='block text-sm font-medium text-gray-700'>
@@ -121,6 +122,7 @@ export const Attachments = ({
             <span>Upload up to 3 files</span>
             <input
               id='attachments'
+              accept="audio/*,video/*,image/*" 
               multiple
               name='attachments'
               onChange={handleAttachments}
@@ -129,7 +131,7 @@ export const Attachments = ({
             />
           </label>
         </div>
-        <p className='text-xs text-gray-500'>PNG, JPG, GIF up to 5MB</p>
+        <p className='text-xs text-gray-500'>PNG, JPG, GIF, MP4 up to {limit / 1000000}MB</p>
       </div>
     </div>
     {errors.attachments ? (

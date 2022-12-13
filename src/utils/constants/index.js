@@ -133,3 +133,5 @@ export const NOTIFICATION_TYPES = {
   JOB_SUBMISSION_COMMENT_RECEIVED: 'jobSubmissionCommentReceived',
   JOB_STATUS_COMPLETED: 'jobStatusCompleted'
 };
+
+export const SUBMISSION_UPLOAD_LIMIT = 25000000

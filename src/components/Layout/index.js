@@ -15,10 +15,7 @@
   ```
 */
 import { Dialog, Menu, Transition } from '@headlessui/react';
-import {
-  HomeIcon,
-  MenuAlt2Icon,
-} from '@heroicons/react/outline';
+import { HomeIcon, MenuAlt2Icon } from '@heroicons/react/outline';
 import { SearchIcon } from '@heroicons/react/solid';
 import { Fragment, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -40,6 +37,7 @@ import { useLazyQuery } from '@apollo/client';
 import { GET_STRIPE_DASHBOARD_LINK } from 'graphql/queries';
 import { MissingStripeAnnouncement } from './Helpers';
 import Notifications from 'components/Notifications';
+import ProfilePicture from 'components/ProfilePicture';
 
 export default function Example({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -72,8 +70,7 @@ export default function Example({ children }) {
     { name: 'Your Profile', href: `/profile/${user?._id}` },
     { name: 'Sign out', onClick: logout },
   ];
-  
-  
+
   const CREATOR_NAVIGATION = [
     {
       name: 'Dashboard',
@@ -183,36 +180,38 @@ export default function Example({ children }) {
                 <div className='mt-5 flex-1 h-0 overflow-y-auto'>
                   <div className='px-2'>
                     <nav className='space-y-2'>
-                      {navigation?.map((item) => (
-                        item?.href ? <Link
-                          key={item.name}
-                          href={item.href}
-                          className={classNames(
-                            item.current
-                              ? 'bg-gray-100 text-gray-900'
-                              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                            'group rounded-md py-2 px-2 flex items-center text-base font-medium'
-                          )}
-                        >
-                          <item.icon
+                      {navigation?.map((item) =>
+                        item?.href ? (
+                          <Link
+                            key={item.name}
+                            href={item.href}
                             className={classNames(
                               item.current
-                                ? 'text-gray-500'
-                                : 'text-gray-400 group-hover:text-gray-500',
-                              'mr-4 flex-shrink-0 h-6 w-6'
+                                ? 'bg-gray-100 text-gray-900'
+                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                              'group rounded-md py-2 px-2 flex items-center text-base font-medium'
                             )}
-                            aria-hidden='true'
-                          />
-                          {item.name}
-                        </Link>: null
-                      ))}
+                          >
+                            <item.icon
+                              className={classNames(
+                                item.current
+                                  ? 'text-gray-500'
+                                  : 'text-gray-400 group-hover:text-gray-500',
+                                'mr-4 flex-shrink-0 h-6 w-6'
+                              )}
+                              aria-hidden='true'
+                            />
+                            {item.name}
+                          </Link>
+                        ) : null
+                      )}
                     </nav>
                   </div>
                   <button
                     type='button'
                     onClick={() => {
-                      setNewProjectModalOpen(true)
-                      setSidebarOpen(false)
+                      setNewProjectModalOpen(true);
+                      setSidebarOpen(false);
                     }}
                     className='inline-flex mt-12 items-center w-full justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
                   >
@@ -241,29 +240,31 @@ export default function Example({ children }) {
             <div className='flex-grow mt-5 flex flex-col'>
               <div className='flex-1 px-2 pb-4'>
                 <nav className='space-y-2'>
-                  {navigation?.map((item) => (
-                    item?.href ? <Link
-                      key={item.name}
-                      href={item.href}
-                      className={classNames(
-                        item.current
-                          ? 'bg-gray-100 text-gray-900'
-                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                        'group rounded-md py-2 px-2 flex items-center text-sm font-medium'
-                      )}
-                    >
-                      <item.icon
+                  {navigation?.map((item) =>
+                    item?.href ? (
+                      <Link
+                        key={item.name}
+                        href={item.href}
                         className={classNames(
                           item.current
-                            ? 'text-gray-500'
-                            : 'text-gray-400 group-hover:text-gray-500',
-                          'mr-3 flex-shrink-0 h-6 w-6'
+                            ? 'bg-gray-100 text-gray-900'
+                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                          'group rounded-md py-2 px-2 flex items-center text-sm font-medium'
                         )}
-                        aria-hidden='true'
-                      />
-                      {item.name}
-                    </Link> : null
-                  ))}
+                      >
+                        <item.icon
+                          className={classNames(
+                            item.current
+                              ? 'text-gray-500'
+                              : 'text-gray-400 group-hover:text-gray-500',
+                            'mr-3 flex-shrink-0 h-6 w-6'
+                          )}
+                          aria-hidden='true'
+                        />
+                        {item.name}
+                      </Link>
+                    ) : null
+                  )}
                 </nav>
                 <button
                   type='button'
@@ -310,16 +311,16 @@ export default function Example({ children }) {
                   </form>
                 </div>
                 <div className='ml-4 flex items-center md:ml-6'>
-                          <Notifications />
+                  <Notifications />
                   {/* Profile dropdown */}
                   <Menu as='div' className='ml-3 relative'>
                     <div>
                       <Menu.Button className='max-w-xs flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'>
                         <span className='sr-only'>Open user menu</span>
-                        <img
-                          className='h-8 w-8 rounded-full'
+                        <ProfilePicture
                           src={profilePicture}
-                          alt='Profile picture'
+                          alt='profile picture'
+                          size='h-8 w-8'
                         />
                       </Menu.Button>
                     </div>
@@ -335,19 +336,23 @@ export default function Example({ children }) {
                       <Menu.Items className='origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none'>
                         {userNavigation.map((item) => (
                           <Menu.Item key={item.name}>
-                            {({ active }) => (
-                              item.href ? <Link
-                                href={item.href}
-                                className={classNames(
-                                  active ? 'bg-gray-100' : '',
-                                  'block py-2 px-4 text-sm text-gray-700'
-                                )}
-                              >
-                                {item.name}
-                              </Link> : <button className="block text-left hover:bg-gray-100 py-2 px-4 text-sm text-gray-700 w-full">
-                                {item.name}
-                              </button>
-                            )}
+                            {({ active }) =>
+                              item.href ? (
+                                <Link
+                                  href={item.href}
+                                  className={classNames(
+                                    active ? 'bg-gray-100' : '',
+                                    'block py-2 px-4 text-sm text-gray-700'
+                                  )}
+                                >
+                                  {item.name}
+                                </Link>
+                              ) : (
+                                <button className='block text-left hover:bg-gray-100 py-2 px-4 text-sm text-gray-700 w-full'>
+                                  {item.name}
+                                </button>
+                              )
+                            }
                           </Menu.Item>
                         ))}
                       </Menu.Items>

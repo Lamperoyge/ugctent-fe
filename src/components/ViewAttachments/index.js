@@ -11,14 +11,13 @@ export default function ViewAttachments({
 }) {
   const [img, setImg] = useState(null);
 
-  console.log(attachments)
   return (
     <>
       <Modal opened={!!img} onClose={() => setImg(null)}>
         <img src={img} />
       </Modal>
     
-      {attachments.map((attach, idx) => (
+      {attachments?.map((attach, idx) => (
         <div key={idx}>
           {fromMemory ? (
             <ImagePreview

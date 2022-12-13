@@ -20,6 +20,7 @@ export const GET_SUBMISSION_BY_ID = gql`
     getSubmissionById(submissionId: $submissionId) {
       _id
       jobId
+      attachments
       title
       description
       links {

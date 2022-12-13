@@ -1,11 +1,7 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import {
-  InvalidApplication,
   LoadingState,
 } from 'components/ApplicationView/Helpers';
-import Link from 'next/link';
-import ProfilePicture from 'components/ProfilePicture';
 import Comments from 'components/Comments';
 import {
   COMMENT_ENTITY_TYPES,
@@ -13,15 +9,14 @@ import {
   SUBMISSION_STATUS_COLORS,
   SUBMISSION_STATUS_LABELS,
 } from 'utils/constants';
-import { useAuth } from 'hooks';
 import { useSubmission } from 'hooks/submissions';
-import { Modal, Button, Group } from '@mantine/core';
+import { Modal, Button } from '@mantine/core';
 import { LinkIcon } from '@heroicons/react/outline';
+import ViewAttachments from 'components/ViewAttachments';
 
 const SubmissionView = ({ submissionId, isOpen, onClose }) => {
   const {
     submission,
-    submissionError,
     submissionLoading,
     getSubmission,
     approveJobSubmission,
@@ -35,10 +30,6 @@ const SubmissionView = ({ submissionId, isOpen, onClose }) => {
   if (!submission) return null;
 
   const statusColor = SUBMISSION_STATUS_COLORS[submission?.status];
-
-  const borderColor = `border-${statusColor}-400`;
-
-  const textColor = `text-${statusColor}-400`;
 
   return (
     <>
@@ -137,6 +128,12 @@ const SubmissionView = ({ submissionId, isOpen, onClose }) => {
                     </a>
                   </dd>
                 ))}
+              </div>
+              <div>
+              <dt className="text-md font-medium text-gray-500">
+                  Attachments
+              </dt>
+              <ViewAttachments attachments={submission?.attachments}/>
               </div>
             </div>
             <Comments

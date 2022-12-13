@@ -168,6 +168,7 @@ const CreatorOnboardingForm = () => {
     }
   };
 
+  console.log(formik.values, 'VALUES')
   const submitBtnAction =
     step.id !== STEPS[STEPS.length - 1].id
       ? () => moveStepper('next')

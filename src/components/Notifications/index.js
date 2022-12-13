@@ -12,10 +12,12 @@ import InfiniteScroll from 'components/InfiniteScroll';
 
 const Notifications = () => {
   const [hasMore, setHasMore] = useState(true);
-  const [isOpen, setIsOpen] = useState(false);
-  const [getNotifications, { data, fetchMore }] = useLazyQuery(
+  const [getNotifications, { data, fetchMore, loading }] = useLazyQuery(
     GET_NOTIFICATIONS,
     {
+      fetchPolicy: 'cache-and-network',
+      nextFetchPolicy: 'cache-first',
+      notifyOnNetworkStatusChange: true,
       variables: {
         limit: LIMIT,
         offset: 0,
@@ -35,6 +37,9 @@ const Notifications = () => {
     getNotifications();
   }, []);
 
+  const notificationsData = data?.getNotifications
+
+  
   return (
     <Menu as='div' className='relative inline-block text-left'>
       <div>
@@ -57,7 +62,12 @@ const Notifications = () => {
             onLoadMore={handleFetchMore}
             hasMore={hasMore}
           >
-            <ul role='list' className='divide-y divide-gray-200'>
+            <ul role='list' className='divide-y divide-gray-200' style={{minHeight: '100px'}}>
+            {!notificationsData?.length && !loading ? <span className="py-8 h-full w-full flex flex-col gap-4 justify-center items-center text-md text-gray-600">
+
+            <span>{`:(`}</span>
+            No notifications yet
+            </span> : null}
               {data?.getNotifications.map((notification, idx) => {
                 const content = notificationBuilder(notification);
                 if (!content) return null;

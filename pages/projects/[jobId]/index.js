@@ -19,7 +19,11 @@ import { JOB_STATUS } from 'utils/constants';
 import CreateSubmission from 'components/Submissions';
 import SubmissionsList from 'components/SubmissionsList';
 import ProfilePicture from 'components/ProfilePicture';
-import { CheckIcon, CurrencyDollarIcon, TrashIcon } from '@heroicons/react/outline';
+import {
+  CheckIcon,
+  CurrencyDollarIcon,
+  TrashIcon,
+} from '@heroicons/react/outline';
 
 export default function ProjectPage() {
   const [isCreateApplicationModalOpen, setIsCreateApplicationModalOpen] =
@@ -39,9 +43,10 @@ export default function ProjectPage() {
 
   const job = data?.getJobById;
 
-  const canEdit = job?.creator?.userId === user?._id && job?.status === JOB_STATUS.CREATED;
+  const canEdit =
+    job?.creator?.userId === user?._id && job?.status === JOB_STATUS.CREATED;
 
-  console.log(job, 'job')
+  console.log(job, 'job');
   const canApply =
     job?.creator?.userId !== user?._id &&
     isStripeVerified &&
@@ -62,11 +67,15 @@ export default function ProjectPage() {
     }
   };
 
-  const canCompleteJob = job?.creator?.userId === user?._id && job?.status === JOB_STATUS.IN_PROGRESS;
+  const canCompleteJob =
+    job?.creator?.userId === user?._id &&
+    job?.status === JOB_STATUS.IN_PROGRESS;
 
-  const canArchive = job?.creator?.userId === user?._id && job?.status === JOB_STATUS.CREATED;
+  const canArchive =
+    job?.creator?.userId === user?._id && job?.status === JOB_STATUS.CREATED;
 
-
+  // TODO Adrian : refactor, too much code
+  
   return (
     <>
       <CreateJobApplication
@@ -109,7 +118,7 @@ export default function ProjectPage() {
                             <span>Edit</span>
                           </button>
                         )}
-                        {canArchive && 
+                        {canArchive && (
                           <button
                             type='button'
                             className='inline-flex justify-center px-4 py-2 border border-red-400 shadow-sm text-sm font-medium rounded-md text-red-400 bg-white hover:bg-red-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-300'
@@ -120,9 +129,8 @@ export default function ProjectPage() {
                             />
                             <span>Archive</span>
                           </button>
-
-                        }
-                        {canCompleteJob && 
+                        )}
+                        {canCompleteJob && (
                           <button
                             type='button'
                             className='inline-flex justify-center px-4 py-2 border border-green-400 shadow-sm text-sm font-medium rounded-md text-green-400 bg-white hover:bg-green-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-400'
@@ -133,9 +141,7 @@ export default function ProjectPage() {
                             />
                             <span>Complete</span>
                           </button>
-
-
-                        }
+                        )}
                         {canApply && (
                           <button
                             type='button'
@@ -268,27 +274,36 @@ export default function ProjectPage() {
                         </div>
                       </div>
                     </aside>
-                    <div className='py-3 xl:pt-6 xl:pb-0'>
+                    <div className='py-3 xl:pt-6 xl:pb-0 flex flex-col gap-4'>
                       <h2 className='sr-only'>Description</h2>
                       <div className='prose max-w-none'>
+                        <span className='text-sm text-gray-500'>
+                          Description{' '}
+                        </span>
                         <p>{job.description}</p>
                       </div>
-                      <ViewAttachments attachments={job.attachments} />
+                      <div className='border-t py-4 flex flex-col gap-4'>
+                        <span className='text-sm text-gray-500'>
+                          Attachments{' '}
+                        </span>
+
+                        <ViewAttachments attachments={job.attachments} />
+                      </div>
                     </div>
                   </div>
                 </div>
                 {user?._id === job.creator?.userId && !job.assigneeId && (
-                    <ApplicationsList jobId={job._id} />
-                  )}
-                {canViewAssignedTask && (
-                  <SubmissionsList jobId={job._id} assignee={job.assigneeId}/>
+                  <ApplicationsList jobId={job._id} />
                 )}
-                <div className='w-full flex justify-center items-center h-full'>
+                <div className='w-full flex justify-center items-start h-fit-content'>
                   {user?._id === job?.assigneeId &&
                     user?._id !== job?.creator?._id && (
                       <CreateSubmission jobId={job._id} />
                     )}
                 </div>
+                {canViewAssignedTask && (
+                  <SubmissionsList jobId={job._id} assignee={job.assigneeId} />
+                )}
               </div>
               <aside className='hidden xl:block xl:pl-8'>
                 <h2 className='sr-only'>Details</h2>
@@ -333,15 +348,23 @@ export default function ProjectPage() {
                       </span>
                     </div>
                   )}
-                  <div className="flex items-center space-x-2">
-                            <CurrencyDollarIcon className="h-5 w-5 text-gray-400" aria-hidden="true"/>
-                            <span className="text-gray-900 text-sm font-medium">
-                              {[JOB_STATUS.IN_PROGRESS, JOB_STATUS.IN_REVIEW, JOB_STATUS.COMPLETED].includes(job?.status) ? "Paid" : "Not paid"} 
-                            </span> 
-                            <span className='text-gray-900 text-sm font-medium'>
+                  <div className='flex items-center space-x-2'>
+                    <CurrencyDollarIcon
+                      className='h-5 w-5 text-gray-400'
+                      aria-hidden='true'
+                    />
+                    <span className='text-gray-900 text-sm font-medium'>
+                      {[
+                        JOB_STATUS.IN_PROGRESS,
+                        JOB_STATUS.IN_REVIEW,
+                        JOB_STATUS.COMPLETED,
+                      ].includes(job?.status)
+                        ? 'Paid'
+                        : 'Not paid'}
+                    </span>
+                    <span className='text-gray-900 text-sm font-medium'>
                       {job?.price} RON
                     </span>
-
                   </div>
                 </div>
                 <div className='mt-6 border-t border-gray-200 py-6 space-y-8'>
@@ -352,10 +375,14 @@ export default function ProjectPage() {
                     <ul className='mt-3 space-y-3'>
                       <li className='flex justify-start'>
                         <div className='flex items-center space-x-3'>
-                            {job?.assignee ?                           <div className='flex-shrink-0'>
-                            <ProfilePicture src={job?.assignee?.profilePicture} size="h-10 w-10"/>
-                          </div>
- : null}
+                          {job?.assignee ? (
+                            <div className='flex-shrink-0'>
+                              <ProfilePicture
+                                src={job?.assignee?.profilePicture}
+                                size='h-10 w-10'
+                              />
+                            </div>
+                          ) : null}
                           <div className='text-sm font-medium text-gray-900'>
                             {job?.assignee
                               ? `${job?.assignee?.firstName} ${job?.assignee?.lastName}`
