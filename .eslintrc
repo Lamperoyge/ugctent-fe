@@ -2,7 +2,7 @@
   "parserOptions": {
     "ecmaVersion": 2022
   },
-  "extends": ["next", "next/core-web-vitals"],
+  "extends": ["next", "next/core-web-vitals", "prettier"],
   "rules": {
     "react/display-name": "warn",
     "react/require-default-props": "warn",
