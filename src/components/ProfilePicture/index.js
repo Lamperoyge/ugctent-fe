@@ -1,7 +1,13 @@
-export default function ProfilePicture({ src, size ='h-16 w-16' }) {
+export default function ProfilePicture({
+  src,
+  size = 'h-16 w-16',
+  className = 'rounded-full',
+}) {
   if (!src)
     return (
-      <span className={`inline-block ${size} rounded-full overflow-hidden bg-gray-100`}>
+      <span
+        className={`inline-block ${size} rounded-full overflow-hidden bg-gray-100 ${className}}`}
+      >
         <svg
           className='h-full w-full text-gray-300'
           fill='currentColor'
@@ -11,5 +17,5 @@ export default function ProfilePicture({ src, size ='h-16 w-16' }) {
         </svg>
       </span>
     );
-  return <img className={`${size} rounded-full`} src={src} alt='' />;
+  return <img className={`${size} ${className}`} src={src} alt='' />;
 }

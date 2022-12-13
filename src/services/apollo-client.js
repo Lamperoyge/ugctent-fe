@@ -32,7 +32,8 @@ const cache = new InMemoryCache({
           keyArgs: false,
           merge: offsetLimitPaginationInput,
         },
-        getCommentsByEntityId: offsetLimitPagination()
+        getCommentsByEntityId: offsetLimitPagination(),
+        getCreators: offsetLimitPagination(),
       }
     }
   }

@@ -64,6 +64,12 @@ export default function Example({ children }) {
         router.asPath.includes('dashboard') ||
         router.asPath.includes('projects'),
     },
+    {
+      name: 'Talents',
+      href: '/explore/talents',
+      icon: PuzzleIcon,
+      current: router.pathname === '/explore/talents',
+    }
   ];
 
   const userNavigation = [
