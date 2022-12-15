@@ -4,7 +4,7 @@ export const GET_EXPLORE_CREATORS = gql`
   query getCreators(
     $skillIds: [String]
     $interestIds: [String]
-    $rangeRating: [Int]
+    $minRating: Int
     $limit: Int
     $offset: Int
     $search: String
@@ -12,7 +12,7 @@ export const GET_EXPLORE_CREATORS = gql`
     getCreators(
       skillIds: $skillIds
       interestIds: $interestIds
-      rangeRating: $rangeRating
+      minRating: $minRating
       limit: $limit
       offset: $offset
       search: $search

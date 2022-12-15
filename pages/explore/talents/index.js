@@ -7,7 +7,6 @@ import InfiniteScroll from 'components/InfiniteScroll';
 import ExploreFilters from 'components/ExploreFilters';
 
 export default function TalentsPage() {
-  // TODO: fix the hasMore initial state
   const [hasMore, setHasMore] = useState(true);
   const { data, loading, error, refetch, fetchMore } = useQuery(
     GET_EXPLORE_CREATORS,
@@ -22,15 +21,6 @@ export default function TalentsPage() {
     }
   );
 
-  const debounceRefetch = () => {
-    let timer;
-    return (e) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        refetch({ search: e.target.value, limit: LIMIT, offset: 0 });
-      }, 1000);
-    };
-  };
 
   const handleFetchMore = () =>
     fetchMore({
@@ -41,16 +31,9 @@ export default function TalentsPage() {
       setHasMore(data?.getCreators?.length >= LIMIT);
     });
 
-  const FILTERS_CONFIG = [
-    {
-      component: 'search',
-      onChange: debounceRefetch()
-    },
-  ];
-
   return (
     <div className='flex flex-col gap-8'>
-      <ExploreFilters config={FILTERS_CONFIG} />
+      <ExploreFilters refetch={refetch} />
       <ul
         role='list'
         className='grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
@@ -62,11 +45,6 @@ export default function TalentsPage() {
               className='col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200'
             >
               <div className='flex-1 flex flex-col p-8'>
-                {/* <img
-              className='w-32 h-32 flex-shrink-0 mx-auto rounded-full'
-              src={person.imageUrl}
-              alt=''
-            /> */}
                 <ProfilePicture
                   src={creator?.profilePicture}
                   size='h-32 w-32'

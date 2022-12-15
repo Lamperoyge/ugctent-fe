@@ -3,6 +3,7 @@ import { Fragment, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
 import { classNames } from 'utils/helpers';
+import { XIcon } from '@heroicons/react/outline';
 
 export default function Multiselect({
   options,
@@ -18,22 +19,31 @@ export default function Multiselect({
             {label}
           </Listbox.Label>
           <div className='mt-1 relative'>
-            <Listbox.Button className='flex min-h-10 flex-wrap gap-2 relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm'>
+            <Listbox.Button className='flex min-h-10 flex-wrap gap-2 relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm items-center'>
               {selected.length ? (
                 selected?.map((s, idx) => (
-                    <span
-                      className='border rounded-full py-1 px-3 font-semibold text-white bg-primaryOrange items-center'
-                      key={idx}
-                    >
-                      <span className='block truncate'>{s.label}</span>
-                    </span>
-                  ))
+                  <span
+                    className='border rounded-full py-1 px-3 font-semibold text-white bg-primaryOrange items-center'
+                    key={idx}
+                  >
+                    <span className='block truncate'>{s.label}</span>
+                  </span>
+                ))
               ) : (
                 <span className='border rounded-full py-1 px-3 font-semibold text-slate-700 bg-slate-300	items-center opacity-30'>
                   <span className='block truncate'>Select value</span>
                 </span>
               )}
-              <span className='ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none'>
+              {selected?.length ? (
+                <div className='flex cursor-pointer'>
+                  <XIcon
+                    onClick={() => onChange([])}
+                    className='h-5 w-5 text-gray-400'
+                    aria-hidden='true'
+                  />
+                </div>
+              ) : null}{' '}
+              <span className='ml-3 absolute inset-y-0 right-0 flex items-center pr-2 flex'>
                 <SelectorIcon
                   className='h-5 w-5 text-gray-400'
                   aria-hidden='true'

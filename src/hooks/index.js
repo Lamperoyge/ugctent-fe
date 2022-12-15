@@ -34,7 +34,9 @@ export const useGetCategories = () => {
 };
 
 export const useGetSkills = () => {
-  const { data, error, loading } = useQuery(GET_SKILLS);
+  const { data, error, loading } = useQuery(GET_SKILLS, {
+    limit: 100
+  });
   return {
     skills: data?.getSkills,
     skillsError: error,
@@ -43,7 +45,9 @@ export const useGetSkills = () => {
 };
 
 export const useGetInterests = () => {
-  const { data, error, loading } = useQuery(GET_INTERESTS);
+  const { data, error, loading } = useQuery(GET_INTERESTS, {
+    limit: 100
+  });
   return {
     interests: data?.getInterests,
     interestsError: error,
