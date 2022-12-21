@@ -1,5 +1,5 @@
 import { SearchIcon } from '@heroicons/react/solid';
-import { useGetSkills, useGetInterests } from 'hooks';
+import { useGetSkills, useGetInterests, useGetCategories } from 'hooks';
 import MultiSelect from 'components/Shared/Form/MultiSelect';
 import { LIMIT } from 'utils/constants';
 import { useCallback, useState } from 'react';
@@ -60,7 +60,22 @@ const Interests = ({ onChange, value }) => {
   );
 };
 
-const options = [
+const Categories = ({ onChange, value }) => {
+  const {categories} = useGetCategories();
+  return (
+    <div className='flex flex-col sm:flex-row gap-5 min-w-30 basis-fit-content flex-1'>
+    <MultiSelect
+      onChange={onChange}
+      label='Category'
+      selected={value}
+      name='category'
+      options={categories}
+    />
+  </div>
+
+  )
+};
+const ratingOptions = [
   {
     label: 'Select minimum rating',
     value: null,
@@ -88,13 +103,35 @@ const options = [
   
 ];
 
-const MinimumRating = ({ value, onChange }) => {
+const pricingOptions = [
+  {
+    label: 'Select minimum price',
+    value: null,
+  }, 
+  {
+    label: 'RON 100+',
+    value: 100,
+  },
+  {
+    label: 'RON 300+',
+    value: 300,
+  },
+  {
+    label: 'RON 500+',
+    value: 500,
+  },
+  {
+    label: 'RON 1000+',
+    value: 1000,
+  }
+];
+const MinimumRange = ({ value, onChange, options = ratingOptions, label = "Minimum Rating", name = "minimumRating" }) => {
   const selectValue = value || options[0];
   return (
     <div className='flex flex-col sm:flex-row gap-5 min-w-30 basis-fit-content flex-1'>
       <Select
-        label='Minimum Rating'
-        name='minimumRating'
+        label={label}
+        name={name}
         inputHeight="h-12"
         options={options}
         value={selectValue}
@@ -104,6 +141,8 @@ const MinimumRating = ({ value, onChange }) => {
     </div>
   );
 };
+
+//TODO : no fucks given about the WET code here, will refactor later
 
 const ExploreTalentsFilters = ({ refetch }) => {
   const [skills, setSkills] = useState([]);
@@ -172,7 +211,7 @@ const ExploreTalentsFilters = ({ refetch }) => {
       <div className='flex w-full gap-4'>
         <Skills value={skills} onChange={handleChange('skills')} />
         <Interests onChange={handleChange('interests')} value={interests} />
-        <MinimumRating
+        <MinimumRange
           onChange={(value) => handleMinRating(value)}
           value={minRating}
         />
@@ -181,4 +220,87 @@ const ExploreTalentsFilters = ({ refetch }) => {
   );
 };
 
+export const ExploreJobsFilters = ({ refetch }) => {
+  const [skills, setSkills] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
+  const [minBudget, setMinBudget] = useState(null);
+
+  const debounceRefetch = () => {
+    let timer;
+    return (e) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        setSearchValue(e.target.value);
+        refetch({
+          search: e.target.value,
+          limit: LIMIT,
+          offset: 0,
+          minBudget: minBudget?.value,
+          skillIds: skills?.map((i) => i._id),
+          categoryIds: categories?.map((i) => i._id),
+        });
+      }, 1000);
+    };
+  };
+
+  const handleSearch = useCallback(debounceRefetch(), [
+    skills,
+    categories,
+    setSearchValue,
+    minBudget,
+  ]);
+
+  const handleChange = (type) => (v) => {
+    if (type === 'skills') {
+      setSkills(v);
+      refetch({
+        limit: LIMIT,
+        offset: 0,
+        skillIds: v?.map((i) => i._id),
+        categoryIds: categories?.map((i) => i._id),
+        minBudget: minBudget?.value,
+      });
+    }
+    if (type === 'categories') {
+      setCategories(v);
+      refetch({
+        limit: LIMIT,
+        offset: 0,
+        skillIds: skills?.map((i) => i._id),
+        categoryIds: v?.map((i) => i._id),
+        minBudget: minBudget?.value,
+      });
+    }
+  };
+  
+  const handleMinBudget = (budget) => {
+    setMinBudget(budget);
+    refetch({
+      limit: LIMIT,
+      offset: 0,
+      skillIds: skills?.map((i) => i._id),
+      categoryIds: categories?.map((i) => i._id),
+      minBudget: budget?.value,
+      search: searchValue,
+    })
+  }
+
+return <div className='flex gap-4 flex-wrap items-center'>
+  <Search onChange={handleSearch} label="Search by keyword"/>
+  <div className='flex w-full gap-4'>
+    <Skills value={skills} onChange={handleChange('skills')} />
+    <Categories onChange={handleChange('categories')} value={categories}/>
+    <MinimumRange
+      onChange={(value) => handleMinBudget(value)}
+      value={minBudget}
+      label="Minimum Budget"
+      name="minimumBudget"
+      options={pricingOptions}
+    />
+  </div>
+</div>
+
+
+};
 export default ExploreTalentsFilters;

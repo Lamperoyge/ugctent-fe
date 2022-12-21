@@ -76,7 +76,7 @@ export default function Example({ children }) {
         router.asPath.includes('projects') || router.asPath.includes('explore'),
     },
     {
-      name: 'Financials',
+      name: 'Finances',
       action: getStripeDashboardLink,
       icon: CurrencyDollarIcon,
       current: false,
@@ -193,11 +193,22 @@ export default function Example({ children }) {
                             />
                             {item.name}
                           </Link>
-                        ) : null
+                        ) : <button
+                        onClick={item.action}
+                                                    className={classNames(
+                              item.current
+                                ? 'bg-gray-100 text-gray-900'
+                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                              'group rounded-md py-2 px-2 flex items-center text-base font-medium w-full'
+                            )}
+
+                        > 
+  <span>{item.name}</span>
+                        </button>
                       )}
                     </nav>
                   </div>
-                  <button
+                  {user?.userType === USER_TYPES.ORG ? <button
                     type='button'
                     onClick={() => {
                       setNewProjectModalOpen(true);
@@ -210,7 +221,7 @@ export default function Example({ children }) {
                       aria-hidden='true'
                     />
                     New Project
-                  </button>
+                  </button> : null}
                 </div>
               </div>
             </Transition.Child>
@@ -253,17 +264,42 @@ export default function Example({ children }) {
                         />
                         {item.name}
                       </Link>
-                    ) : null
+                    ) : <button
+                        onClick={item.action}
+                                                    className={classNames(
+                              item.current
+                                ? 'bg-gray-100 text-gray-900'
+                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                              'group rounded-md py-2 px-2 flex items-center text-base font-medium w-full'
+                            )}
+
+                        > 
+  <item.icon
+                          className={classNames(
+                            item.current
+                              ? 'text-gray-500'
+                              : 'text-gray-400 group-hover:text-gray-500',
+                            'mr-3 flex-shrink-0 h-6 w-6'
+                          )}
+                          aria-hidden='true'
+                        />
+                        <span className="text-sm font-medium font-inherit">
+
+  {item.name}
+
+                        </span>
+
+                        </button>
                   )}
                 </nav>
-                <button
+                {user?.userType === USER_TYPES.ORG ? <button
                   type='button'
                   onClick={() => setNewProjectModalOpen(true)}
                   className='inline-flex mt-12 items-center w-full justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
                 >
                   <PlusIcon className='-ml-1 mr-2 h-5 w-5' aria-hidden='true' />
                   New Project
-                </button>
+                </button> : null}
               </div>
             </div>
           </div>

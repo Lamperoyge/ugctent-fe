@@ -1,29 +1,25 @@
 import { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { GET_JOBS } from 'graphql/queries';
+import { GET_EXPLORE_JOBS } from 'graphql/queries';
 import { useAuth } from 'hooks';
 import { LIMIT } from 'utils/constants';
-import ProjectsList from 'components/Projects/List';
 import EmptyStateAction from 'components/EmptyState';
-import InfiniteScroll from 'components/InfiniteScroll'
+import ExploreJobsList from 'components/ExploreJobsList';
+import { ExploreJobsFilters } from 'components/ExploreFilters';
 
 const ExplorePageComponent = () => {
   const { user } = useAuth();
-  const [hasMore, setHasMore] = useState(false);
-  const { data, loading, error, previousData, fetchMore, variables } = useQuery(
-    GET_JOBS,
+  const [hasMore, setHasMore] = useState(true);
+  const { data, loading, error, fetchMore, refetch } = useQuery(
+    GET_EXPLORE_JOBS,
     {
-      variables: {
-        input: {
-          limit: LIMIT,
-          offset: 0,
-          // skillIds: user?.userInfo?.skillIds,
-          // categoryIds: user?.userInfo?.interestIds
-        },
-      },
+      fetchPolicy: 'cache-and-network',
+      nextFetchPolicy: 'network-only',
+      notifyOnNetworkStatusChange: true,
       skip: !user?._id,
-      onCompleted: ({ getJobs }) => {
-        if (!previousData && getJobs?.length === LIMIT) setHasMore(true);
+      variables: {
+        limit: LIMIT,
+        offset: 0,
       },
     }
   );
@@ -31,26 +27,27 @@ const ExplorePageComponent = () => {
   const fetchNextJobs = () => {
     fetchMore({
       variables: {
-        input: {
-          ...variables?.input,
-          offset: data?.getJobs?.length,
-        },
+        offset: data?.getExploreJobs?.length,
       },
-    }).then(({data}) => {
-      setHasMore(data?.getJobs?.length >= LIMIT)
+    }).then(({ data }) => {
+      setHasMore(data?.getExploreJobs?.length >= LIMIT);
     });
   };
 
-  const jobs = data?.getJobs || [];
+  const jobs = data?.getExploreJobs || [];
   return (
     <div className='h-full w-full'>
-      <h1 className='text-2xl font-semibold text-gray-900 py-5'>Explore Projects</h1>
-      {loading && !data?.getJobs?.length && null}
+      <h1 className='text-6xl font-bold text-gray-900 pt-5 text-center w-full'>
+        Explore
+      </h1>
+      <p className='text-xl font-medium text-gray-900 pb-5 pt-2 text-center w-full'>
+        Discover jobs that match your skills and interests
+      </p>
+      {loading && !data?.getExploreJobs?.length && null}
+      
+      <ExploreJobsFilters refetch={refetch}/>
       <div className='h-full w-full flex justify-center items-center'>
-    <InfiniteScroll onLoadMore={fetchNextJobs} hasMore={hasMore}>
-    <ProjectsList data={jobs} />
-
-    </InfiniteScroll>
+          <ExploreJobsList jobs={jobs} fetchNextJobs={fetchNextJobs} hasMore={hasMore}/>
         {!jobs.length && !loading && (
           <EmptyStateAction
             title='No projects in here'
