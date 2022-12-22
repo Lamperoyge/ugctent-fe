@@ -166,6 +166,7 @@ export default function Comments({ entityId, entityType, disabled = false }) {
                                 ).toLocaleTimeString()}
                               </span>{' '}
                             </div>
+                            {console.log(comment?.priceSuggestion?.createdBy !== comment?.creator?.userId, comment)}
                             {comment?.priceSuggestion?.status ===
                             JOB_APLPICATION_PRICE_SUGGEST_STATUS.CREATED ? (
                               <div className='flex gap-4 py-4 w-1/3'>

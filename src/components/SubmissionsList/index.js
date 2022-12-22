@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { GET_SUBMISSIONS_FOR_JOB } from 'graphql/queries';
 import {
   LIMIT,
@@ -24,35 +24,36 @@ const SubmissionsList = ({ jobId, assignee }) => {
   const [hasMore, setHasMore] = useState(false);
   const user = useAuth();
 
-  const { data, previousData, fetchMore, loading, variables } = useQuery(
+  
+  const [getSubmissions, { data, fetchMore, loading }] = useLazyQuery(
     GET_SUBMISSIONS_FOR_JOB,
 
     {
       notifyOnNetworkStatusChange: true,
       fetchPolicy: 'cache-and-network',
-      nextFetchPolicy: 'cache-first',
-      variables: {
-        input: {
+      nextFetchPolicy: 'cache-and-network',
+    }
+  );
+
+
+  console.log(data?.getSubmissionsForJob, 'data?.getSubmissionsForJob')
+
+  useEffect(() => {
+    if(jobId) {
+      getSubmissions({
+        variables: {
           jobId,
           limit: LIMIT,
           offset: 0,
-        },
-      },
-      skip: !jobId,
-      onCompleted: ({ getSubmissionsForJob }) => {
-        if (!previousData && getSubmissionsForJob?.length === LIMIT)
-          setHasMore(true);
-      },
+        }
+      }).then(({data}) => setHasMore(data?.getSubmissionsForJob?.length >= LIMIT));  
     }
-  );
+  }, [jobId])
 
   const handleFetchMore = () =>
     fetchMore({
       variables: {
-        input: {
-          ...variables?.input,
           offset: data?.getSubmissionsForJob?.length,
-        },
       },
     }).then(({ data }) => {
       setHasMore(data?.getSubmissionsForJob?.length >= LIMIT);

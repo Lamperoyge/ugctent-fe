@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_SUBMISSIONS_FOR_JOB = gql`
-  query getSubmissionsForJob($input: GetSubmissionsForJobInput) {
-    getSubmissionsForJob(input: $input) {
+  query getSubmissionsForJob($jobId: ID!, $limit: Int!, $offset: Int!) {
+    getSubmissionsForJob(jobId: $jobId, limit: $limit, offset: $offset) {
       _id
       description
       status
