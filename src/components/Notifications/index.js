@@ -57,7 +57,7 @@ const Notifications = () => {
         leaveFrom='transform opacity-100 scale-100'
         leaveTo='transform opacity-0 scale-95'
       >
-        <Menu.Items className='absolute right-0 w-72 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
+        <Menu.Items className='absolute right-0 w-96 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
           <InfiniteScroll
             onLoadMore={handleFetchMore}
             hasMore={hasMore}
@@ -92,10 +92,10 @@ const Notifications = () => {
                               {sinceDate(parseInt(notification?.createdAt, 10))}
                             </p>
                           </div>
-                          <p className='text-sm text-gray-500'>
+                          <p className='text-sm text-gray-500 whitespace-pre-line'>
                             {content?.title}
                           </p>
-                          <p className='text-xs text-gray-300'>
+                          <p className='text-xs text-gray-300 whitespace-pre-line'>
                             {content?.subtitle}
                           </p>
                         </div>

@@ -108,7 +108,6 @@ export const renderAttachmentComponent = (formik, idx) => {
     return formik.setFieldValue('attachments', files);
   };
 
-  console.log(formik)
   return (
     <Attachments
       key={idx}

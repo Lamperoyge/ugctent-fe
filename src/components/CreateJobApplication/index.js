@@ -64,7 +64,6 @@ const CreateJobApplication = ({ opened, onClose, job }) => {
     }
   }, [opened, job?._id]);
 
-  console.log(formik);
   const { user } = useAuth();
   const { createJobApplication } = useJobApplications();
   return (

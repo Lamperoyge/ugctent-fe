@@ -5,3 +5,18 @@ export const GET_STRIPE_DASHBOARD_LINK = gql`
     getStripeDashboardLink
   }
 `;
+
+export const GET_STRIPE_BALANCE = gql`
+  query getStripeAccountBalance {
+    getStripeAccountBalance {
+      available {
+        amount
+        currency
+      }
+      pending {
+        amount
+        currency
+      }
+    }
+  }
+`;

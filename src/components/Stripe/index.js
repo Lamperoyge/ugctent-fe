@@ -57,7 +57,6 @@ const StripeComponent = ({clientSecret, application, handleClose}) => {
     clientSecret
   }
 
-  console.log(process.env.NEXT_PUBLIC_STRIPE_PB_KEY)
   const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PB_KEY);
 
 

@@ -1,5 +1,6 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_COMMENTS } from 'graphql/queries';
+import { useAuth } from 'hooks';
 import {
   CREATE_COMMENT,
   CREATE_PRICE_SUGGESTION,
@@ -21,6 +22,7 @@ import ContentComponent from './Content';
 export default function Comments({ entityId, entityType, disabled = false }) {
   const [isSuggestionModalOpen, setIsSuggestionsModalOpen] = useState(false);
   const [hasMore, setHasMore] = useState(false);
+  const { user } = useAuth();
   const [suggestionModalData, setSuggestionModalData] = useState('200');
   const [createPriceSuggestions] = useMutation(CREATE_PRICE_SUGGESTION, {
     refetchQueries: [
@@ -67,6 +69,7 @@ export default function Comments({ entityId, entityType, disabled = false }) {
       },
     });
 
+    console.log(data, 'data')
   useEffect(() => {
     getComments().then(({ data }) => {
       if (!previousData && data?.getCommentsByEntityId?.length === LIMIT)
@@ -135,7 +138,7 @@ export default function Comments({ entityId, entityType, disabled = false }) {
                   hasMore={hasMore}
                   reverseScroll
                 >
-                  <ul className="gap-8 flex-col-reverse flex">
+                  <ul className='gap-8 flex-col-reverse flex'>
                     {data?.getCommentsByEntityId?.map((comment) => (
                       <li key={comment._id}>
                         <div className='flex space-x-3'>
@@ -147,7 +150,10 @@ export default function Comments({ entityId, entityType, disabled = false }) {
                           </div>
                           <div>
                             <div className='text-sm'>
-                              <Link href={`/profile/${comment.creator._id}`} className='font-medium text-gray-900'>
+                              <Link
+                                href={`/profile/${comment.creator._id}`}
+                                className='font-medium text-gray-900'
+                              >
                                 {comment.creator.firstName}{' '}
                                 {comment.creator.lastName}
                               </Link>
@@ -166,18 +172,22 @@ export default function Comments({ entityId, entityType, disabled = false }) {
                                 ).toLocaleTimeString()}
                               </span>{' '}
                             </div>
-                            {console.log(comment?.priceSuggestion?.createdBy !== comment?.creator?.userId, comment)}
                             {comment?.priceSuggestion?.status ===
                             JOB_APLPICATION_PRICE_SUGGEST_STATUS.CREATED ? (
                               <div className='flex gap-4 py-4 w-1/3'>
-{comment?.priceSuggestion?.createdBy !== comment?.creator?.userId ?                                 <button
-                                  onClick={() =>
-                                    handleApprove(comment?.priceSuggestion?._id)
-                                  }
-                                  className={`cursor-pointer inline-flex border items-center px-3 py-0.5 rounded-full text-sm font-bold bg-green-100 text-green-800 hover:bg-green-200`}
-                                >
-                                  Accept
-                                </button> : null}
+                                {comment?.priceSuggestion?.createdBy !==
+                                user?._id ? (
+                                  <button
+                                    onClick={() =>
+                                      handleApprove(
+                                        comment?.priceSuggestion?._id
+                                      )
+                                    }
+                                    className={`cursor-pointer inline-flex border items-center px-3 py-0.5 rounded-full text-sm font-bold bg-green-100 text-green-800 hover:bg-green-200`}
+                                  >
+                                    Accept
+                                  </button>
+                                ) : null}
                                 <button
                                   type='button'
                                   onClick={() =>
@@ -185,7 +195,10 @@ export default function Comments({ entityId, entityType, disabled = false }) {
                                   }
                                   className={`cursor-pointer inline-flex border items-center px-3 py-0.5 rounded-full text-sm font-bold bg-red-100 text-red-800 hover:bg-red-200`}
                                 >
-                                  {comment?.priceSuggestion?.createdBy === comment?.creator?.userId ? 'Revoke' : 'Decline'}
+                                  {comment?.priceSuggestion?.createdBy ===
+                                  user?._id
+                                    ? 'Revoke'
+                                    : 'Decline'}
                                 </button>
                               </div>
                             ) : null}

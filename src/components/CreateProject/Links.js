@@ -61,7 +61,6 @@ function LinksComponent(props) {
     }
   };
 
-  console.log('fields', props.values);
   return (
     <div className='col-span-3'>
             <label

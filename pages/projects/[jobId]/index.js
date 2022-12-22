@@ -57,7 +57,7 @@ export default function ProjectPage() {
   const canViewAssignedTask =
     job?.creator?.userId === user?._id || job?.assigneeId === user?._id;
 
-  const canViewAssignedPerson = canEdit && job.assignee;
+  const canViewAssignedPerson = job?.creator?.userId === user?._id || job?.assigneeId === user?._id;
 
   const toggleCreateApplicationModal = () => {
     if (job?.userApplication?.hasUserApplied) {
@@ -212,8 +212,8 @@ export default function ProjectPage() {
                       </div>
                       <div className="mt-6 border-t border-b border-gray-200 py-6 space-y-8">
                         {canViewAssignedPerson && <Assignee job={job} />}
-                        {job.skills && <Skills job={job} />}
-                        {job.category && <Category job={job} />}
+                        {job?.skills && <Skills job={job} />}
+                        {job?.category && <Category job={job} />}
                       </div>
                     </aside>
                     <div className="py-3 xl:pt-6 xl:pb-0 flex flex-col gap-4">

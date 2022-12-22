@@ -36,7 +36,6 @@ const SubmissionsList = ({ jobId, assignee }) => {
   );
 
 
-  console.log(data?.getSubmissionsForJob, 'data?.getSubmissionsForJob')
 
   useEffect(() => {
     if(jobId) {

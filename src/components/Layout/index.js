@@ -374,7 +374,7 @@ export default function Example({ children }) {
                                   {item.name}
                                 </Link>
                               ) : (
-                                <button className='block text-left hover:bg-gray-100 py-2 px-4 text-sm text-gray-700 w-full'>
+                                <button onClick={item.onClick} className='block text-left hover:bg-gray-100 py-2 px-4 text-sm text-gray-700 w-full'>
                                   {item.name}
                                 </button>
                               )

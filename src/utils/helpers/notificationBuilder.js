@@ -38,6 +38,15 @@ const buildJobApplicationNotification = (notification) => {
     }
 };
 
+const buildJobApplicationAcceptedNotification = (notification) => {
+    return {
+        avatar: notification?.creator?.avatar,
+        fullName: `${notification?.creator?.firstName} ${notification?.creator?.lastName}`,
+        title: `accepted your application for the job: ${notification?.entity?.title}. \n You're now assigned to this job`,
+        subtitle: notification?.description ? `${notification?.description?.substring(0, 15)}...` : null,
+        link: `/projects/${notification?.entity?.parentEntityId}`,
+    }
+};
 const buildJobCompletedNotificationToAssignee = notification => {
     return {
         avatar: notification?.creator?.avatar,
@@ -53,6 +62,8 @@ export default function notificationBuilder(notification) {
     switch (notification.notificationType) {
         case NOTIFICATION_TYPES.JOB_APPLICATION_RECEIVED:
             return buildJobApplicationNotification(notification);
+        case NOTIFICATION_TYPES.JOB_APPLICATION_ACCEPTED:
+            return buildJobApplicationAcceptedNotification(notification);
         case NOTIFICATION_TYPES.JOB_STATUS_COMPLETED:
             return buildJobCompletedNotificationToAssignee(notification);
         default:

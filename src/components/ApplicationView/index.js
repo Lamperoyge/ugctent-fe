@@ -243,9 +243,7 @@ export default function ApplicationView() {
           <ApplicationHeader application={application} />
 
           <div
-            className={`mt-8 mx-auto grid grid-cols-1 gap-6 sm:px-6 lg:grid-flow-col-dense ${
-              !isApplicationInReview ? '' : 'lg:grid-cols-3'
-            }`}
+            className={`mt-8 mx-auto grid grid-cols-1 gap-6 sm:px-6 lg:grid-flow-col-dense`}
           >
             <div className='space-y-6 lg:col-start-1 lg:col-span-2'>
               {/* Description list*/}
@@ -262,7 +260,6 @@ export default function ApplicationView() {
                 entityType={COMMENT_ENTITY_TYPES.JOB_APPLICATION}
               />
             </div>
-            {isApplicationInReview && <OtherApplications />}
           </div>
         </main>
       </div>
