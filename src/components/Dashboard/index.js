@@ -4,7 +4,14 @@ import { classNames } from 'utils/helpers';
 import { useAuth } from 'hooks';
 import ProfilePicture from 'components/ProfilePicture';
 import { useLazyQuery, useQuery } from '@apollo/client';
-import { GET_ASSIGNED_JOBS, GET_CREATED_JOBS, GET_STRIPE_BALANCE, GET_TOTAL_COMPLETED_JOBS } from 'graphql/queries';
+import {
+  GET_ASSIGNED_JOBS,
+  GET_CREATED_JOBS,
+  GET_STRIPE_BALANCE,
+  GET_TOTAL_COMPLETED_JOBS,
+  GET_TOTAL_CREATED_JOBS,
+  GET_TOTAL_ASSIGNED_JOBS
+} from 'graphql/queries';
 import { LIMIT, USER_TYPES } from 'utils/constants';
 import ProjectList from './ProjectsList';
 import { useEffect } from 'react';
@@ -16,44 +23,45 @@ import { useEffect } from 'react';
 
 const CreatorCards = () => {
   const auth = useAuth();
-  const [getStripeBalance, {data: stripeBalanceData}] = useLazyQuery(GET_STRIPE_BALANCE)
+  const [getStripeBalance, { data: stripeBalanceData }] =
+    useLazyQuery(GET_STRIPE_BALANCE);
 
-  const [getTotalCompletedJobs, {data: completedJobsData}] = useLazyQuery(GET_TOTAL_COMPLETED_JOBS)
+  const [getTotalCompletedJobs, { data: completedJobsData }] = useLazyQuery(
+    GET_TOTAL_COMPLETED_JOBS
+  );
   useEffect(() => {
-    getStripeBalance()
-    getTotalCompletedJobs()
-  }, [])
+    getStripeBalance();
+    getTotalCompletedJobs();
+  }, []);
 
-  console.log(completedJobsData)
+  console.log(completedJobsData);
   const cards = [
     {
       name: 'Available balance',
       icon: CashIcon,
-      amount: `${stripeBalanceData?.getStripeAccountBalance?.available[0]?.amount / 100} ${stripeBalanceData?.getStripeAccountBalance?.available[0]?.currency?.toUpperCase()}`,
+      amount: `${
+        stripeBalanceData?.getStripeAccountBalance?.available[0]?.amount / 100
+      } ${stripeBalanceData?.getStripeAccountBalance?.available[0]?.currency?.toUpperCase()}`,
     },
     {
       name: 'Pending balance',
       icon: ScaleIcon,
-      amount: `${stripeBalanceData?.getStripeAccountBalance?.pending[0]?.amount / 100} ${stripeBalanceData?.getStripeAccountBalance?.pending[0]?.currency?.toUpperCase()}`,
+      amount: `${
+        stripeBalanceData?.getStripeAccountBalance?.pending[0]?.amount / 100
+      } ${stripeBalanceData?.getStripeAccountBalance?.pending[0]?.currency?.toUpperCase()}`,
     },
     {
       name: 'Total jobs completed',
       icon: ScaleIcon,
       amount: completedJobsData?.getTotalCompletedJobs,
-    }
+    },
   ];
   return cards.map((card) => (
-    <div
-      key={card.name}
-      className='bg-white overflow-hidden shadow rounded-lg'
-    >
+    <div key={card.name} className='bg-white overflow-hidden shadow rounded-lg'>
       <div className='p-5'>
         <div className='flex items-center'>
           <div className='flex-shrink-0'>
-            <card.icon
-              className='h-6 w-6 text-gray-400'
-              aria-hidden='true'
-            />
+            <card.icon className='h-6 w-6 text-gray-400' aria-hidden='true' />
           </div>
           <div className='ml-5 w-0 flex-1'>
             <dl>
@@ -70,13 +78,8 @@ const CreatorCards = () => {
         </div>
       </div>
     </div>
-  ))
-
-
+  ));
 };
-
-
-
 
 // ORG cards
 
@@ -105,7 +108,13 @@ const CreatorCards = () => {
 export default function Dashboard() {
   const auth = useAuth();
   const user = auth?.user;
-  const { data: assignedJobs, loading: assignedJobsLoading, error: assignedJobsError } = useQuery(GET_ASSIGNED_JOBS, {
+  const {
+    data: assignedJobs,
+    loading: assignedJobsLoading,
+    error: assignedJobsError,
+    refetch: refetchAssignedJobs,
+    fetchMore: fetchMoreAssignedJobs,
+  } = useQuery(GET_ASSIGNED_JOBS, {
     variables: {
       input: {
         limit: LIMIT,
@@ -119,19 +128,57 @@ export default function Dashboard() {
     data: businessJobs,
     error: businessJobsError,
     loading: businessLoading,
+    refetch: refetchBusinessJobs,
+    fetchMore: fetchMoreBusinessJobs,
+    variables: businessJobsVariables
   } = useQuery(GET_CREATED_JOBS, {
     variables: {
       input: {
         userId: user?._id,
-        limit: 10,
+        limit: LIMIT,
         offset: 0,
       },
     },
-    skip: !user?._id || user?.userType === USER_TYPES.CREATOR || !user?.userType,
+    skip:
+      !user?._id || user?.userType === USER_TYPES.CREATOR || !user?.userType,
   });
 
-  const data = user?.userType === USER_TYPES.CREATOR ? assignedJobs?.getJobsForCreator : businessJobs?.getJobsForBusinessUser;
-  
+  const { data: businessJobsCount } = useQuery(GET_TOTAL_CREATED_JOBS, {
+    skip: !user?._id || user?.userType !== USER_TYPES.ORG,
+  });
+
+  const { data: creatorJobsCount } = useQuery(GET_TOTAL_ASSIGNED_JOBS, {
+    skip: !user?._id || user?.userType !== USER_TYPES.CREATOR,
+  });
+
+  const data =
+    user?.userType === USER_TYPES.CREATOR
+      ? assignedJobs?.getJobsForCreator
+      : businessJobs?.getJobsForBusinessUser;
+
+  const fetchMore = () => {
+    if (user?.userType === USER_TYPES.CREATOR) {
+      fetchMoreAssignedJobs({
+        variables: {
+          input: {
+            limit: LIMIT,
+            offset: assignedJobs?.getJobsForCreator?.length,
+          },
+        },
+      });
+    } else {
+      fetchMoreBusinessJobs({
+        variables: {
+          input: {
+            ...businessJobsVariables?.input,
+            limit: LIMIT,
+            offset: businessJobs?.getJobsForBusinessUser?.length,
+          },
+        },
+      });
+    }
+  };
+
   return (
     <div className='min-h-full'>
       {/* Static sidebar for desktop */}
@@ -146,15 +193,25 @@ export default function Dashboard() {
             </h2>
             <div className='mt-2 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3'>
               {/* Card */}
-{user?.userType === USER_TYPES.CREATOR ? <CreatorCards /> : null}
+              {user?.userType === USER_TYPES.CREATOR ? <CreatorCards /> : null}
             </div>
           </div>
 
           <h2 className='max-w-6xl mx-auto mt-8 px-4 text-lg leading-6 font-medium text-gray-900 sm:px-6 lg:px-8'>
-            {user?.userType === USER_TYPES.CREATOR ? 'Assigned Jobs' : 'Created Jobs'}
+            {user?.userType === USER_TYPES.CREATOR
+              ? 'Assigned Jobs'
+              : 'Created Jobs'}
           </h2>
 
-          <ProjectList data={data} />
+          <ProjectList
+            data={data}
+            fetchMore={fetchMore}
+            count={
+              user?.userType === USER_TYPES.CREATOR
+                ? creatorJobsCount?.getTotalAssignedJobs
+                : businessJobsCount?.getTotalCreatedJobs
+            }
+          />
         </div>
       </main>
     </div>

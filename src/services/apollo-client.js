@@ -31,6 +31,14 @@ const cache = new InMemoryCache({
         getSubmissionsForJob: offsetLimitPagination(['jobId', 'offset']),
         getCommentsByEntityId: offsetLimitPagination(['entityId', 'entityType']),
         getCreators: offsetLimitPagination(['skillIds', 'interestIds', 'minRating', 'limit', 'offset', 'search']),
+        getJobsForCreator: {
+          keyArgs: false,
+          merge: offsetLimitPaginationInput
+        },
+        getJobsForBusinessUser: {
+          keyArgs: false,
+          merge: offsetLimitPaginationInput
+        }
       }
     }
   }

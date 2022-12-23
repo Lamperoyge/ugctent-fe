@@ -2,15 +2,19 @@ import { useAuth } from 'hooks';
 import EmptyStateAction from 'components/EmptyState';
 import { useState, useEffect } from 'react';
 import CreateProjectModal from 'components/CreateProject';
-import { GET_ASSIGNED_JOBS, GET_CREATED_JOBS } from 'graphql/queries';
+import {
+  GET_ASSIGNED_JOBS,
+  GET_CREATED_JOBS,
+  GET_TOTAL_CREATED_JOBS,
+  GET_TOTAL_ASSIGNED_JOBS,
+} from 'graphql/queries';
 import { useLazyQuery } from '@apollo/client';
-import { USER_TYPES } from 'utils/constants';
+import { LIMIT, USER_TYPES } from 'utils/constants';
 import ProjectsList from 'components/Projects/List';
 
 export default function Projects() {
   const [open, setIsOpen] = useState(false);
   const { user } = useAuth();
-
   const [
     getJobsForBusinessUser,
     { data: businessJobs, error: businessJobsError, loading: businessLoading },
@@ -32,7 +36,7 @@ export default function Projects() {
         variables: {
           input: {
             userId: user?._id,
-            limit: 10,
+            limit: LIMIT,
             offset: 0,
           },
         },
@@ -43,7 +47,7 @@ export default function Projects() {
         variables: {
           input: {
             userId: user?._id,
-            limit: 10,
+            limit: LIMIT,
             offset: 0,
           },
         },

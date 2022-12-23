@@ -5,3 +5,15 @@ export const GET_TOTAL_COMPLETED_JOBS = gql`
         getTotalCompletedJobs
     }
 `;
+
+export const GET_TOTAL_ASSIGNED_JOBS = gql`
+    query getTotalAssignedJobs {
+        getTotalAssignedJobs
+    }
+`;
+
+export const GET_TOTAL_CREATED_JOBS = gql`
+    query getTotalCreatedJobs {
+        getTotalCreatedJobs
+    }
+`;
