@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { useAuth } from "hooks";
 import { GET_USER_BY_ID } from "graphql/queries";
@@ -35,10 +36,30 @@ const UserProfilePage = ({}) => {
       bio: "",
       website: "",
       email: "",
+      socialLinks: {
+        instagram: "",
+        facebook: "",
+        tiktok: "",
+        youtube: "",
+      },
     },
     validationSchema: schema,
-    onSubmit: async (values) => {},
+    onSubmit: async (values) => {
+      console.log(values);
+    },
   });
+
+  useEffect(() => {
+    if (!(loading || error)) {
+      const { bio, socialLinks, website, email } = data.getUserById?.userInfo;
+      formik.setValues({
+        bio,
+        socialLinks,
+        website,
+        email,
+      });
+    }
+  }, [data]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error</div>;

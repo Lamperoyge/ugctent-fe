@@ -1,16 +1,18 @@
 import { useState } from "react";
+import { useGetSkills } from "hooks";
 
 import {
   StarIcon,
-  MapIcon,
   UserCircleIcon,
   MenuIcon,
   XCircleIcon,
   PencilIcon,
+  SaveIcon,
 } from "@heroicons/react/solid";
 import { FaFacebook, FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa";
 
 import PanelContainer from "components/PanelContainer";
+import SocialLinks from "components/Shared/Form/SocialLinks";
 import ProfileSection from "../ProfileSection";
 import ProfileSectionTitle from "../ProfileSection/ProfileSectionTitle";
 import WorkSection from "./WorkSection";
@@ -67,7 +69,9 @@ const CreatorProfilePage = ({ data, values, setFieldValue, handleChange }) => {
     },
   };
 
+  const { skills } = useGetSkills();
   const [isEditMode, setIsEditMode] = useState(false);
+  const [activeTab, setActiveTab] = useState(PROFILE_TABS.ABOUT);
 
   const {
     profilePicture,
@@ -82,8 +86,6 @@ const CreatorProfilePage = ({ data, values, setFieldValue, handleChange }) => {
     works,
     email,
   } = mockData && mockData.userInfo;
-
-  const [activeTab, setActiveTab] = useState(PROFILE_TABS.ABOUT);
 
   const isAboutVisible = activeTab === PROFILE_TABS.ABOUT;
   const isWorkVisible = activeTab === PROFILE_TABS.WORK;
@@ -102,6 +104,9 @@ const CreatorProfilePage = ({ data, values, setFieldValue, handleChange }) => {
         return;
     }
   };
+
+  const getUserSkills = () =>
+    skills.filter((skill) => skillIds.find((skillId) => skill._id === skillId));
 
   return (
     <div className="grid grid-cols-6 grid-rows-profileLayoutMobile lg:grid-rows-profileLayout h-full w-full px-10 xl:px-16 py-10 gap-x-10 lg:gap-x-1 2xl:gap-x-14 gap-y-8">
@@ -149,13 +154,26 @@ const CreatorProfilePage = ({ data, values, setFieldValue, handleChange }) => {
             )}
 
             {isEditMode && (
-              <button
-                onClick={() => setIsEditMode(false)}
-                type="button"
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-              >
-                <XCircleIcon className="h-5 w-5 mr-2"></XCircleIcon> Cancel
-              </button>
+              <div className="inline-flex">
+                <button
+                  type="submit"
+                  onClick={(e) => {
+                    setIsEditMode(false);
+                    e.preventDefault();
+                  }}
+                  className="inline-flex justify-center py-2 px-4 mr-5 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                >
+                  <SaveIcon className="h-5 w-5 mr-2"></SaveIcon> Save
+                </button>
+
+                <button
+                  onClick={() => setIsEditMode(false)}
+                  type="button"
+                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                >
+                  <XCircleIcon className="h-5 w-5 mr-2"></XCircleIcon> Cancel
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -215,20 +233,29 @@ const CreatorProfilePage = ({ data, values, setFieldValue, handleChange }) => {
 
             <div className="flex text-slate-900">
               <div className="w-16">Platforms:</div>
-              <div className="flex ml-10">
-                {Object.keys(socialLinks).map(
-                  (platform, idx) =>
-                    socialLinks[platform] && (
-                      <a
-                        target="_blank"
-                        className={`${idx === 0 ? "ml-0" : "ml-5"}`}
-                        href={socialLinks[platform]}
-                      >
-                        {getPlatformIcon(platform)}
-                      </a>
-                    )
-                )}
-              </div>
+              {isEditMode && (
+                <SocialLinks
+                  onChange={handleChange}
+                  values={values}
+                  name="socialLinks"
+                />
+              )}
+              {!isEditMode && (
+                <div className="flex ml-10">
+                  {Object.keys(socialLinks).map(
+                    (platform, idx) =>
+                      socialLinks[platform] && (
+                        <a
+                          target="_blank"
+                          className={`${idx === 0 ? "ml-0" : "ml-5"}`}
+                          href={socialLinks[platform]}
+                        >
+                          {getPlatformIcon(platform)}
+                        </a>
+                      )
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </ProfileSection>
@@ -254,17 +281,24 @@ const CreatorProfilePage = ({ data, values, setFieldValue, handleChange }) => {
           </EditableSection>
         </ProfileSection>
         <ProfileSection hasTitleLine={true} title="Skills">
-          <p className="flex flex-col text-sm text-slate-700">
-            {skillIds.map((id) => (
-              <span class>{id}</span>
-            ))}
-          </p>
+          <ul className="flex flex-wrap">
+            {skills?.length &&
+              getUserSkills().map((skill) => (
+                <li
+                  className="flex items-center border rounded-full py-1 px-3 text-xs mr-2 mb-2 font-semibold text-white bg-primaryOrange items-center"
+                  key={skill._id}
+                >
+                  <span className="block truncate">{skill.label}</span>
+                </li>
+              ))}
+          </ul>
         </ProfileSection>
       </PanelContainer>
 
       <PanelContainer extraClassName="flex flex-col gap-5 row-start-8 row-span-3 col-start-1 col-span-6 lg:col-start-3 lg:col-span-4 lg:row-start-3 lg:row-span-5 w-full">
         <div className="flex border-solid border-b-2">
           <button
+            type="button"
             onClick={() => setActiveTab(PROFILE_TABS.ABOUT)}
             className={`flex items-center p-3 text-slate-500 ${
               isAboutVisible ? activeTabStyle : ""
@@ -277,6 +311,7 @@ const CreatorProfilePage = ({ data, values, setFieldValue, handleChange }) => {
           </button>
 
           <button
+            type="button"
             onClick={() => setActiveTab(PROFILE_TABS.WORK)}
             className={`flex items-center p-3 text-slate-500 ${
               isWorkVisible ? activeTabStyle : ""
