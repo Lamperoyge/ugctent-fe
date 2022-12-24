@@ -22,6 +22,7 @@ import EditableSection from "../EditableSection";
 const activeTabStyle = "border-b-2 border-orange-500 mb-[-2px]";
 
 const CreatorProfilePage = ({ data, values, setFieldValue, handleChange }) => {
+  // console.log(data);
   const mockData = {
     ...data,
     userInfo: {
@@ -323,25 +324,48 @@ const CreatorProfilePage = ({ data, values, setFieldValue, handleChange }) => {
         </div>
 
         {isAboutVisible && (
-          <ProfileSection title="Basic Information">
+          <ProfileSection title="Basic Information" classNames="gap-3">
             <div className="flex items-center text-slate-900 w-full">
-              <div className="w-30 mr-4">City and Country:</div>
+              <div className="w-16 mr-4">City:</div>
               <EditableSection
                 inputProps={{
                   type: "text",
-                  name: "country",
+                  name: "city",
                   value: values.city,
                   onChange: handleChange,
-                  id: "country",
-                  autoComplete: "Your Country",
+                  id: "city",
+                  autoComplete: "Your city",
                   className:
                     "mt-1 focus:ring-secondary focus:border-secondary block w-1/2 shadow-sm sm:text-sm border-gray-300 rounded-md",
                 }}
                 isEditMode={isEditMode}
                 type="input"
               >
-                {city && <span className="pl-1">{city}, </span>}
-                {country && <span className="text-slate-700">{country}</span>}
+                {city ? <span className="pl-1">{city}, </span> : "-"}
+              </EditableSection>
+            </div>
+
+            <div className="flex items-center text-slate-900 w-full">
+              <div className="w-16 mr-4">Country:</div>
+              <EditableSection
+                inputProps={{
+                  type: "text",
+                  name: "country",
+                  value: values.country,
+                  onChange: handleChange,
+                  id: "country",
+                  autoComplete: "Your country",
+                  className:
+                    "mt-1 focus:ring-secondary focus:border-secondary block w-1/2 shadow-sm sm:text-sm border-gray-300 rounded-md",
+                }}
+                isEditMode={isEditMode}
+                type="input"
+              >
+                {country ? (
+                  <span className="text-slate-700">{country}</span>
+                ) : (
+                  "-"
+                )}
               </EditableSection>
             </div>
           </ProfileSection>
