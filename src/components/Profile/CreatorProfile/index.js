@@ -105,7 +105,7 @@ const CreatorProfilePage = ({ data, values, setFieldValue, handleChange }) => {
     }
   };
 
-  const getUserSkills = () =>
+  const mapUserSkills = () =>
     skills.filter((skill) => skillIds.find((skillId) => skill._id === skillId));
 
   return (
@@ -283,7 +283,7 @@ const CreatorProfilePage = ({ data, values, setFieldValue, handleChange }) => {
         <ProfileSection hasTitleLine={true} title="Skills">
           <ul className="flex flex-wrap">
             {skills?.length &&
-              getUserSkills().map((skill) => (
+              mapUserSkills().map((skill) => (
                 <li
                   className="flex items-center border rounded-full py-1 px-3 text-xs mr-2 mb-2 font-semibold text-white bg-primaryOrange items-center"
                   key={skill._id}
