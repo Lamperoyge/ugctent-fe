@@ -5,9 +5,6 @@ import {
   StarIcon,
   UserCircleIcon,
   MenuIcon,
-  XCircleIcon,
-  PencilIcon,
-  SaveIcon,
 } from "@heroicons/react/solid";
 import { FaFacebook, FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa";
 
@@ -21,7 +18,7 @@ import EditableSection from "../EditableSection";
 
 const activeTabStyle = "border-b-2 border-orange-500 mb-[-2px]";
 
-const CreatorProfilePage = ({ data, values, setFieldValue, handleChange }) => {
+const CreatorProfilePage = ({ data, values, handleChange, isEditMode }) => {
   // console.log(data);
   const mockData = {
     ...data,
@@ -71,7 +68,6 @@ const CreatorProfilePage = ({ data, values, setFieldValue, handleChange }) => {
   };
 
   const { skills } = useGetSkills();
-  const [isEditMode, setIsEditMode] = useState(false);
   const [activeTab, setActiveTab] = useState(PROFILE_TABS.ABOUT);
 
   const {
@@ -143,45 +139,12 @@ const CreatorProfilePage = ({ data, values, setFieldValue, handleChange }) => {
                 </div>
               </div>
             </div>
-
-            {!isEditMode && (
-              <button
-                onClick={() => setIsEditMode(true)}
-                type="button"
-                className="inline-flex items-center justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-              >
-                <PencilIcon className="h-5 w-5 mr-2"></PencilIcon> Edit
-              </button>
-            )}
-
-            {isEditMode && (
-              <div className="inline-flex">
-                <button
-                  type="submit"
-                  onClick={(e) => {
-                    setIsEditMode(false);
-                    e.preventDefault();
-                  }}
-                  className="inline-flex justify-center py-2 px-4 mr-5 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                >
-                  <SaveIcon className="h-5 w-5 mr-2"></SaveIcon> Save
-                </button>
-
-                <button
-                  onClick={() => setIsEditMode(false)}
-                  type="button"
-                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-                >
-                  <XCircleIcon className="h-5 w-5 mr-2"></XCircleIcon> Cancel
-                </button>
-              </div>
-            )}
           </div>
         </div>
         <ProfileSection title="Contact Information">
           <div className="flex flex-col gap-5">
             <div className="flex items-center text-slate-900">
-              <div className="w-16">Website:</div>
+              <div className="w-16 mr-6">Website:</div>
               <EditableSection
                 inputProps={{
                   type: "text",
@@ -191,7 +154,7 @@ const CreatorProfilePage = ({ data, values, setFieldValue, handleChange }) => {
                   id: "website",
                   autoComplete: "Website",
                   className:
-                    "mt-1 ml-4 focus:ring-secondary focus:border-secondary block w-1/2 shadow-sm sm:text-sm border-gray-300 rounded-md",
+                    "mt-1 focus:ring-secondary focus:border-secondary block w-1/2 shadow-sm sm:text-sm border-gray-300 rounded-md",
                 }}
                 isEditMode={isEditMode}
                 type="input"
@@ -207,7 +170,7 @@ const CreatorProfilePage = ({ data, values, setFieldValue, handleChange }) => {
             </div>
 
             <div className="flex items-center text-slate-900">
-              <div className="w-16">Email:</div>
+              <div className="w-16 mr-6">Email:</div>
               <EditableSection
                 inputProps={{
                   type: "text",
@@ -217,7 +180,7 @@ const CreatorProfilePage = ({ data, values, setFieldValue, handleChange }) => {
                   id: "email",
                   autoComplete: "Email",
                   className:
-                    "mt-1 ml-4 focus:ring-secondary focus:border-secondary block w-1/2 shadow-sm sm:text-sm border-gray-300 rounded-md",
+                    "mt-1 focus:ring-secondary focus:border-secondary block w-1/2 shadow-sm sm:text-sm border-gray-300 rounded-md",
                 }}
                 isEditMode={isEditMode}
                 type="input"
@@ -233,7 +196,7 @@ const CreatorProfilePage = ({ data, values, setFieldValue, handleChange }) => {
             </div>
 
             <div className="flex text-slate-900">
-              <div className="w-16">Platforms:</div>
+              <div className="w-16 mr-6">Platforms:</div>
               {isEditMode && (
                 <SocialLinks
                   onChange={handleChange}
@@ -346,7 +309,7 @@ const CreatorProfilePage = ({ data, values, setFieldValue, handleChange }) => {
             </div>
 
             <div className="flex items-center text-slate-900 w-full">
-              <div className="w-16 mr-4">Country:</div>
+              <div className="w-16 mr-6">Country:</div>
               <EditableSection
                 inputProps={{
                   type: "text",
