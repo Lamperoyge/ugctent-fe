@@ -93,7 +93,7 @@ const CreatorOnboardingForm = () => {
     {
       onCompleted: () => {
         getLoggedInUser().then(() =>
-          router.push('/', undefined, { shallow: true })
+          router.push('/dashboard', undefined, { shallow: true })
         );
       },
     }

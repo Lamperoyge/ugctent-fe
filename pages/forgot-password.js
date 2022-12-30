@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { RESET_PASSWORD } from 'graphql/mutations';
+import { FORGOT_PASSWORD } from 'graphql/mutations';
 import { useRouter } from 'next/router';
 import Logo from 'components/Shared/Logo';
 import Link from 'next/link';
@@ -7,39 +7,27 @@ import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import { LightSpinner } from 'components/Shared/Spinner';
 
-const ResetPassword = () => {
+const ForgotPassword = () => {
   const router = useRouter();
-  const [resetPassword, { data, error, loading }] = useMutation(RESET_PASSWORD);
-  const { token } = router.query;
+  const [forgotPassword, { data, error, loading }] = useMutation(FORGOT_PASSWORD);
 
   const config = [
     {
-      label: 'Password',
-      type: 'password',
-      name: 'password',
-      placeholder: 'Password',
-    },
-    {
-      label: 'Confirm Password',
-      type: 'password',
-      name: 'confirm password',
-      placeholder: 'Confirm Password',
+      label: 'Email',
+      type: 'email',
+      name: 'email',
+      placeholder: 'you@ugctent.com',
     },
   ];
+
   const schema = Yup.object({
-    password: Yup.string()
-      .required('Password is required')
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-        'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character'
-      ),
-    'confirm password': Yup.string()
-      .required('Please confirm your password')
-      .oneOf([Yup.ref('password'), null], 'Passwords must match'),
+    email: Yup.string()
+      .email('Please enter a valid email')
+      .required('Please enter an email'),
   });
 
   const handleSubmit = (values) => {
-    resetPassword({ variables: { token, password: values.password } });
+    forgotPassword({ variables: { email: values.email } });
   };
 
   return (
@@ -49,7 +37,7 @@ const ResetPassword = () => {
           <div>
             <Logo />
             <h2 className='mt-6 text-3xl font-extrabold text-gray-900'>
-              Reset password
+              Forgot password?
             </h2>
           </div>
 
@@ -59,10 +47,10 @@ const ResetPassword = () => {
                 <LightSpinner size='h-12 w-12' />
               ) : (
                 <>
-                  {data?.resetPassword ? (
+                  {data ? (
                     <div className='flex gap-8 flex-col'>
                       <span className='text-xl font-bold text-gray-600 mt-6'>
-                        Success! Your password is now reset
+                        Success! Check your email for a link to reset your password.
                       </span>
                       <button
                         type='submit'
@@ -89,7 +77,6 @@ const ResetPassword = () => {
                         handleBlur,
                       }) => (
                         <Form onSubmit={handleSubmit} className='space-y-6'>
-                          {console.log(errors, 'errors12')}
                           {config.map((item, idx) => (
                             <div key={idx}>
                               {item.type === 'checkbox' ? (
@@ -172,4 +159,4 @@ const ResetPassword = () => {
   );
 };
 
-export default ResetPassword;
+export default ForgotPassword;

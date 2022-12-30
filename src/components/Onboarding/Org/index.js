@@ -55,7 +55,7 @@ export default function OrgOnboardingForm() {
     {
       onCompleted: () => {
         getLoggedInUser().then(() =>
-          router.push('/', undefined, { shallow: true })
+          router.push('/dashboard', undefined, { shallow: true })
         );
       },
     }
@@ -103,7 +103,7 @@ export default function OrgOnboardingForm() {
         variables: {
           input: {
             ...values,
-            profilePicture: profilePic.src,
+            profilePicture: profilePic?.src,
             categoryIds: values.categoryIds.map((c) => c._id),
           },
         },
