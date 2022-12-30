@@ -41,3 +41,11 @@ export const GET_USER_BY_ID = gql`
   }
   ${UserInfoFragment}
 `;
+
+export const VERIFY_FORGOT_PASSWORD_TOKEN = gql`
+  query verifyForgotPasswordToken($token: String!) {
+    verifyForgotPasswordToken(token: $token) {
+      success
+    }
+  }
+`;

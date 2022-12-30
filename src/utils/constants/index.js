@@ -29,7 +29,7 @@ export const JOB_APPLICATION_STATUS = {
   IN_REVIEW: 'inReview',
 };
 
-export const EXCLUDED_PATHS = ['/login', '/signup'];
+export const EXCLUDED_PATHS = ['/login', '/signup', '/verify-token/[token]', '/forgot-password', '/reset-password/[token]'];
 
 export const JOB_STATUS_LABELS_AND_COLORS = {
   [JOB_STATUS.CREATED]: {
