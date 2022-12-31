@@ -114,7 +114,7 @@ export const Attachments = ({
             strokeLinejoin='round'
           />
         </svg>
-        <div className='flex text-sm text-gray-600'>
+        <div className='flex text-sm text-gray-600 justify-center items-center'>
           <label
             htmlFor='attachments'
             className='relative cursor-pointer bg-white rounded-md font-medium text-secondary hover:text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary'

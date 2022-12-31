@@ -19,7 +19,7 @@ export default function ViewAttachments({
     
       {attachments?.map((attach, idx) => (
         <div key={idx}>
-          {fromMemory ? (
+          {fromMemory && typeof attach !== 'string' ? (
             <ImagePreview
               className='w-auto max-h-24 rounded overflow-hidden'
               file={attach}

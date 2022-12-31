@@ -5,12 +5,12 @@ import { useFormik } from 'formik';
 import { useGetCategories, useGetSkills } from 'hooks';
 import MultiSelect from 'components/Shared/Form/MultiSelect';
 import { uploadPhoto } from 'services/upload-media';
-import { CREATE_JOB } from 'graphql/mutations';
+import { CREATE_JOB, UPDATE_JOB } from 'graphql/mutations';
 import { useMutation } from '@apollo/client';
 import { limit, schema, initialValues } from './config';
 import { Input, TextArea, Attachments } from './helpers';
 
-const CreateProjectModal = ({ open, onClose }) => {
+const CreateProjectModal = ({ open, onClose, existingJob }) => {
   const { categories = [] } = useGetCategories();
   const { skills } = useGetSkills();
   const [createJob, { data, error, loading }] = useMutation(CREATE_JOB, {
@@ -73,19 +73,55 @@ const CreateProjectModal = ({ open, onClose }) => {
     },
   ];
 
+  const getInitialValuesFromExistingJob = () => {
+    return {
+      title: existingJob?.title || '',
+      price: existingJob?.price || '',
+      categoryId: [existingJob?.category],
+      skillIds: existingJob?.skills,
+      description: existingJob?.description || '',
+      attachments: existingJob?.attachments || [],
+    };
+  };
+
+  const [updateJob] = useMutation(UPDATE_JOB, {
+    refetchQueries: ['getJobById'],
+    onCompleted: () => onClose(),
+  });
+
+  const submitAction = () => {
+    if (existingJob) {
+      return ({variables}) => {
+        updateJob({
+          variables: {
+            input: {
+              ...variables.input,
+              _id: existingJob._id,
+            },
+          },
+        });
+      };
+    }
+    return createJob;
+  };
   const formik = useFormik({
-    initialValues,
+    initialValues: existingJob
+      ? getInitialValuesFromExistingJob()
+      : initialValues,
     validationSchema: schema,
     onSubmit: async (values) => {
       const getFileStrings = async (attachments) =>
         await Promise.all(
           attachments.map(async (i) => {
-            const data = await uploadPhoto(i);
-            return data.src;
+            if (typeof i !== 'string') {
+              const data = await uploadPhoto(i);
+              return data.src;
+            }
+            return i;
           })
         );
       const attachments = await getFileStrings(values.attachments);
-      createJob({
+      submitAction()({
         variables: {
           input: {
             ...values,
@@ -95,8 +131,19 @@ const CreateProjectModal = ({ open, onClose }) => {
           },
         },
       });
+      // createJob({
+      //   variables: {
+      //     input: {
+      //       ...values,
+      //       skillIds: values.skillIds.map((s) => s._id),
+      //       attachments,
+      //       categoryId: values.categoryId[0]?._id || null,
+      //     },
+      //   },
+      // });
     },
   });
+
 
   const handleAttachments = (e) => {
     const files = Array.from(e.target.files)
@@ -104,7 +151,10 @@ const CreateProjectModal = ({ open, onClose }) => {
       .filter((i) => i);
     files.length !== e.target.files.length
       ? formik.setFieldError('attachments', 'Max upload size is 2MB')
-      : formik.setFieldValue('attachments', files);
+      : formik.setFieldValue(
+          'attachments',
+          existingJob ? [...existingJob.attachments, ...files] : files
+        );
   };
 
   const removeAttachment = (attach) => {
@@ -146,7 +196,7 @@ const CreateProjectModal = ({ open, onClose }) => {
                         <div className='bg-white py-6 px-4 space-y-6 sm:p-6'>
                           <div>
                             <h3 className='text-lg leading-6 font-medium text-gray-900'>
-                              New project
+                              {existingJob ? 'Edit job' : 'New job'}
                             </h3>
                             <p className='mt-1 text-sm text-gray-500'>
                               Share as many details as you can. This will help
