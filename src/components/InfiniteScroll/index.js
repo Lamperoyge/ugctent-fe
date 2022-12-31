@@ -12,9 +12,9 @@ const InfiniteScroll = ({ children, onLoadMore, hasMore, reverseScroll }) => {
 
   return (
     <>
-    {reverseScroll ? <div ref={ref} style={{ height: '5px' }} /> : null}
+    {reverseScroll ? <div ref={ref} style={{ height: '5px', opacity: '0' }} /> : null}
       {children}
-      {reverseScroll ? null : <div ref={ref} style={{ height: '5px' }} />}
+      {reverseScroll ? null : <div ref={ref} style={{ height: '5px', opacity: '0'}} />}
     </>
   );
 };

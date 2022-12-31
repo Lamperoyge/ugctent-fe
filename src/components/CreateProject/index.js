@@ -131,16 +131,6 @@ const CreateProjectModal = ({ open, onClose, existingJob }) => {
           },
         },
       });
-      // createJob({
-      //   variables: {
-      //     input: {
-      //       ...values,
-      //       skillIds: values.skillIds.map((s) => s._id),
-      //       attachments,
-      //       categoryId: values.categoryId[0]?._id || null,
-      //     },
-      //   },
-      // });
     },
   });
 

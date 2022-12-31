@@ -20,6 +20,7 @@ import { JOB_STATUS } from 'utils/constants';
 import CreateSubmission from 'components/Submissions';
 import SubmissionsList from 'components/SubmissionsList';
 import EditJob from 'components/EditJob';
+import ProjectPageAsideContent from 'components/ProjectPageAsideContent';
 import {
   CheckIcon,
   CurrencyDollarIcon,
@@ -28,6 +29,7 @@ import {
 import Skills from 'components/JobsPageComponents/skills';
 import Category from 'components/JobsPageComponents/category';
 import Assignee from 'components/JobsPageComponents/assignee';
+
 
 export default function ProjectPage() {
   const [isEditMode, setIsEditMode] = useState(false);
@@ -89,8 +91,7 @@ export default function ProjectPage() {
 
   // TODO Adrian : refactor, too much code
 
-
-  const toggleEdit = () => setIsEditMode(prev => !prev);
+  const toggleEdit = () => setIsEditMode((prev) => !prev);
 
   return (
     <>
@@ -99,7 +100,7 @@ export default function ProjectPage() {
         onClose={toggleCreateApplicationModal}
         job={job}
       />
-      {isEditMode ? <EditJob job={job} onClose={toggleEdit}/> : null}
+      {isEditMode ? <EditJob job={job} onClose={toggleEdit} /> : null}
       <div className='w-full h-full'>
         <main className='flex-1'>
           <div className='py-8 xl:py-10'>
@@ -263,78 +264,14 @@ export default function ProjectPage() {
                       <CreateSubmission jobId={job._id} />
                     )}
                 </div>
-                {canViewAssignedTask && (
+                {canViewAssignedTask && job?.assigneeId && (
                   <SubmissionsList jobId={job._id} assignee={job.assigneeId} />
                 )}
               </div>
-              <aside className='hidden xl:block xl:pl-8'>
-                <h2 className='sr-only'>Details</h2>
-                <div className='space-y-5'>
-                  <div className='flex items-center space-x-2'>
-                    <StatusChip status={job.status} />
-                  </div>
-                  <div className='flex items-center space-x-2'>
-                    <ChatAltIcon
-                      className='h-5 w-5 text-gray-400'
-                      aria-hidden='true'
-                    />
-                    <span className='text-gray-900 text-sm font-medium'>
-                      {job?.applicationsCount || 0} applications
-                    </span>
-                  </div>
-                  <div className='flex items-center space-x-2'>
-                    <CalendarIcon
-                      className='h-5 w-5 text-gray-400'
-                      aria-hidden='true'
-                    />
-                    <span className='text-gray-900 text-sm font-medium'>
-                      Created on{' '}
-                      <time dateTime='2020-12-02'>
-                        {new Date(parseInt(job.createdAt)).toLocaleDateString()}
-                      </time>
-                    </span>
-                  </div>
-                  {job.createdAt !== job.updatedAt && (
-                    <div className='flex items-center space-x-2'>
-                      <CalendarIcon
-                        className='h-5 w-5 text-gray-400'
-                        aria-hidden='true'
-                      />
-                      <span className='text-primaryOrange text-sm font-medium'>
-                        Last update{' '}
-                        <time dateTime='2020-12-02'>
-                          {new Date(
-                            parseInt(job.updatedAt)
-                          ).toLocaleDateString()}
-                        </time>
-                      </span>
-                    </div>
-                  )}
-                  <div className='flex items-center space-x-2'>
-                    <CurrencyDollarIcon
-                      className='h-5 w-5 text-gray-400'
-                      aria-hidden='true'
-                    />
-                    <span className='text-gray-900 text-sm font-medium'>
-                      {[
-                        JOB_STATUS.IN_PROGRESS,
-                        JOB_STATUS.IN_REVIEW,
-                        JOB_STATUS.COMPLETED,
-                      ].includes(job?.status)
-                        ? 'Paid'
-                        : 'Not paid'}
-                    </span>
-                    <span className='text-gray-900 text-sm font-medium'>
-                      {job?.price} RON
-                    </span>
-                  </div>
-                </div>
-                <div className='mt-6 border-t border-gray-200 py-6 space-y-8'>
-                  {canViewAssignedPerson && <Assignee job={job} />}
-                  {job.skills && <Skills job={job} />}
-                  {job.category && <Category job={job} />}
-                </div>
-              </aside>
+              <ProjectPageAsideContent
+                job={job}
+                canViewAssignedPerson={canViewAssignedPerson}
+              />
             </div>
           </div>
         </main>
