@@ -1,7 +1,7 @@
 import { Dialog, Menu, Transition } from '@headlessui/react';
 import { HomeIcon, MenuAlt2Icon } from '@heroicons/react/outline';
 import { SearchIcon } from '@heroicons/react/solid';
-import { Fragment, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import {
   CurrencyDollarIcon,
@@ -22,8 +22,9 @@ import { GET_STRIPE_DASHBOARD_LINK } from 'graphql/queries';
 import { MissingStripeAnnouncement } from './Helpers';
 import Notifications from 'components/Notifications';
 import ProfilePicture from 'components/ProfilePicture';
+import Spotlight from 'components/Spotlight';
 
-export default function Example({ children }) {
+export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const { user, isStripeVerified } = useAuth();
@@ -53,7 +54,7 @@ export default function Example({ children }) {
       href: '/explore/talents',
       icon: PuzzleIcon,
       current: router.pathname === '/explore/talents',
-    }
+    },
   ];
 
   const userNavigation = [
@@ -61,28 +62,35 @@ export default function Example({ children }) {
     { name: 'Sign out', onClick: logout },
   ];
 
-  const CREATOR_NAVIGATION = [
-    {
-      name: 'Dashboard',
-      href: '/dashboard',
-      icon: HomeIcon,
-      current: router.asPath.includes('dashboard'),
-    },
-    {
-      name: 'Explore',
-      href: '/explore',
-      icon: PuzzleIcon,
-      current:
-        router.asPath.includes('projects') || router.asPath.includes('explore'),
-    },
-    {
-      name: 'Finances',
-      action: getStripeDashboardLink,
-      icon: CurrencyDollarIcon,
-      current: false,
-      as: 'button',
-    },
-  ];
+  const CREATOR_NAVIGATION = useMemo(() => {
+    const nav = [
+      {
+        name: 'Dashboard',
+        href: '/dashboard',
+        icon: HomeIcon,
+        current: router.asPath.includes('dashboard'),
+      },
+      {
+        name: 'Explore',
+        href: '/explore',
+        icon: PuzzleIcon,
+        current:
+          router.asPath.includes('projects') ||
+          router.asPath.includes('explore'),
+      },
+    ];
+
+    if (isStripeVerified) {
+      nav.push({
+        name: 'Finances',
+        action: getStripeDashboardLink,
+        icon: CurrencyDollarIcon,
+        current: false,
+        as: 'button',
+      });
+    }
+    return nav;
+  }, [router, isStripeVerified, getStripeDashboardLink]);
 
   const navigation =
     user?.userType === USER_TYPES.ORG ? ORG_NAVIGATION : CREATOR_NAVIGATION;
@@ -98,14 +106,6 @@ export default function Example({ children }) {
   const handleAlertDismiss = () => setDisplayAnnouncement(false);
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full">
-        <body class="h-full">
-        ```
-      */}
       {isNewProjectModalOpen && (
         <CreateProjectModal
           open={isNewProjectModalOpen}
@@ -193,35 +193,38 @@ export default function Example({ children }) {
                             />
                             {item.name}
                           </Link>
-                        ) : <button
-                        onClick={item.action}
-                                                    className={classNames(
+                        ) : (
+                          <button
+                            onClick={item.action}
+                            className={classNames(
                               item.current
                                 ? 'bg-gray-100 text-gray-900'
                                 : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
                               'group rounded-md py-2 px-2 flex items-center text-base font-medium w-full'
                             )}
-
-                        > 
-  <span>{item.name}</span>
-                        </button>
+                          >
+                            <span>{item.name}</span>
+                          </button>
+                        )
                       )}
                     </nav>
                   </div>
-                  {user?.userType === USER_TYPES.ORG ? <button
-                    type='button'
-                    onClick={() => {
-                      setNewProjectModalOpen(true);
-                      setSidebarOpen(false);
-                    }}
-                    className='inline-flex mt-12 items-center w-full justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
-                  >
-                    <PlusIcon
-                      className='-ml-1 mr-2 h-5 w-5'
-                      aria-hidden='true'
-                    />
-                    New Project
-                  </button> : null}
+                  {user?.userType === USER_TYPES.ORG ? (
+                    <button
+                      type='button'
+                      onClick={() => {
+                        setNewProjectModalOpen(true);
+                        setSidebarOpen(false);
+                      }}
+                      className='inline-flex mt-12 items-center w-full justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
+                    >
+                      <PlusIcon
+                        className='-ml-1 mr-2 h-5 w-5'
+                        aria-hidden='true'
+                      />
+                      New Project
+                    </button>
+                  ) : null}
                 </div>
               </div>
             </Transition.Child>
@@ -264,17 +267,17 @@ export default function Example({ children }) {
                         />
                         {item.name}
                       </Link>
-                    ) : <button
+                    ) : (
+                      <button
                         onClick={item.action}
-                                                    className={classNames(
-                              item.current
-                                ? 'bg-gray-100 text-gray-900'
-                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                              'group rounded-md py-2 px-2 flex items-center text-base font-medium w-full'
-                            )}
-
-                        > 
-  <item.icon
+                        className={classNames(
+                          item.current
+                            ? 'bg-gray-100 text-gray-900'
+                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                          'group rounded-md py-2 px-2 flex items-center text-base font-medium w-full'
+                        )}
+                      >
+                        <item.icon
                           className={classNames(
                             item.current
                               ? 'text-gray-500'
@@ -283,112 +286,34 @@ export default function Example({ children }) {
                           )}
                           aria-hidden='true'
                         />
-                        <span className="text-sm font-medium font-inherit">
-
-  {item.name}
-
+                        <span className='text-sm font-medium font-inherit'>
+                          {item.name}
                         </span>
-
-                        </button>
+                      </button>
+                    )
                   )}
                 </nav>
-                {user?.userType === USER_TYPES.ORG ? <button
-                  type='button'
-                  onClick={() => setNewProjectModalOpen(true)}
-                  className='inline-flex mt-12 items-center w-full justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
-                >
-                  <PlusIcon className='-ml-1 mr-2 h-5 w-5' aria-hidden='true' />
-                  New Project
-                </button> : null}
+                {user?.userType === USER_TYPES.ORG ? (
+                  <button
+                    type='button'
+                    onClick={() => setNewProjectModalOpen(true)}
+                    className='inline-flex mt-12 items-center w-full justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
+                  >
+                    <PlusIcon
+                      className='-ml-1 mr-2 h-5 w-5'
+                      aria-hidden='true'
+                    />
+                    New Project
+                  </button>
+                ) : null}
               </div>
             </div>
           </div>
         </div>
 
         <div className='md:pl-64'>
-          <div className='max-w-6xl mx-auto flex flex-col md:px-8 xl:px-0'>
-            <div className='sticky top-0 z-10 flex-shrink-0 h-16 bg-white border-b border-gray-200 flex px-4'>
-              <button
-                type='button'
-                className='border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden'
-                onClick={() => setSidebarOpen(true)}
-              >
-                <span className='sr-only'>Open sidebar</span>
-                <MenuAlt2Icon className='h-6 w-6' aria-hidden='true' />
-              </button>
-              <div className='flex-1 flex justify-between px-4 md:px-0'>
-                <div className='flex-1 flex'>
-                  <form className='w-full flex md:ml-0' action='#' method='GET'>
-                    <label htmlFor='search-field' className='sr-only'>
-                      Search
-                    </label>
-                    <div className='relative w-full text-gray-400 focus-within:text-gray-600'>
-                      <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center'>
-                        <SearchIcon className='h-5 w-5' aria-hidden='true' />
-                      </div>
-                      <input
-                        id='search-field'
-                        className='block h-full w-full border-transparent py-2 pl-8 pr-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm'
-                        placeholder='Search'
-                        type='search'
-                        name='search'
-                      />
-                    </div>
-                  </form>
-                </div>
-                <div className='ml-4 flex items-center md:ml-6'>
-                  <Notifications />
-                  {/* Profile dropdown */}
-                  <Menu as='div' className='ml-3 relative'>
-                    <div>
-                      <Menu.Button className='max-w-xs flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'>
-                        <span className='sr-only'>Open user menu</span>
-                        <ProfilePicture
-                          src={profilePicture}
-                          alt='profile picture'
-                          size='h-8 w-8'
-                        />
-                      </Menu.Button>
-                    </div>
-                    <Transition
-                      as={Fragment}
-                      enter='transition ease-out duration-100'
-                      enterFrom='transform opacity-0 scale-95'
-                      enterTo='transform opacity-100 scale-100'
-                      leave='transition ease-in duration-75'
-                      leaveFrom='transform opacity-100 scale-100'
-                      leaveTo='transform opacity-0 scale-95'
-                    >
-                      <Menu.Items className='origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none'>
-                        {userNavigation.map((item) => (
-                          <Menu.Item key={item.name}>
-                            {({ active }) =>
-                              item.href ? (
-                                <Link
-                                  href={item.href}
-                                  className={classNames(
-                                    active ? 'bg-gray-100' : '',
-                                    'block py-2 px-4 text-sm text-gray-700'
-                                  )}
-                                >
-                                  {item.name}
-                                </Link>
-                              ) : (
-                                <button onClick={item.onClick} className='block text-left hover:bg-gray-100 py-2 px-4 text-sm text-gray-700 w-full'>
-                                  {item.name}
-                                </button>
-                              )
-                            }
-                          </Menu.Item>
-                        ))}
-                      </Menu.Items>
-                    </Transition>
-                  </Menu>
-                </div>
-              </div>
-            </div>
-
-            <main className='flex-1 h-full w-full'>
+          <div className='mx-auto flex flex-col md:px-8 xl:px-0'>
+            <div className='sticky top-0 z-10 '>
               {displayAnnouncement && (
                 <HeaderAlert
                   btnTitle={'Verify now'}
@@ -399,6 +324,82 @@ export default function Example({ children }) {
                   renderContent={() => <MissingStripeAnnouncement />}
                 />
               )}
+
+              <div className='flex-shrink-0 h-16 bg-white border-b border-gray-200 flex px-4'>
+                <button
+                  type='button'
+                  className='border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden'
+                  onClick={() => setSidebarOpen(true)}
+                >
+                  <span className='sr-only'>Open sidebar</span>
+                  <MenuAlt2Icon className='h-6 w-6' aria-hidden='true' />
+                </button>
+                <div className='flex-1 flex justify-between px-4 md:px-0'>
+                  <div className='flex-1 flex'>
+                    <div className='w-full flex md:ml-0'>
+                      <label htmlFor='search-field' className='sr-only'>
+                        Search
+                      </label>
+                      <Spotlight />
+                    </div>
+                  </div>
+                  <div className='ml-4 flex items-center md:ml-6'>
+                    <Notifications />
+                    {/* Profile dropdown */}
+                    <Menu as='div' className='ml-3 relative'>
+                      <div>
+                        <Menu.Button className='max-w-xs flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'>
+                          <span className='sr-only'>Open user menu</span>
+                          <ProfilePicture
+                            src={profilePicture}
+                            alt='profile picture'
+                            size='h-8 w-8'
+                          />
+                        </Menu.Button>
+                      </div>
+                      <Transition
+                        as={Fragment}
+                        enter='transition ease-out duration-100'
+                        enterFrom='transform opacity-0 scale-95'
+                        enterTo='transform opacity-100 scale-100'
+                        leave='transition ease-in duration-75'
+                        leaveFrom='transform opacity-100 scale-100'
+                        leaveTo='transform opacity-0 scale-95'
+                      >
+                        <Menu.Items className='origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 focus:outline-none'>
+                          {userNavigation.map((item) => (
+                            <Menu.Item key={item.name}>
+                              {({ active }) =>
+                                item.href ? (
+                                  <Link
+                                    href={item.href}
+                                    className={classNames(
+                                      active ? 'bg-gray-100' : '',
+                                      'block py-2 px-4 text-sm text-gray-700'
+                                    )}
+                                  >
+                                    {item.name}
+                                  </Link>
+                                ) : (
+                                  <button
+                                    onClick={item.onClick}
+                                    className='block text-left hover:bg-gray-100 py-2 px-4 text-sm text-gray-700 w-full'
+                                  >
+                                    {item.name}
+                                  </button>
+                                )
+                              }
+                            </Menu.Item>
+                          ))}
+                        </Menu.Items>
+                      </Transition>
+                    </Menu>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <main className='flex-1 h-full w-full'>
               <div className='py-6 h-full w-full'>
                 <div className='mx-auto px-4 sm:px-6 md:px-8' />
                 <div className='mx-auto px-4 sm:px-6 md:px-8 h-full w-full'>

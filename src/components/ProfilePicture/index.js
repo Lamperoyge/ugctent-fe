@@ -1,7 +1,7 @@
 export default function ProfilePicture({
   src,
   size = 'h-16 w-16',
-  className = 'rounded-full',
+  className = 'rounded-full object-cover',
 }) {
   if (!src)
     return (
