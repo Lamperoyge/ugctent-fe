@@ -14,10 +14,12 @@ module.exports = {
         primaryYellow: "#FCD900",
       },
       minWidth: {
-        "1/2": "50%",
-        "1/3": "33%",
-        "1/4": "25%",
-        "1/5": "20%",
+        '1/2': '50%',
+        '1/3': '33%',
+        '1/4': '25%',
+        '1/5': '20%',
+        '40': '40%',
+        '30': '30%',
       },
       maxWidth: {
         "1/2": "50%",
@@ -27,5 +29,9 @@ module.exports = {
       },
     },
   },
-  plugins: [require("@tailwindcss/forms"), require("@tailwindcss/typography")],
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/line-clamp'),
+  ],
 };

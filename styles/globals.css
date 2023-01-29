@@ -28,7 +28,7 @@ a {
 .mantine-Paper-root {
   /* overflow: auto; */
   min-width: 50%;
-  background-color: #f1f5f9;
+  /* background-color: #f1f5f9; */
 }
 /* @media (prefers-color-scheme: dark) {
   html {
