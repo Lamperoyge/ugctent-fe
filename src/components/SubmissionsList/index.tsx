@@ -1,31 +1,20 @@
-//@ts-nocheck
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import { GET_SUBMISSIONS_FOR_JOB } from 'graphql/queries';
-import {
-  LIMIT,
-  SUBMISSION_STATUS_COLORS,
-  SUBMISSION_STATUS_LABELS,
-} from 'utils/constants';
-import Tabs from 'components/Tabs';
+import { LIMIT } from 'utils/constants';
 import { LightSpinner } from 'components/Shared/Spinner';
 import { PuzzleIcon } from '@heroicons/react/outline';
-import {
-  CheckCircleIcon,
-  ChevronRightIcon,
-  CurrencyDollarIcon,
-} from '@heroicons/react/solid';
-import Link from 'next/link';
+import { ChevronRightIcon } from '@heroicons/react/solid';
 import InfiniteScroll from 'components/InfiniteScroll';
 import { useEffect, useState } from 'react';
 import SubmissionView from 'components/SubmissionView';
+import StatusChip from 'components/StatusChip';
 import { useAuth } from 'hooks';
 
 const SubmissionsList = ({ jobId, assignee }) => {
   const [activeSubmissionId, setActiveSubmissionId] = useState(null);
   const [hasMore, setHasMore] = useState(false);
-  const user:any = useAuth();
+  const user: any = useAuth();
 
-  
   const [getSubmissions, { data, fetchMore, loading }] = useLazyQuery(
     GET_SUBMISSIONS_FOR_JOB,
 
@@ -36,24 +25,24 @@ const SubmissionsList = ({ jobId, assignee }) => {
     }
   );
 
-
-
   useEffect(() => {
-    if(jobId) {
+    if (jobId) {
       getSubmissions({
         variables: {
           jobId,
           limit: LIMIT,
           offset: 0,
-        }
-      }).then(({data}) => setHasMore(data?.getSubmissionsForJob?.length >= LIMIT));  
+        },
+      }).then(({ data }) =>
+        setHasMore(data?.getSubmissionsForJob?.length >= LIMIT)
+      );
     }
-  }, [jobId])
+  }, [jobId]);
 
   const handleFetchMore = () =>
     fetchMore({
       variables: {
-          offset: data?.getSubmissionsForJob?.length,
+        offset: data?.getSubmissionsForJob?.length,
       },
     }).then(({ data }) => {
       setHasMore(data?.getSubmissionsForJob?.length >= LIMIT);
@@ -95,15 +84,13 @@ const SubmissionsList = ({ jobId, assignee }) => {
             ) : (
               <InfiniteScroll onLoadMore={handleFetchMore} hasMore={hasMore}>
                 {data?.getSubmissionsForJob?.map((submission) => {
-                  const statusColor =
-                    SUBMISSION_STATUS_COLORS[submission?.status];
                   return (
                     <li
                       key={submission._id}
                       onClick={() => setActiveSubmissionId(submission._id)}
                     >
                       <div className='flex items-center py-5 px-4 sm:py-6 sm:px-0 hover:bg-gray-100 cursor-pointer'>
-                        <div className='min-w-0 flex-1 flex items-center'>
+                        <div className='min-w-0 flex-1 flex items-start'>
                           <div className='flex-shrink-0'>
                             {submission.creator.profilePicture ? (
                               <img
@@ -124,19 +111,22 @@ const SubmissionsList = ({ jobId, assignee }) => {
                             )}
                           </div>
                           <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4'>
-                            <div>
-                              <span
-                                className={`inline-flex border border-${statusColor}-400 my-2 items-center px-2 py-0 rounded-full text-xs font-bold bg-${statusColor}-100 text-${statusColor}-800`}
-                              >
-                                <svg
-                                  className={`-ml-1 mr-1.5 h-2 w-2 text-${statusColor}-400`}
-                                  fill='currentColor'
-                                  viewBox='0 0 8 8'
-                                >
-                                  <circle cx={4} cy={4} r={3} />
-                                </svg>
-                                {SUBMISSION_STATUS_LABELS[submission.status]}{' '}
-                              </span>
+                            <div className='flex gap-2 flex-col'>
+                              <div>
+                                <StatusChip status={submission?.status} />
+                              </div>
+                              <p className='text-sm text-gray-500'>
+                                  Submitted on {' '}
+                                  <time
+                                    dateTime={new Date(
+                                      parseInt(submission?.createdAt, 10)
+                                    ).toLocaleDateString()}
+                                  >
+                                    {new Date(
+                                      parseInt(submission?.createdAt, 10)
+                                    ).toLocaleDateString()}
+                                  </time>
+                                  </p>
 
                               <p className='text-sm font-medium text-secondary truncate'>
                                 {submission.creator.firstName +
@@ -148,24 +138,6 @@ const SubmissionsList = ({ jobId, assignee }) => {
                                   {submission.description.slice(0.3) + '...'}
                                 </span>
                               </p>
-                            </div>
-                            <div className='hidden md:block'>
-                              <div>
-                                <p className='text-sm text-gray-900'>
-                                  Submitted on{' '}
-                                  <time
-                                    dateTime={
-                                      new Date(
-                                        parseInt(submission?.createdAt, 10)
-                                      )
-                                    }
-                                  >
-                                    {new Date(
-                                      parseInt(submission?.createdAt, 10)
-                                    ).toLocaleDateString()}
-                                  </time>
-                                </p>
-                              </div>
                             </div>
                           </div>
                         </div>

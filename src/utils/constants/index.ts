@@ -52,6 +52,16 @@ export const JOB_STATUS_LABELS_AND_COLORS = {
     textColor: 'text-green-800',
     chipColor: 'bg-green-100',
   },
+  [JOB_SUBMISSION_STATUS.ACCEPTED]: {
+    label: 'Accepted',
+    textColor: 'text-green-800',
+    chipColor: 'bg-green-100',
+  },
+  [JOB_SUBMISSION_STATUS.REJECTED]: {
+    label: 'Rejected',
+    textColor: 'text-red-800',
+    chipColor: 'bg-red-100',
+  },
   [JOB_STATUS.ARCHIVED]: {
     label: 'Archived',
     textColor: 'text-slate-800',

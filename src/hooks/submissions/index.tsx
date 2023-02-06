@@ -10,11 +10,11 @@ export const useSubmission = () => {
   });
 
   const [approveJobSubmission] = useMutation(APPROVE_JOB_SUBMISSION, {
-    refetchQueries: ['getSubmissionById'],
+    refetchQueries: ['getSubmissionById', 'getSubmissionsForJob'],
   });
 
   const [rejectJobSubmission] = useMutation(REJECT_JOB_SUBMISSION, {
-    refetchQueries: ['getSubmissionsForJob'],
+    refetchQueries: ['getSubmissionsForJob', 'getSubmissionById'],
   });
   // TODO - Add Approve / Reject / Req changes
 

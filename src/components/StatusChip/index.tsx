@@ -5,9 +5,9 @@ export default function StatusChip({ status }) {
 
   return (
     <p
-      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${jobStatusLabelData.chipColor} ${jobStatusLabelData.textColor}`}
+      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${jobStatusLabelData?.chipColor} ${jobStatusLabelData?.textColor}`}
     >
-      {jobStatusLabelData.label}
+      {jobStatusLabelData?.label}
     </p>
   );
 }

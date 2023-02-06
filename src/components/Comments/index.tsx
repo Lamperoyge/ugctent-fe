@@ -123,13 +123,13 @@ export default function Comments({ entityId, entityType, disabled = false }) {
       <div className='bg-white shadow sm:rounded-lg sm:overflow-hidden'>
         <div className='divide-y divide-gray-200'>
           <div className='px-4 py-5 sm:px-6'>
-            <h2 id='notes-title' className='text-lg font-medium text-gray-900'>
+            <h2 id='notes-title' className='text-sm font-medium text-gray-500'>
               Discussion
             </h2>
           </div>
           <div className='px-4 py-6 sm:px-6 max-h-96 overflow-auto flex flex-col-reverse'>
             {!loading && !error && !data?.getCommentsByEntityId?.length && (
-              <div>No messages yet</div>
+              <div className="text-sm text-gray-500">No messages yet</div>
             )}
             <div>
               <div className='space-y-8'>

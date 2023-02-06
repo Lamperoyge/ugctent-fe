@@ -52,7 +52,7 @@ const CreateSubmission = ({ jobId }) => {
             return data.src;
           })
         );
-      const attachments = await getFileStrings(values.attachments);
+      const attachments = values.attachments?.length ? await getFileStrings(values.attachments) : [];
       await createJobSubmission({
         variables: {
           input: {
