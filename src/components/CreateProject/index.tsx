@@ -120,7 +120,7 @@ const CreateProjectModal = ({ open, onClose, existingJob }:any) => {
             return i;
           })
         );
-      const attachments = await getFileStrings(values.attachments);
+      const attachments = values?.attachments?.length ? await getFileStrings(values.attachments): null
       submitAction()({
         variables: {
           input: {

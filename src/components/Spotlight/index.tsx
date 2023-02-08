@@ -111,7 +111,6 @@ export default function Spotlight() {
     return {};
   }, [data]);
 
-  console.log(open, 'OPEN12')
   return (
     <>
       <div
