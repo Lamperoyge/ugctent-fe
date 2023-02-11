@@ -29,10 +29,12 @@ import {
 import Skills from 'components/JobsPageComponents/skills';
 import Category from 'components/JobsPageComponents/category';
 import Assignee from 'components/JobsPageComponents/assignee';
+import RatingPrompt from 'components/RatingPrompt';
 
 
 export default function ProjectPage() {
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isFeedbackPromptOpen, setIsFeedbackPromptOpen] = useState(false);
   const [isCreateApplicationModalOpen, setIsCreateApplicationModalOpen] =
     useState(false);
   const router = useRouter();
@@ -41,6 +43,9 @@ export default function ProjectPage() {
   });
   const [completeJob] = useMutation(COMPLETE_JOB, {
     refetchQueries: ['getJobById'],
+    onCompleted: () => {
+      setIsFeedbackPromptOpen(true);
+    }
   });
   const { user, isStripeVerified }:any = useAuth();
   const { data } = useQuery(GET_JOB_BY_ID, {
@@ -93,8 +98,13 @@ export default function ProjectPage() {
 
   const toggleEdit = () => setIsEditMode((prev) => !prev);
 
+  const handleComplete = async () => {
+    await completeJob({ variables: { jobId: job?._id } })
+
+  };
   return (
     <>
+    <RatingPrompt job={job} handleClose={() => setIsFeedbackPromptOpen(false)} opened={isFeedbackPromptOpen}/>
       <CreateJobApplication
         opened={isCreateApplicationModalOpen}
         onClose={toggleCreateApplicationModal}
@@ -155,9 +165,7 @@ export default function ProjectPage() {
                         {canCompleteJob && (
                           <button
                             type='button'
-                            onClick={() =>
-                              completeJob({ variables: { jobId: job?._id } })
-                            }
+                            onClick={handleComplete}
                             className='inline-flex justify-center px-4 py-2 border border-green-400 shadow-sm text-sm font-medium rounded-md text-green-400 bg-white hover:bg-green-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-400'
                           >
                             <CheckIcon
