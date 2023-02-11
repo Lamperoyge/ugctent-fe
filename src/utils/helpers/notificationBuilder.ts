@@ -57,6 +57,36 @@ const buildJobCompletedNotificationToAssignee = notification => {
     }
 }
 
+const ENITITY_TYPE_LABELS = {
+    [NOTIFICATION_ENTITY_TYPES.JOB]: 'job',
+    [NOTIFICATION_ENTITY_TYPES.JOB_APPLICATION]: 'job application',
+    [NOTIFICATION_ENTITY_TYPES.SUBMISSION]: 'submission',
+    [NOTIFICATION_ENTITY_TYPES.COMMENT]: 'comment'
+}
+
+const buildCommentMentionNotification = notification => {
+    let link = '';
+    if(notification?.entityType === NOTIFICATION_ENTITY_TYPES.JOB_APPLICATION) {
+        link = `/projects/${notification?.entity?.parentEntityId}/applications/${notification?.entityId}`
+    }
+
+    if(notification?.entityType === NOTIFICATION_ENTITY_TYPES.SUBMISSION) {
+        link = `/projects/${notification?.entity?.parentEntityId}?submission=${notification?.entityId}`
+    }
+
+    if(notification?.entityType === NOTIFICATION_ENTITY_TYPES.JOB) {
+        link = `/projects/${notification?.entityId}`
+    }
+
+    const subtitle = notification?.entity?.description ? `${notification?.entity?.description?.substring(0, 15)}` : null;
+    return {
+        avatar: notification?.creator?.avatar,
+        fullName: `${notification?.creator?.firstName} ${notification?.creator?.lastName}`,
+        title: `left a comment on ${ENITITY_TYPE_LABELS[notification?.entityType]}`,
+        subtitle: subtitle?.length > 15 ? `${subtitle}...` : subtitle,
+        link,
+    }
+}
 export default function notificationBuilder(notification) {
 
     switch (notification.notificationType) {
@@ -66,6 +96,8 @@ export default function notificationBuilder(notification) {
             return buildJobApplicationAcceptedNotification(notification);
         case NOTIFICATION_TYPES.JOB_STATUS_COMPLETED:
             return buildJobCompletedNotificationToAssignee(notification);
+        case NOTIFICATION_TYPES.COMMENT_MENTION:
+            return buildCommentMentionNotification(notification);
         default:
             return null
     }

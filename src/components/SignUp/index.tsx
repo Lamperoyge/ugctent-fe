@@ -18,7 +18,7 @@ const SignUp = () => {
 
   const config = [
     {
-      label: 'Email',
+      label:  'Email',
       type: 'email',
       name: 'email',
       placeholder: 'Enter your email',
@@ -126,13 +126,13 @@ const SignUp = () => {
                                       htmlFor={`${item.name}-${idx}`}
                                       className='ml-3 text-sm text-gray-500'
                                     >
-                                      {<item.label />}
+                                      {typeof item.label === 'string' ? item.label : <item.label />}
                                     </label>
                                   </div>
                                 ) : (
                                   <>
                                     <label className='block text-sm font-medium text-gray-700'>
-                                      {<item.label />}
+                                    {typeof item.label === 'string' ? item.label : <item.label />}
                                     </label>
                                     <div className='mt-1'>
                                       <input
