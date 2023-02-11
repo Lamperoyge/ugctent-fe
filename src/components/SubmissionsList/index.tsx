@@ -9,12 +9,14 @@ import { useEffect, useState } from 'react';
 import SubmissionView from 'components/SubmissionView';
 import StatusChip from 'components/StatusChip';
 import { useAuth } from 'hooks';
+import { useRouter } from 'next/router';
 
 const SubmissionsList = ({ jobId, assignee }) => {
   const [activeSubmissionId, setActiveSubmissionId] = useState(null);
   const [hasMore, setHasMore] = useState(false);
   const user: any = useAuth();
 
+  const router = useRouter();
   const [getSubmissions, { data, fetchMore, loading }] = useLazyQuery(
     GET_SUBMISSIONS_FOR_JOB,
 
@@ -39,6 +41,12 @@ const SubmissionsList = ({ jobId, assignee }) => {
     }
   }, [jobId]);
 
+  useEffect(() => {
+    if (router.query.submission) {
+      setActiveSubmissionId(router.query.submission);
+    }
+  }, [router.query.submission])
+
   const handleFetchMore = () =>
     fetchMore({
       variables: {
@@ -48,7 +56,10 @@ const SubmissionsList = ({ jobId, assignee }) => {
       setHasMore(data?.getSubmissionsForJob?.length >= LIMIT);
     });
 
-  const handleClose = () => setActiveSubmissionId(null);
+  const handleClose = () => {
+    setActiveSubmissionId(null);
+    router.push(`/projects/${jobId}`, undefined, { shallow: true });
+  }
 
   return (
     <>

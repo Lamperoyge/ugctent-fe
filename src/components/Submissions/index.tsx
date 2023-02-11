@@ -19,8 +19,8 @@ const validationSchema = yup.object().shape({
   attachments: yup.array().of(yup.mixed()).max(5).nullable(),
   links: yup.array().of(
     yup.object().shape({
-      displayName: yup.string().required('Display name is required'),
-      url: yup.string().required('URL is required'),
+      displayName: yup.string(),
+      url: yup.string(),
     })
   ),
 });
