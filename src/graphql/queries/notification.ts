@@ -7,5 +7,6 @@ export const GET_NOTIFICATIONS = gql`
       ...NotificationFragment
     }
   }
+
   ${NotificationFragment}
 `;

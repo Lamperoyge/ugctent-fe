@@ -6,7 +6,7 @@ export default function ProfilePicture({
   if (!src)
     return (
       <span
-        className={`inline-block ${size} rounded-full overflow-hidden bg-gray-100 ${className}}`}
+        className={`inline-block ${size} rounded-full overflow-hidden bg-gray-100 ${className}`}
       >
         <svg
           className='h-full w-full text-gray-300'
