@@ -18,7 +18,7 @@ const ChatPage = ({ job }) => {
   const [open, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
 
-  const [getRoom, {data}] = useLazyQuery(GET_ROOM_FOR_MEMBER_IDS, {
+  const [getRoom, {data, fetchMore}] = useLazyQuery(GET_ROOM_FOR_MEMBER_IDS, {
     onCompleted: (data) => {
       setMessages([
         ...messages,
@@ -41,7 +41,7 @@ const ChatPage = ({ job }) => {
             senderId: user._id,
             receiverId:
               user._id === creator.userId ? assignee.userId : creator.userId,
-            limit: LIMIT,
+            limit: 500,
             offset: 0,
           },
         });
@@ -50,23 +50,6 @@ const ChatPage = ({ job }) => {
       }
     }
   }, [open]);
-
-  useEffect(() => {
-    socketClient?.on('getMessage', (socketData) => {
-      if(socketData.roomId !== data?.getRoomForMemberIds?._id) {
-        return
-      }
-      if(open) {
-        const messageClone = [...messages];
-        messageClone.push({
-          creator: socketData.createdBy,
-          message: socketData.text,
-          timestamp: socketData.timestamp
-        });
-        setMessages(messageClone);
-      }
-    });
-  }, [socketClient, messages]);
 
   const sendMessage = () => {
     const newMessage = {
@@ -79,6 +62,41 @@ const ChatPage = ({ job }) => {
     socketClient.emit('sendMessage', newMessage);
     ref.current.value = '';
   };
+
+  const handleKeydown = (e) => {
+    if (e.key === 'Escape') {
+      setIsOpen(false);
+    }
+    if(e.key === 'Enter' && ref.current.value) {
+      console.log(ref.current.value, 'val')
+      sendMessage();
+    }
+  }
+  
+  useEffect(() => {
+    if(data?.getRoomForMemberIds?._id) {
+      document.addEventListener('keydown', handleKeydown)
+    }
+    return () => document.removeEventListener('keydown', handleKeydown)
+  }, [data?.getRoomForMemberIds?._id, socketClient])
+
+  useEffect(() => {
+    socketClient?.on('getMessage', (socketData) => {
+      if(socketData.roomId !== data?.getRoomForMemberIds?._id) {
+        return
+      }
+      if(open) {
+        const messageClone = [...messages];
+        messageClone.unshift({
+          creator: socketData.createdBy,
+          message: socketData.text,
+          timestamp: socketData.timestamp
+        });
+        setMessages(messageClone);
+      }
+    });
+  }, [socketClient, messages]);
+
 
   const toggleDrawer = () => setIsOpen((prev) => !prev);
   return (
@@ -113,7 +131,8 @@ const ChatPage = ({ job }) => {
             </div>
             <div className='flex flex-col-reverse overflow-auto'>
               <div className='flex flex-col gap-4 pt-8 pb-24 px-6'>
-                <div className='flex flex-col gap-4'>
+                <div className='flex gap-4 flex-col-reverse'>
+
                   {messages.map((message, idx) => (
                     <div
                       key={idx}
@@ -147,12 +166,6 @@ const ChatPage = ({ job }) => {
             </div>
           </div>
         </div>
-        {/* <div className="flex gap-4 flex-col px-8 py-4"> */}
-        {/* <h1 className='text-4xl font-bold text-gray-900 pt-5 text-left w-full'>
-        Chat
-      </h1> */}
-        {/* <div></div> */}
-        {/* </div> */}
       </Drawer>
     </>
   );

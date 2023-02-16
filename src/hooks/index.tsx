@@ -13,7 +13,8 @@ import {
   CREATE_JOB_APPLICATION,
   APPROVE_JOB_APPLICATION,
   REJECT_JOB_APPLICATION,
-  CREATE_JOB_SUBMISSION
+  CREATE_JOB_SUBMISSION,
+  UPDATE_JOB_SUBMISSION
 } from 'graphql/mutations';
 import apolloClient from 'services/apollo-client';
 
@@ -163,7 +164,11 @@ export const useJobSubmissions = () => {
   const [createJobSubmission] = useMutation(CREATE_JOB_SUBMISSION, {
     refetchQueries: ['getJobById', 'getSubmissionsForJob'],
   });
+  const [updateJobSubmission] = useMutation(UPDATE_JOB_SUBMISSION, {
+    refetchQueries: ['getJobById', 'getSubmissionsForJob', 'getSubmissionById'],
+  })
   return {
     createJobSubmission,
+    updateJobSubmission
   };
 }

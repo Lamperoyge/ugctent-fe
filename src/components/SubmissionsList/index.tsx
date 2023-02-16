@@ -75,7 +75,7 @@ const SubmissionsList = ({ jobId, assignee }) => {
           </div>
           <ul
             role='list'
-            className='mt-5 border-t border-gray-200 divide-y divide-gray-200 sm:mt-0 sm:border-t-0'
+            className='mt-5 border-t border-gray-200 divide-y divide-gray-200 sm:mt-8 sm:border-t-0 rounded-xl'
           >
             {!loading && data?.getSubmissionsForJob?.length === 0 ? (
               <div className='w-full h-full flex justify-center items-center flex-col gap-4'>
@@ -100,8 +100,8 @@ const SubmissionsList = ({ jobId, assignee }) => {
                       key={submission._id}
                       onClick={() => setActiveSubmissionId(submission._id)}
                     >
-                      <div className='flex items-center py-5 px-4 sm:py-6 sm:px-0 hover:bg-gray-100 cursor-pointer'>
-                        <div className='min-w-0 flex-1 flex items-start'>
+                      <div className='flex items-center py-5 px-4 sm:py-6 sm:px-0 hover:bg-gray-100 cursor-pointer rounded-xl'>
+                        <div className='min-w-0 flex-1 flex items-start px-4'>
                           <div className='flex-shrink-0'>
                             {submission.creator.profilePicture ? (
                               <img

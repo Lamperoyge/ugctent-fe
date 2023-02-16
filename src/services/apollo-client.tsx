@@ -39,7 +39,7 @@ const cache = new InMemoryCache({
         getJobsForBusinessUser: {
           keyArgs: false,
           merge: offsetLimitPaginationInput
-        }
+        },
       }
     }
   }
