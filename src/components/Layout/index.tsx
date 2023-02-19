@@ -113,7 +113,7 @@ export default function Layout({ children }) {
         />
       )}
 
-      <div>
+      <div className="h-full">
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
             as='div'
@@ -311,8 +311,8 @@ export default function Layout({ children }) {
           </div>
         </div>
 
-        <div className='md:pl-64'>
-          <div className='mx-auto flex flex-col md:px-8 xl:px-0'>
+        <div className='md:pl-64 h-full'>
+          <div className='mx-auto flex flex-col md:px-8 xl:px-0 h-full'>
             <div className='sticky top-0 z-10 '>
               {displayAnnouncement && (
                 <HeaderAlert

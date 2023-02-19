@@ -1,11 +1,7 @@
 import { useState } from "react";
 import { useGetSkills } from "hooks";
 
-import {
-  StarIcon,
-  UserCircleIcon,
-  MenuIcon,
-} from "@heroicons/react/solid";
+import { StarIcon, UserCircleIcon, MenuIcon } from "@heroicons/react/solid";
 import { FaFacebook, FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa";
 
 import PanelContainer from "components/PanelContainer";
@@ -106,236 +102,240 @@ const CreatorProfilePage = ({ data, values, handleChange, isEditMode }) => {
     skills.filter((skill) => skillIds.find((skillId) => skill._id === skillId));
 
   return (
-    <div className="grid grid-cols-6 grid-rows-profileLayoutMobile lg:grid-rows-profileLayout h-full w-full px-10 xl:px-16 py-10 gap-x-10 lg:gap-x-1 2xl:gap-x-14 gap-y-8">
-      <PanelContainer extraClassName="flex flex-col justify-center items-center row-start-1 row-span-2 col-start-1 col-span-6 lg:row-start-1 lg:row-span-2 lg:col-start-1 lg:col-span-2">
-        <h1 className="font-sans font-semibold text-3xl">
-          {firstName} {lastName}
-        </h1>
-        <h2 className="text-orange-500 font-medium">Product Designer</h2>
-        <img
-          src={profilePicture}
-          className="object-cover rounded-full aspect-square overflow-hidden mt-5"
-          alt="Profile image of the user"
-        />
-      </PanelContainer>
+    <div className="flex flex-col h-full w-full px-10 xl:px-16 py-10 gap-x-10 lg:gap-x-1 2xl:gap-x-14 gap-y-8">
+      <div className="flex flex-col lg:flex-row justify-between w-full gap-y-10 lg:gap-x-10">
+        <PanelContainer extraClassName="flex flex-1 flex-col justify-center items-center">
+          <h1 className="font-sans font-semibold text-3xl">
+            {firstName} {lastName}
+          </h1>
+          <h2 className="text-orange-500 font-medium">Product Designer</h2>
+          <img
+            src={profilePicture}
+            className="max-w-1/1.3 xl:max-w-1/2 object-cover rounded-full aspect-square overflow-hidden mt-5"
+            alt="Profile image of the user"
+          />
+        </PanelContainer>
 
-      <PanelContainer extraClassName="flex flex-col justify-between w-full row-start-5 row-span-2 col-start-1 col-span-6 lg:row-start-1 lg:row-span-2 lg:col-start-3 lg:col-span-4 w-full">
-        <div className="flex-col w-full">
-          <div className="flex justify-between items-center w-full">
-            <div className="flex flex-col">
-              <ProfileSectionTitle>Rankings</ProfileSectionTitle>
-              <div className="flex items-center">
-                <span className="text-xl text-slate-500">8.6</span>
-                <div className="flex pl-2">
-                  {[1, 2, 3, 4, 5].map((val) => (
-                    <StarIcon
-                      className={
-                        val !== 5
-                          ? "text-orange-500 h-6 w-6"
-                          : "text-slate-500 h-6 w-6 opacity-30"
-                      }
-                    ></StarIcon>
-                  ))}
+        <PanelContainer extraClassName="flex flex-1 basis-1/3 flex-col justify-between">
+          <div className="flex-col w-full">
+            <div className="flex justify-between items-center w-full">
+              <div className="flex flex-col">
+                <ProfileSectionTitle>Rankings</ProfileSectionTitle>
+                <div className="flex items-center">
+                  <span className="text-xl text-slate-500">8.6</span>
+                  <div className="flex pl-2">
+                    {[1, 2, 3, 4, 5].map((val) => (
+                      <StarIcon
+                        className={
+                          val !== 5
+                            ? "text-orange-500 h-6 w-6"
+                            : "text-slate-500 h-6 w-6 opacity-30"
+                        }
+                      ></StarIcon>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <ProfileSection title="Contact Information">
-          <div className="flex flex-col gap-5">
-            <div className="flex items-center text-slate-900">
-              <div className="w-16 mr-6">Website:</div>
-              <EditableSection
-                inputProps={{
-                  type: "text",
-                  name: "website",
-                  value: values.website,
-                  onChange: handleChange,
-                  id: "website",
-                  autoComplete: "Website",
-                  className:
-                    "mt-1 focus:ring-secondary focus:border-secondary block w-1/2 shadow-sm sm:text-sm border-gray-300 rounded-md",
-                }}
-                isEditMode={isEditMode}
-                type="input"
-              >
-                <a
-                  className="text-orange-500 ml-10"
-                  target="_blank"
-                  href={website}
+          <ProfileSection title="Contact Information">
+            <div className="flex flex-col gap-5">
+              <div className="flex items-center text-slate-900">
+                <div className="w-16 mr-6">Website:</div>
+                <EditableSection
+                  inputProps={{
+                    type: "text",
+                    name: "website",
+                    value: values.website,
+                    onChange: handleChange,
+                    id: "website",
+                    autoComplete: "Website",
+                    className:
+                      "mt-1 focus:ring-secondary focus:border-secondary block w-1/2 shadow-sm sm:text-sm border-gray-300 rounded-md",
+                  }}
+                  isEditMode={isEditMode}
+                  type="input"
                 >
-                  {website}
-                </a>
-              </EditableSection>
-            </div>
+                  <a
+                    className="text-orange-500 ml-10"
+                    target="_blank"
+                    href={website}
+                  >
+                    {website}
+                  </a>
+                </EditableSection>
+              </div>
 
-            <div className="flex items-center text-slate-900">
-              <div className="w-16 mr-6">Email:</div>
-              <EditableSection
-                inputProps={{
-                  type: "text",
-                  name: "email",
-                  value: values.email,
-                  onChange: handleChange,
-                  id: "email",
-                  autoComplete: "Email",
-                  className:
-                    "mt-1 focus:ring-secondary focus:border-secondary block w-1/2 shadow-sm sm:text-sm border-gray-300 rounded-md",
-                }}
-                isEditMode={isEditMode}
-                type="input"
-              >
-                <a
-                  className="text-orange-500 ml-10"
-                  target="_blank"
-                  href={email}
+              <div className="flex items-center text-slate-900">
+                <div className="w-16 mr-6">Email:</div>
+                <EditableSection
+                  inputProps={{
+                    type: "text",
+                    name: "email",
+                    value: values.email,
+                    onChange: handleChange,
+                    id: "email",
+                    autoComplete: "Email",
+                    className:
+                      "mt-1 focus:ring-secondary focus:border-secondary block w-1/2 shadow-sm sm:text-sm border-gray-300 rounded-md",
+                  }}
+                  isEditMode={isEditMode}
+                  type="input"
                 >
-                  test.test@gmail.com
-                </a>
-              </EditableSection>
-            </div>
+                  <a
+                    className="text-orange-500 ml-10"
+                    target="_blank"
+                    href={email}
+                  >
+                    test.test@gmail.com
+                  </a>
+                </EditableSection>
+              </div>
 
-            <div className="flex text-slate-900">
-              <div className="w-16 mr-6">Platforms:</div>
-              {isEditMode && (
-                <SocialLinks
-                  onChange={handleChange}
-                  values={values}
-                  name="socialLinks"
-                />
-              )}
-              {!isEditMode && (
-                <div className="flex ml-10">
-                  {Object.keys(socialLinks).map(
-                    (platform, idx) =>
-                      socialLinks[platform] && (
-                        <a
-                          target="_blank"
-                          className={`${idx === 0 ? "ml-0" : "ml-5"}`}
-                          href={socialLinks[platform]}
-                        >
-                          {getPlatformIcon(platform)}
-                        </a>
-                      )
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        </ProfileSection>
-      </PanelContainer>
-
-      <PanelContainer extraClassName="flex flex-col gap-20 row-start-3 row-span-2 col-start-1 col-span-6 lg:col-span-2 lg:row-start-3 lg:row-span-5 h-full">
-        <ProfileSection hasTitleLine={true} title="Bio">
-          <EditableSection
-            inputProps={{
-              type: "text",
-              name: "bio",
-              value: values.bio,
-              onChange: handleChange,
-              id: "bio",
-              autoComplete: "Your description",
-              className:
-                "mt-1 focus:ring-secondary focus:border-secondary block w-full shadow-sm sm:text-sm border-gray-300 rounded-md",
-            }}
-            isEditMode={isEditMode}
-            type="input"
-          >
-            <p className="text-slate-700">{bio}</p>
-          </EditableSection>
-        </ProfileSection>
-        <ProfileSection hasTitleLine={true} title="Skills">
-          <ul className="flex flex-wrap">
-            {skills?.length &&
-              mapUserSkills().map((skill) => (
-                <li
-                  className="flex items-center border rounded-full py-1 px-3 text-xs mr-2 mb-2 font-semibold text-white bg-primaryOrange items-center"
-                  key={skill._id}
-                >
-                  <span className="block truncate">{skill.label}</span>
-                </li>
-              ))}
-          </ul>
-        </ProfileSection>
-      </PanelContainer>
-
-      <PanelContainer extraClassName="flex flex-col gap-5 row-start-8 row-span-3 col-start-1 col-span-6 lg:col-start-3 lg:col-span-4 lg:row-start-3 lg:row-span-5 w-full">
-        <div className="flex border-solid border-b-2">
-          <button
-            type="button"
-            onClick={() => setActiveTab(PROFILE_TABS.ABOUT)}
-            className={`flex items-center p-3 text-slate-500 ${
-              isAboutVisible ? activeTabStyle : ""
-            }`}
-          >
-            <UserCircleIcon className="w-8 h-8 text-slate-500"></UserCircleIcon>
-            <span className="text-slate-500 font-semibold text-xl px-2">
-              About
-            </span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab(PROFILE_TABS.WORK)}
-            className={`flex items-center p-3 text-slate-500 ${
-              isWorkVisible ? activeTabStyle : ""
-            }`}
-          >
-            <MenuIcon className="w-8 h-8" />
-            <span className="font-semibold text-xl pl-2">Work</span>
-          </button>
-        </div>
-
-        {isAboutVisible && (
-          <ProfileSection title="Basic Information" classNames="gap-3">
-            <div className="flex items-center text-slate-900 w-full">
-              <div className="w-16 mr-4">City:</div>
-              <EditableSection
-                inputProps={{
-                  type: "text",
-                  name: "city",
-                  value: values.city,
-                  onChange: handleChange,
-                  id: "city",
-                  autoComplete: "Your city",
-                  className:
-                    "mt-1 focus:ring-secondary focus:border-secondary block w-1/2 shadow-sm sm:text-sm border-gray-300 rounded-md",
-                }}
-                isEditMode={isEditMode}
-                type="input"
-              >
-                {city ? <span className="pl-1">{city}, </span> : "-"}
-              </EditableSection>
-            </div>
-
-            <div className="flex items-center text-slate-900 w-full">
-              <div className="w-16 mr-6">Country:</div>
-              <EditableSection
-                inputProps={{
-                  type: "text",
-                  name: "country",
-                  value: values.country,
-                  onChange: handleChange,
-                  id: "country",
-                  autoComplete: "Your country",
-                  className:
-                    "mt-1 focus:ring-secondary focus:border-secondary block w-1/2 shadow-sm sm:text-sm border-gray-300 rounded-md",
-                }}
-                isEditMode={isEditMode}
-                type="input"
-              >
-                {country ? (
-                  <span className="text-slate-700">{country}</span>
-                ) : (
-                  "-"
+              <div className="flex text-slate-900">
+                <div className="w-16 mr-6">Platforms:</div>
+                {isEditMode && (
+                  <SocialLinks
+                    onChange={handleChange}
+                    values={values}
+                    name="socialLinks"
+                  />
                 )}
-              </EditableSection>
+                {!isEditMode && (
+                  <div className="flex ml-10">
+                    {Object.keys(socialLinks).map(
+                      (platform, idx) =>
+                        socialLinks[platform] && (
+                          <a
+                            target="_blank"
+                            className={`${idx === 0 ? "ml-0" : "ml-5"}`}
+                            href={socialLinks[platform]}
+                          >
+                            {getPlatformIcon(platform)}
+                          </a>
+                        )
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </ProfileSection>
-        )}
+        </PanelContainer>
+      </div>
 
-        {isWorkVisible && <WorkSection works={works}></WorkSection>}
-      </PanelContainer>
+      <div className="flex flex-col lg:flex-row justify-between w-full gap-y-10 lg:gap-x-10">
+        <PanelContainer extraClassName="flex flex-1 flex-col gap-20 h-full">
+          <ProfileSection hasTitleLine={true} title="Bio">
+            <EditableSection
+              inputProps={{
+                type: "text",
+                name: "bio",
+                value: values.bio,
+                onChange: handleChange,
+                id: "bio",
+                autoComplete: "Your description",
+                className:
+                  "mt-1 focus:ring-secondary focus:border-secondary block w-full shadow-sm sm:text-sm border-gray-300 rounded-md",
+              }}
+              isEditMode={isEditMode}
+              type="input"
+            >
+              <p className="text-slate-700">{bio}</p>
+            </EditableSection>
+          </ProfileSection>
+          <ProfileSection hasTitleLine={true} title="Skills">
+            <ul className="flex flex-wrap">
+              {skills?.length &&
+                mapUserSkills().map((skill) => (
+                  <li
+                    className="flex items-center border rounded-full py-1 px-3 text-xs mr-2 mb-2 font-semibold text-white bg-primaryOrange items-center"
+                    key={skill._id}
+                  >
+                    <span className="block truncate">{skill.label}</span>
+                  </li>
+                ))}
+            </ul>
+          </ProfileSection>
+        </PanelContainer>
+
+        <PanelContainer extraClassName="flex flex-1 basis-1/3 flex-col gap-5">
+          <div className="flex border-solid border-b-2">
+            <button
+              type="button"
+              onClick={() => setActiveTab(PROFILE_TABS.ABOUT)}
+              className={`flex items-center p-3 text-slate-500 ${
+                isAboutVisible ? activeTabStyle : ""
+              }`}
+            >
+              <UserCircleIcon className="w-8 h-8 text-slate-500"></UserCircleIcon>
+              <span className="text-slate-500 font-semibold text-xl px-2">
+                About
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab(PROFILE_TABS.WORK)}
+              className={`flex items-center p-3 text-slate-500 ${
+                isWorkVisible ? activeTabStyle : ""
+              }`}
+            >
+              <MenuIcon className="w-8 h-8" />
+              <span className="font-semibold text-xl pl-2">Work</span>
+            </button>
+          </div>
+
+          {isAboutVisible && (
+            <ProfileSection title="Basic Information" classNames="gap-3">
+              <div className="flex items-center text-slate-900 w-full">
+                <div className="w-16 mr-4">City:</div>
+                <EditableSection
+                  inputProps={{
+                    type: "text",
+                    name: "city",
+                    value: values.city,
+                    onChange: handleChange,
+                    id: "city",
+                    autoComplete: "Your city",
+                    className:
+                      "mt-1 focus:ring-secondary focus:border-secondary block w-1/2 shadow-sm sm:text-sm border-gray-300 rounded-md",
+                  }}
+                  isEditMode={isEditMode}
+                  type="input"
+                >
+                  {city ? <span className="pl-1">{city}, </span> : "-"}
+                </EditableSection>
+              </div>
+
+              <div className="flex items-center text-slate-900 w-full">
+                <div className="w-16 mr-6">Country:</div>
+                <EditableSection
+                  inputProps={{
+                    type: "text",
+                    name: "country",
+                    value: values.country,
+                    onChange: handleChange,
+                    id: "country",
+                    autoComplete: "Your country",
+                    className:
+                      "mt-1 focus:ring-secondary focus:border-secondary block w-1/2 shadow-sm sm:text-sm border-gray-300 rounded-md",
+                  }}
+                  isEditMode={isEditMode}
+                  type="input"
+                >
+                  {country ? (
+                    <span className="text-slate-700">{country}</span>
+                  ) : (
+                    "-"
+                  )}
+                </EditableSection>
+              </div>
+            </ProfileSection>
+          )}
+
+          {isWorkVisible && <WorkSection works={works}></WorkSection>}
+        </PanelContainer>
+      </div>
     </div>
   );
 };
