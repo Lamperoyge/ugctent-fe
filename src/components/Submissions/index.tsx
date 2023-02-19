@@ -19,28 +19,30 @@ const validationSchema = yup.object().shape({
   attachments: yup.array().of(yup.mixed()).max(5).nullable(),
   links: yup.array().of(
     yup.object().shape({
-      displayName: yup.string().required('Display name is required'),
-      url: yup.string().required('URL is required'),
+      displayName: yup.string(),
+      url: yup.string(),
     })
   ),
 });
 
-const CreateSubmission = ({ jobId }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const { createJobSubmission } = useJobSubmissions();
+const CreateSubmission = ({ jobId, existingSubmission = null, hideButton = false, isDefaultOpen = false, onClose = null }) => {
+  const [isOpen, setIsOpen] = useState(isDefaultOpen);
+  const { createJobSubmission, updateJobSubmission } = useJobSubmissions();
   const toggleModal = () => setIsOpen((prevState) => !prevState);
 
   const formik = useFormik({
     initialValues: {
-      title: '',
-      description: '',
-      attachments: null,
-      links: [
-        {
-          displayName: '',
-          url: '',
-        },
-      ],
+      title: existingSubmission?.title || '',
+      description: existingSubmission?.description || '',
+      attachments: existingSubmission?.attachments || null,
+      links: existingSubmission?.links?.length
+        ? existingSubmission?.links
+        : [
+            {
+              displayName: '',
+              url: '',
+            },
+          ],
     },
     validationSchema,
     onSubmit: async (values, { setSubmitting }) => {
@@ -52,7 +54,29 @@ const CreateSubmission = ({ jobId }) => {
             return data.src;
           })
         );
-      const attachments = await getFileStrings(values.attachments);
+      const attachments = values.attachments?.length
+        ? await getFileStrings(values.attachments)
+        : [];
+      if (existingSubmission) {
+        await updateJobSubmission({
+          variables: {
+            input: {
+              ...values,
+              attachments,
+              links: values.links.map((link) => ({
+                displayName: link.displayName,
+                url: link.url,
+              })),
+              submissionId: existingSubmission._id,
+            },
+          },
+        });
+        setSubmitting(false);
+        onClose?.()
+        formik.resetForm();
+        toggleModal();
+        return;
+      }
       await createJobSubmission({
         variables: {
           input: {
@@ -92,7 +116,7 @@ const CreateSubmission = ({ jobId }) => {
         </div>
       </Modal>
 
-      <CreateSubmissionButton onClick={toggleModal} />
+     {hideButton ? null :  <CreateSubmissionButton onClick={toggleModal} />}
     </>
   );
 };

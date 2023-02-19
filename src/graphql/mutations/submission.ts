@@ -8,6 +8,14 @@ export const CREATE_JOB_SUBMISSION = gql`
     }
 `;
 
+export const UPDATE_JOB_SUBMISSION = gql`
+    mutation updateJobSubmission($input: UpdateJobSubmissionInput) {
+        updateJobSubmission(input: $input) {
+            success
+        }
+    }
+`;
+
 export const APPROVE_JOB_SUBMISSION = gql`
     mutation approveJobSubmission($submissionId: ID!) {
         approveJobSubmission(submissionId: $submissionId) {

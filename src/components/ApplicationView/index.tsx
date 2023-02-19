@@ -177,14 +177,14 @@ export default function ApplicationView() {
   });
 
   useEffect(() => {
-    if (router.query.applicationId) {
+    if (router.query?.applicationId) {
       getJobApplicationById({
         variables: {
           id: router.query.applicationId,
         },
       });
     }
-  }, []);
+  }, [router.query?.applicationId]);
 
   if (error) {
     return <InvalidApplication jobId={router.query.jobId} />;

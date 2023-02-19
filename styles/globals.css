@@ -30,6 +30,9 @@ a {
   min-width: 50%;
   /* background-color: #f1f5f9; */
 }
+#modal-confirm-wrapper .mantine-Paper-root {
+  min-width: unset;
+}
 /* @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

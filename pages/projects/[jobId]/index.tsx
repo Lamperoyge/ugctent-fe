@@ -29,10 +29,13 @@ import {
 import Skills from 'components/JobsPageComponents/skills';
 import Category from 'components/JobsPageComponents/category';
 import Assignee from 'components/JobsPageComponents/assignee';
+import RatingPrompt from 'components/RatingPrompt';
+import Chat from 'components/Chat';
 
 
 export default function ProjectPage() {
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isFeedbackPromptOpen, setIsFeedbackPromptOpen] = useState(false);
   const [isCreateApplicationModalOpen, setIsCreateApplicationModalOpen] =
     useState(false);
   const router = useRouter();
@@ -41,6 +44,9 @@ export default function ProjectPage() {
   });
   const [completeJob] = useMutation(COMPLETE_JOB, {
     refetchQueries: ['getJobById'],
+    onCompleted: () => {
+      setIsFeedbackPromptOpen(true);
+    }
   });
   const { user, isStripeVerified }:any = useAuth();
   const { data } = useQuery(GET_JOB_BY_ID, {
@@ -93,8 +99,13 @@ export default function ProjectPage() {
 
   const toggleEdit = () => setIsEditMode((prev) => !prev);
 
+  const handleComplete = async () => {
+    await completeJob({ variables: { jobId: job?._id } })
+
+  };
   return (
     <>
+    <RatingPrompt job={job} handleClose={() => setIsFeedbackPromptOpen(false)} opened={isFeedbackPromptOpen}/>
       <CreateJobApplication
         opened={isCreateApplicationModalOpen}
         onClose={toggleCreateApplicationModal}
@@ -155,9 +166,7 @@ export default function ProjectPage() {
                         {canCompleteJob && (
                           <button
                             type='button'
-                            onClick={() =>
-                              completeJob({ variables: { jobId: job?._id } })
-                            }
+                            onClick={handleComplete}
                             className='inline-flex justify-center px-4 py-2 border border-green-400 shadow-sm text-sm font-medium rounded-md text-green-400 bg-white hover:bg-green-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-400'
                           >
                             <CheckIcon
@@ -245,28 +254,40 @@ export default function ProjectPage() {
                         </span>
                         <p>{job.description}</p>
                       </div>
-                      <div className='border-t py-4 flex flex-col gap-4'>
+                      {job.attachments?.length ? <div className='border-t py-4 flex flex-col gap-4'>
                         <span className='text-sm text-gray-500'>
                           Attachments{' '}
                         </span>
 
                         <ViewAttachments attachments={job.attachments} />
-                      </div>
+                      </div> : null}
                     </div>
                   </div>
                 </div>
-                {user?._id === job.creator?.userId && !job.assigneeId && (
+
+<div className="mt-8 py-4 border-t flex flex-col gap-4">
+{canViewAssignedTask && job?.assigneeId && (
+      <Chat 
+      job={job}
+      />
+                )}
+
+{user?._id === job.creator?.userId && !job.assigneeId && (
                   <ApplicationsList jobId={job._id} />
                 )}
                 <div className='w-full flex justify-center items-start h-fit-content'>
                   {user?._id === job?.assigneeId &&
-                    user?._id !== job?.creator?._id && (
+                    user?._id !== job?.creator?._id && [JOB_STATUS.IN_PROGRESS, JOB_STATUS.IN_REVIEW].includes(job.status) && (
                       <CreateSubmission jobId={job._id} />
                     )}
+                </div>
+                
+                <div className="w-full flex items-center justify-center">
                 </div>
                 {canViewAssignedTask && job?.assigneeId && (
                   <SubmissionsList jobId={job._id} assignee={job.assigneeId} />
                 )}
+</div>
               </div>
               <ProjectPageAsideContent
                 job={job}

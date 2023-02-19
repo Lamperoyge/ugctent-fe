@@ -25,9 +25,9 @@ export const schema = yup.object({
     .array()
     .of(
       yup.object({
-        _id: yup.string(),
-        label: yup.string(),
-        __typename: yup.string(),
+        _id: yup.string().required('Please select a value'),
+        label: yup.string().required('Please select a value'),
+        __typename: yup.string().required('Please select a value'),
       })
     )
     .required(),
@@ -41,7 +41,7 @@ export const schema = yup.object({
       })
     )
     .required(),
-  attachments: yup.array().of(yup.mixed()).max(3),
+  attachments: yup.array().of(yup.mixed()).max(3).nullable(),
   description: yup
     .string()
     .required('You need to enter project description')

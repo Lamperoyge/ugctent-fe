@@ -29,6 +29,7 @@ export const GET_SUBMISSION_BY_ID = gql`
       }
       status
       createdAt
+      createdBy
       creator {
         firstName
         lastName
