@@ -11,7 +11,7 @@ import StatusChip from 'components/StatusChip';
 import { useAuth } from 'hooks';
 import { useRouter } from 'next/router';
 
-const SubmissionsList = ({ jobId, assignee }) => {
+const SubmissionsList = ({ jobId, assignee, jobCreator}) => {
   const [activeSubmissionId, setActiveSubmissionId] = useState(null);
   const [hasMore, setHasMore] = useState(false);
   const user: any = useAuth();
@@ -67,6 +67,7 @@ const SubmissionsList = ({ jobId, assignee }) => {
         submissionId={activeSubmissionId}
         onClose={handleClose}
         isOpen={!!activeSubmissionId}
+        jobCreator={jobCreator}
       />
       <main className='pt-8 pb-16'>
         <div className='w-full mx-auto'>

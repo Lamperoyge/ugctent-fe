@@ -15,7 +15,7 @@ import { useConfirmModal } from 'components/Shared/ConfirmModal';
 import { useAuth } from 'hooks';
 import CreateSubmission from 'components/Submissions';
 
-const SubmissionView = ({ submissionId, isOpen, onClose }) => {
+const SubmissionView = ({ submissionId, isOpen, onClose, jobCreator }) => {
   const {
     submission,
     submissionLoading,
@@ -99,7 +99,7 @@ const SubmissionView = ({ submissionId, isOpen, onClose }) => {
     },
   ];
 
-  const ACTIONS = user?._id === submission?.job?.creator?.userId ? JOB_CREATOR_ACTIONS : SUB_CREATOR_ACTIONS;
+  const ACTIONS = user?._id === jobCreator?.userId ? JOB_CREATOR_ACTIONS : SUB_CREATOR_ACTIONS;
   const displayActions = [
     JOB_SUBMISSION_STATUS.IN_REVIEW,
     JOB_SUBMISSION_STATUS.REQUESTED_CHANGES,

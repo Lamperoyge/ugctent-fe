@@ -285,7 +285,9 @@ export default function ProjectPage() {
                 <div className="w-full flex items-center justify-center">
                 </div>
                 {canViewAssignedTask && job?.assigneeId && (
-                  <SubmissionsList jobId={job._id} assignee={job.assigneeId} />
+                  <SubmissionsList jobId={job._id} assignee={job.assigneeId} 
+                  jobCreator={job.creator}
+                  />
                 )}
 </div>
               </div>

@@ -33,6 +33,7 @@ export const GET_SUBMISSION_BY_ID = gql`
       creator {
         firstName
         lastName
+        userId
       }
     }
   }
