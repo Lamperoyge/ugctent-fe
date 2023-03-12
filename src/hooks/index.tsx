@@ -73,7 +73,6 @@ export const useImagePreview = (file) => {
 
     const objectUrl:any = URL.createObjectURL(file);
     setPreview(objectUrl);
-
     // free memory when ever this component is unmounted
     return () => URL.revokeObjectURL(objectUrl);
   }, [file]);

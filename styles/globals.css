@@ -24,7 +24,6 @@ a {
   box-sizing: border-box;
 }
 
-
 .mantine-Paper-root {
   /* overflow: auto; */
   min-width: 50%;
@@ -42,3 +41,22 @@ a {
     background: black;
   }
 } */
+
+.main-gradient-btn {
+  background-image: linear-gradient(
+    to right,
+    #00d2ff 0%,
+    #3a7bd5 51%,
+    #00d2ff 100%
+  );
+  padding: 15px 45px;
+  text-align: center;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: #fff;
+  box-shadow: 0 0 20px #eee;
+  display: block;
+}
+.main-gradient-btn:hover {
+  background-position: right center;
+}

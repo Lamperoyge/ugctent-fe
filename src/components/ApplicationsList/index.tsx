@@ -7,6 +7,7 @@ import {
   CheckCircleIcon,
   ChevronRightIcon,
   MailIcon,
+  StarIcon,
 } from '@heroicons/react/solid';
 import {
   JOB_APPLICATION_STATUS,
@@ -17,6 +18,8 @@ import { LightSpinner } from 'components/Shared/Spinner';
 import Link from 'next/link';
 import ProfilePicture from 'components/ProfilePicture';
 import { sinceDate } from 'utils/helpers/dateFormatter';
+import { UserCircleIcon } from '@heroicons/react/outline';
+import StatusChip from 'components/StatusChip';
 
 const ApplicationsList = ({ jobId }) => {
   const { getJobApplications, jobApplications, fetchMoreJobApplications } =
@@ -52,75 +55,70 @@ const ApplicationsList = ({ jobId }) => {
         <div className='pb-4'>
           <h2 className='text-lg font-medium text-gray-900'>Applications</h2>
         </div>
-        <div className='bg-white shadow overflow-hidden sm:rounded-md'>
-          <ul role='list' className='divide-y divide-gray-200'>
-            <InfiniteScroll onLoadMore={handleFetchMore} hasMore={hasMore}>
-              {jobApplications?.getJobApplications.map((application) => (
-                <li key={application?._id}>
-                  <Link
-                    href={`/projects/${jobId}/applications/${application._id}`}
-                    className='block hover:bg-gray-50'
+        <div className='bg-white sm:rounded-md'>
+          {jobApplications?.getJobApplications?.length ? (
+            <ul
+              role='list'
+              className='grid grid-cols-1 gap-6 sm:grid-cols-2'
+            >
+              <InfiniteScroll onLoadMore={handleFetchMore} hasMore={hasMore}>
+                {jobApplications?.getJobApplications.map((application) => (
+                  <li
+                    key={application?._id}
+                    className='col-span-1 bg-white rounded-lg shadow divide-y divide-gray-200 max-w-md'
                   >
-                    <div className='flex items-center px-4 py-4 sm:px-6'>
-                      <div className='min-w-0 flex-1 flex items-center'>
-                        <div className='flex-shrink-0'>
+                    <Link
+                      href={`/projects/${jobId}/applications/${application._id}`}
+                    >
+                      <div className='flex flex-col gap-4 items-start p-4'>
+                        <div className='flex justify-between items-start w-full'>
+                          <div className="flex gap-4">
                           <ProfilePicture
-                            size='h-12 w-12'
+                            size='h-10 w-10'
                             src={application?.creator?.profilePicture}
                           />
-                        </div>
-                        <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4'>
-                          <div>
-                            <p className='text-sm font-medium text-indigo-600 truncate'>
-                              {application.creator?.firstName}{' '}
+                          <div className='flex flex-col gap-2'>
+                            <span className='text-sm font-bold text-gray-500'>
+                              {application?.creator?.firstName}{' '}
                               {application?.creator?.lastName}
-                            </p>
-                            <p className='mt-2 flex items-center text-sm text-gray-500'>
-                              <span className='truncate'>
-                                {application.message}
-                              </span>
-                            </p>
-                          </div>
-                          <div className='hidden md:block'>
-                            <div>
-                              <p className='text-sm text-gray-900'>
-                                Applied{' '}
-                                {sinceDate(parseInt(application.createdAt, 10))}
-                              </p>
-                              <p
-                                className={`mt-2 flex items-center text-sm ${
-                                  JOB_APPLICATION_COLORS[application.status]
-                                }`}
-                              >
-                                <CheckCircleIcon
-                                  className={`flex-shrink-0 mr-1.5 h-5 w-5 ${
-                                    JOB_APPLICATION_COLORS[application.status]
-                                  }`}
-                                  aria-hidden='true'
-                                />
-                                {/* {application.stage} */}
-                                {
-                                  JOB_APPLICATION_STATUS_LABELS[
-                                    application.status
-                                  ]
-                                }
-                              </p>
+                            </span>
+                            
+                            <div className='flex gap-2'>
+                              <StarIcon className='text-orange-300 h-4 w-4' />
+                              <span className='text-xs text-gray-400'>{application?.creatorRating ? application?.creatorRating :  "No reviews yet"}</span>
                             </div>
                           </div>
+
+                          </div>
+                  <StatusChip status={application.status}/>
                         </div>
+                        <span className="text-sm text-gray-500">Applied {sinceDate(parseInt(application.createdAt, 10))}</span>
+                        <div className="flex gap-2 flex-col">
+                          <span className='text-sm text-gray-400 font-bold'>
+                            Offer
+                            </span>
+                            <span className="text-sm text-gray-500">
+                              {(application?.price / 100).toFixed(2)} RON
+                            </span>
+                        </div>
+                         <div className="flex flex-col gap-1">
+                          <span className="text-sm text-gray-400 font-bold">Message</span>
+                         <span className='text-sm text-gray-800 line-clamp-3 w-full h-full'>
+                  {application?.message}
+                            </span>
+                         </div>
                       </div>
-                      <div>
-                        <ChevronRightIcon
-                          className='h-5 w-5 text-gray-400'
-                          aria-hidden='true'
-                        />
-                      </div>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </InfiniteScroll>
-          </ul>
+                    </Link>
+                  </li>
+                ))}
+              </InfiniteScroll>
+            </ul>
+          ) : (
+            <div className='flex justify-center items-center text-gray-400 gap-4 flex-col'>
+              <UserCircleIcon className='h-8 w-8' />
+              No applications yet. Make sure to check back later.
+            </div>
+          )}
         </div>
       </div>
     </main>

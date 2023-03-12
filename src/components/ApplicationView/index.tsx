@@ -22,6 +22,7 @@ import {
 import { useAuth } from 'hooks';
 import StripeComponent from 'components/Stripe';
 import { useLazyQuery } from '@apollo/client';
+import StatusChip from 'components/StatusChip';
 
 function ApplicationHeader({ application }) {
   const { user }: any = useAuth();
@@ -93,14 +94,15 @@ function ApplicationHeader({ application }) {
       {!hasRightForActions &&
         JOB_APPLICATION_PAYMENT_STATUS.PROCESSING !==
           application?.paymentStatus && (
-          <div className='mt-5 flex lg:mt-0 lg:ml-4'>
-            <button
-              className={`px-4 py-2 bg-transparent border-2 rounded-md ${borderColor} ${textColor}`}
-              disabled
-            >
-              {JOB_APPLICATION_STATUS_LABELS[application.status]}
-            </button>
-          </div>
+          // <div className='mt-5 flex lg:mt-0 lg:ml-4'>
+          //   <button
+          //     className={`px-4 py-2 bg-transparent border-2 rounded-md ${borderColor} ${textColor}`}
+          //     disabled
+          //   >
+          //     {JOB_APPLICATION_STATUS_LABELS[application.status]}
+          //   </button>
+          // </div>
+          <StatusChip status={application.status} />
         )}
       {![
         JOB_APPLICATION_PAYMENT_STATUS.PAID,

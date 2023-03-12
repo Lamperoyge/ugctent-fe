@@ -98,14 +98,10 @@ const BusinessProfilePage = ({ data }) => {
                 </div>
               </div>
             </div>
-            <button className="flex items-center text-slate-300 opacity-90 cursor-pointer  hover:text-orange-500">
-              <BookmarkIcon className="h-7 w-7"></BookmarkIcon>
-              <span className="pl-1 font-semibold">Bookmark</span>
-            </button>
           </div>
         </div>
         <ProfileSection title="Contact Information">
-          <div class="flex flex-col gap-5">
+          <div className="flex flex-col gap-5">
             <div className="flex text-slate-900">
               <div className="w-16">Website:</div>
               <a
@@ -156,7 +152,7 @@ const BusinessProfilePage = ({ data }) => {
         <ProfileSection hasTitleLine={true} title="Interests">
           <p className="flex flex-col text-sm text-slate-700">
             {skillIds.map((id) => (
-              <span class>{id}</span>
+              <span>{id}</span>
             ))}
           </p>
         </ProfileSection>

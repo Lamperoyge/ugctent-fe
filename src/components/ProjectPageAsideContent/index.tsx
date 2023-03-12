@@ -6,12 +6,83 @@ import { CurrencyDollarIcon } from '@heroicons/react/outline';
 import Skills from 'components/JobsPageComponents/skills';
 import Category from 'components/JobsPageComponents/category';
 import Assignee from 'components/JobsPageComponents/assignee';
+import { useMemo } from 'react';
 
-function ProjectPageAsideContent({ job, canViewAssignedPerson }) {
+function ProjectPageAsideContent({ job, canViewAssignedPerson, children }) {
+  const asideDetails: any = useMemo(() => {
+    const items = [
+      {
+        label: 'Status',
+        value: job?.status,
+        component: () => <StatusChip status={job?.status} />,
+      },
+      {
+        label: 'Assignee',
+        value: job?.assignee,
+        component: () => <Assignee job={job} />,
+        condition: !!job?.assignee && canViewAssignedPerson,
+      },
+      {
+        label: [
+          JOB_STATUS.IN_PROGRESS,
+          JOB_STATUS.IN_REVIEW,
+          JOB_STATUS.COMPLETED,
+        ].includes(job?.status)
+          ? 'Paid'
+          : 'Left to pay',
+        value: job?.price,
+        component: () => (
+          <div className='px-2 inline-flex text-xs leading-5 font-bold rounded-full bg-green-200 text-green-800'>
+            {job?.price} RON
+          </div>
+        ),
+      },
+
+      {
+        label: 'Applications',
+        value: job?.applicationsCount || 0,
+      },
+      {
+        label: 'Created',
+        value: new Date(parseInt(job.createdAt)).toLocaleDateString(),
+      },
+      {
+        label: 'Last update',
+        value: new Date(parseInt(job.updatedAt)).toLocaleDateString(),
+      },
+      {
+        label: 'Category',
+        value: job?.category,
+        component: () => <Category job={job} />,
+        condiition: !!job?.category
+      }
+    ];
+
+    return items?.filter((item) => item?.condition !== false);
+  }, [job, canViewAssignedPerson]);
+
   return (
-    <aside className='hidden xl:block xl:pl-8'>
-      <h2 className='sr-only'>Details</h2>
-      <div className='space-y-5'>
+    <aside className='block xl:pl-8'>
+      <div className='flex gap-8 items-left justify-center flex-col'>
+        {asideDetails.map((item, key) => {
+          console.log(item.value);
+          return (
+            <div className='flex gap-4 justify-between'>
+              <span className='font-semibold text-sm text-gray-500'>
+                {item.label}
+              </span>
+              {item?.component ? (
+                item.component()
+              ) : (
+                <div className='px-2 inline-flex text-xs leading-5 font-bold rounded-full bg-blue-200 text-blue-800'>
+                  {item.value}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      {/* <div className='space-y-5'>
         <div className='flex items-center space-x-2'>
           <StatusChip status={job.status} />
         </div>
@@ -67,7 +138,8 @@ function ProjectPageAsideContent({ job, canViewAssignedPerson }) {
         {canViewAssignedPerson && <Assignee job={job} />}
         {job.skills && <Skills job={job} />}
         {job.category && <Category job={job} />}
-      </div>
+      </div> */}
+      {children}
     </aside>
   );
 }

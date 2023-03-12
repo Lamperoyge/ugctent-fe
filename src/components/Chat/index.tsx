@@ -1,5 +1,5 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
-import { PaperAirplaneIcon } from '@heroicons/react/outline';
+import { ChatAltIcon, PaperAirplaneIcon } from '@heroicons/react/outline';
 import { Button, Drawer, Input, Tooltip } from '@mantine/core';
 import ProfilePicture from 'components/ProfilePicture';
 import { ChatContext } from 'contexts';
@@ -20,15 +20,16 @@ const ChatPage = ({ job }) => {
 
   const [getRoom, {data, fetchMore}] = useLazyQuery(GET_ROOM_FOR_MEMBER_IDS, {
     onCompleted: (data) => {
+      console.log(data, 'DATA')
       setMessages([
         ...messages,
-        ...data.getRoomForMemberIds.messages?.map((msg) => {
-          return {
-            creator: msg.createdBy,
-            message: msg.text,
-            timestamp: msg.createdAt,
-          };
-        })
+       ...(data?.getRoomForMemberIds ?  data.getRoomForMemberIds?.messages?.map((msg) => {
+        return {
+          creator: msg.createdBy,
+          message: msg.text,
+          timestamp: msg.createdAt,
+        };
+      }) : [])
       ])
     }
   });
@@ -101,9 +102,12 @@ const ChatPage = ({ job }) => {
   const toggleDrawer = () => setIsOpen((prev) => !prev);
   return (
     <>
-      <Button variant='outline' onClick={toggleDrawer}>
-        Open chat
-      </Button>
+        <button
+          onClick={toggleDrawer}
+        className="bg-blue-400 w-full rounded-full py-2 px-4 main-gradient-btn flex justify-center items-center gap-4"
+        >
+          <ChatAltIcon className="h-5 w-5 text-white" aria-hidden="true" />
+          Open chat</button>
       <Drawer
         overlayOpacity={0.55}
         position='right'
@@ -131,7 +135,7 @@ const ChatPage = ({ job }) => {
             </div>
             <div className='flex flex-col-reverse overflow-auto'>
               <div className='flex flex-col gap-4 pt-8 pb-24 px-6'>
-                <div className='flex gap-4 flex-col-reverse'>
+                <div className='flex gap-4 flex-col-reverse' style={{minHeight: '80vh'}}>
 
                   {messages.map((message, idx) => (
                     <div

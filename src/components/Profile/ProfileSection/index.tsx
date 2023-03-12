@@ -1,6 +1,6 @@
 import ProfileSectionTitle from "./ProfileSectionTitle";
 
-const ProfileSection = ({ children, title, hasTitleLine, classNames }) => {
+const ProfileSection = ({ children, title, hasTitleLine, classNames }:any) => {
   return (
     <div className={`flex flex-col w-full gap-5 overflow-auto ${classNames}`}>
       <ProfileSectionTitle hasLine={hasTitleLine}>{title}</ProfileSectionTitle>

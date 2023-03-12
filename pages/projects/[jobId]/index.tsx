@@ -22,6 +22,7 @@ import SubmissionsList from 'components/SubmissionsList';
 import EditJob from 'components/EditJob';
 import ProjectPageAsideContent from 'components/ProjectPageAsideContent';
 import {
+  CheckCircleIcon,
   CheckIcon,
   CurrencyDollarIcon,
   TrashIcon,
@@ -32,7 +33,6 @@ import Assignee from 'components/JobsPageComponents/assignee';
 import RatingPrompt from 'components/RatingPrompt';
 import Chat from 'components/Chat';
 
-
 export default function ProjectPage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isFeedbackPromptOpen, setIsFeedbackPromptOpen] = useState(false);
@@ -42,13 +42,14 @@ export default function ProjectPage() {
   const [archiveJob] = useMutation(ARCHIVE_JOB, {
     refetchQueries: ['getJobById'],
   });
+
   const [completeJob] = useMutation(COMPLETE_JOB, {
     refetchQueries: ['getJobById'],
     onCompleted: () => {
       setIsFeedbackPromptOpen(true);
-    }
+    },
   });
-  const { user, isStripeVerified }:any = useAuth();
+  const { user, isStripeVerified }: any = useAuth();
   const { data } = useQuery(GET_JOB_BY_ID, {
     variables: {
       id: router.query.jobId,
@@ -100,12 +101,17 @@ export default function ProjectPage() {
   const toggleEdit = () => setIsEditMode((prev) => !prev);
 
   const handleComplete = async () => {
-    await completeJob({ variables: { jobId: job?._id } })
-
+    await completeJob({ variables: { jobId: job?._id } });
   };
+
+
   return (
     <>
-    <RatingPrompt job={job} handleClose={() => setIsFeedbackPromptOpen(false)} opened={isFeedbackPromptOpen}/>
+      <RatingPrompt
+        job={job}
+        handleClose={() => setIsFeedbackPromptOpen(false)}
+        opened={isFeedbackPromptOpen}
+      />
       <CreateJobApplication
         opened={isCreateApplicationModalOpen}
         onClose={toggleCreateApplicationModal}
@@ -167,13 +173,13 @@ export default function ProjectPage() {
                           <button
                             type='button'
                             onClick={handleComplete}
-                            className='inline-flex justify-center px-4 py-2 border border-green-400 shadow-sm text-sm font-medium rounded-md text-green-400 bg-white hover:bg-green-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-400'
+                            className='inline-flex justify-center px-10 py-2 items-center border border-transparent text-sm font-medium rounded-full text-white bg-green-500 hover:bg-green-400'
                           >
-                            <CheckIcon
+                            <CheckCircleIcon
                               className='-ml-1 mr-2 h-5 w-5 text-inherit'
                               aria-hidden='true'
                             />
-                            <span>Complete</span>
+                            <span>Mark job as complete</span>
                           </button>
                         )}
                         {canApply && (
@@ -210,42 +216,6 @@ export default function ProjectPage() {
                           )}
                       </div>
                     </div>
-                    <aside className='mt-8 xl:hidden'>
-                      <h2 className='sr-only'>Details</h2>
-                      <div className='space-y-5'>
-                        <div className='ml-2 flex-shrink-0 flex'>
-                          <StatusChip status={job.status} />
-                        </div>
-                        <div className='flex items-center space-x-2'>
-                          <ChatAltIcon
-                            className='h-5 w-5 text-gray-400'
-                            aria-hidden='true'
-                          />
-                          <span className='text-gray-900 text-sm font-medium'>
-                            {job?.applicationsCount || 0} applications
-                          </span>
-                        </div>
-                        <div className='flex items-center space-x-2'>
-                          <CalendarIcon
-                            className='h-5 w-5 text-gray-400'
-                            aria-hidden='true'
-                          />
-                          <span className='text-gray-900 text-sm font-medium'>
-                            Created on{' '}
-                            <time dateTime='2020-12-02'>
-                              {new Date(
-                                parseInt(job.createdAt, 10)
-                              ).toLocaleDateString()}
-                            </time>
-                          </span>
-                        </div>
-                      </div>
-                      <div className='mt-6 border-t border-b border-gray-200 py-6 space-y-8'>
-                        {canViewAssignedPerson && <Assignee job={job} />}
-                        {job?.skills && <Skills job={job} />}
-                        {job?.category && <Category job={job} />}
-                      </div>
-                    </aside>
                     <div className='py-3 xl:pt-6 xl:pb-0 flex flex-col gap-4'>
                       <h2 className='sr-only'>Description</h2>
                       <div className='prose max-w-none'>
@@ -254,47 +224,52 @@ export default function ProjectPage() {
                         </span>
                         <p>{job.description}</p>
                       </div>
-                      {job.attachments?.length ? <div className='border-t py-4 flex flex-col gap-4'>
-                        <span className='text-sm text-gray-500'>
-                          Attachments{' '}
-                        </span>
+                      {job.attachments?.length ? (
+                        <div className='border-t py-4 flex flex-col gap-4'>
+                          <span className='text-sm text-gray-500'>
+                            Attachments{' '}
+                          </span>
 
-                        <ViewAttachments attachments={job.attachments} />
-                      </div> : null}
+                          <ViewAttachments attachments={job.attachments} />
+                        </div>
+                      ) : null}
+                      <Skills job={job} />
                     </div>
                   </div>
                 </div>
 
-<div className="mt-8 py-4 border-t flex flex-col gap-4">
-{canViewAssignedTask && job?.assigneeId && (
-      <Chat 
-      job={job}
-      />
-                )}
+                <div className='mt-8 py-4 border-t flex flex-col gap-4'>
+                  {user?._id === job.creator?.userId && !job.assigneeId && (
+                    <ApplicationsList jobId={job._id} />
+                  )}
+                  <div className='w-full flex justify-center items-start h-fit-content'>
+                    {user?._id === job?.assigneeId &&
+                      user?._id !== job?.creator?._id &&
+                      [JOB_STATUS.IN_PROGRESS, JOB_STATUS.IN_REVIEW].includes(
+                        job.status
+                      ) && <CreateSubmission jobId={job._id} />}
+                  </div>
 
-{user?._id === job.creator?.userId && !job.assigneeId && (
-                  <ApplicationsList jobId={job._id} />
-                )}
-                <div className='w-full flex justify-center items-start h-fit-content'>
-                  {user?._id === job?.assigneeId &&
-                    user?._id !== job?.creator?._id && [JOB_STATUS.IN_PROGRESS, JOB_STATUS.IN_REVIEW].includes(job.status) && (
-                      <CreateSubmission jobId={job._id} />
-                    )}
+                  <div className='w-full flex items-center justify-center'></div>
+                  {canViewAssignedTask && job?.assigneeId && (
+                    <SubmissionsList
+                      jobId={job._id}
+                      assignee={job.assigneeId}
+                      jobCreator={job.creator}
+                    />
+                  )}
                 </div>
-                
-                <div className="w-full flex items-center justify-center">
-                </div>
-                {canViewAssignedTask && job?.assigneeId && (
-                  <SubmissionsList jobId={job._id} assignee={job.assigneeId} 
-                  jobCreator={job.creator}
-                  />
-                )}
-</div>
               </div>
               <ProjectPageAsideContent
                 job={job}
                 canViewAssignedPerson={canViewAssignedPerson}
-              />
+              >
+                {canViewAssignedTask && job?.assigneeId && (
+                  <div className='mt-8 w-full flex justify-center'>
+                    <Chat job={job} />
+                  </div>
+                )}
+              </ProjectPageAsideContent>
             </div>
           </div>
         </main>

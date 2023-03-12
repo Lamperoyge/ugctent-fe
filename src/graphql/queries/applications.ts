@@ -21,6 +21,7 @@ export const GET_JOB_APPLICATIONS = gql`
       createdAt
       price
       message
+      creatorRating
       creator {
         firstName
         lastName
@@ -39,6 +40,7 @@ export const GET_JOB_APPLICATION_BY_ID = gql`
       jobId
       createdAt
       paymentStatus
+      creatorRating
       status
       price
       job {
