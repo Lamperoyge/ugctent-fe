@@ -1,13 +1,17 @@
 module.exports = {
-  mode: 'jit',
-  purge: ['./pages/**/*.{js,ts,jsx,tsx}', './src/**/*.{js,ts,jsx,tsx}'],
+  mode: "jit",
+  purge: ["./pages/**/*.{js,ts,jsx,tsx}", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      gridTemplateRows: {
+        profileLayoutMobile: "repeat(10, minmax(150px, 1fr))",
+        profileLayout: "repeat(5, minmax(150px, 1fr))",
+      },
       colors: {
-        primary: '#001E6C',
-        secondary: '#035397',
-        primaryOrange: '#E8630A',
-        primaryYellow: '#FCD900',
+        primary: "#001E6C",
+        secondary: "#035397",
+        primaryOrange: "#E8630A",
+        primaryYellow: "#FCD900",
       },
       minWidth: {
         '1/2': '50%',
@@ -18,11 +22,12 @@ module.exports = {
         '30': '30%',
       },
       maxWidth: {
-        '1/2': '50%',
-        '1/3': '33%',
-        '1/4': '25%',
-        '1/5': '20%',
-      }
+        "1/1.3":"75%",
+        "1/2": "50%",
+        "1/3": "33%",
+        "1/4": "25%",
+        "1/5": "20%",
+      },
     },
   },
   plugins: [
