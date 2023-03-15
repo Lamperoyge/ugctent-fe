@@ -43,7 +43,7 @@ const schema = yup.object({
 });
 
 const UserProfilePage = ({}) => {
-  const auth:any = useAuth();
+  const auth: any = useAuth();
   const router = useRouter();
   const [isEditMode, setIsEditMode] = useState(false);
   const userId = router.query.userId;
@@ -69,13 +69,13 @@ const UserProfilePage = ({}) => {
     initialValues: {
       bio: "",
       website: "",
-      email: "",
       socialLinks: {
         instagram: "",
         facebook: "",
         tiktok: "",
         youtube: "",
       },
+      profilePicture: "",
     },
     validationSchema: schema,
     onSubmit: async (values) => {
@@ -92,12 +92,18 @@ const UserProfilePage = ({}) => {
 
   useEffect(() => {
     if (!(loading || error)) {
-      const { bio, socialLinks, website, email } = data.getUserById?.userInfo;
+      const { bio, socialLinks, website, profilePicture } =
+        data.getUserById?.userInfo;
       formik.setValues({
         bio,
-        socialLinks,
+        socialLinks: {
+          tiktok: socialLinks.tiktok,
+          instagram: socialLinks.instagram,
+          facebook: socialLinks.facebook,
+          youtube: socialLinks.youtube,
+        },
         website,
-        email,
+        profilePicture,
       });
     }
   }, [data]);
@@ -147,6 +153,9 @@ const UserProfilePage = ({}) => {
         isEditMode={isEditMode}
         values={formik.values}
         handleChange={formik.handleChange}
+        handleProfileChange={(file) => {
+          formik.setFieldValue("file", file);
+        }}
         data={data.getUserById}
       />
     </form>

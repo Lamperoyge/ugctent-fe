@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useGetSkills } from "hooks";
 
 import { StarIcon, UserCircleIcon, MenuIcon } from "@heroicons/react/solid";
@@ -14,7 +14,14 @@ import EditableSection from "../EditableSection";
 
 const activeTabStyle = "border-b-2 border-orange-500 mb-[-2px]";
 
-const CreatorProfilePage = ({ data, values, handleChange, isEditMode }) => {
+const CreatorProfilePage = ({
+  data,
+  values,
+  handleChange,
+  handleProfileChange,
+  isEditMode,
+}) => {
+  const uploadRef = useRef();
   // console.log(data);
   const mockData = {
     ...data,
@@ -25,7 +32,6 @@ const CreatorProfilePage = ({ data, values, handleChange, isEditMode }) => {
         facebook: "www.google.com",
         tiktok: "www.google.com",
         youtube: "www.google.com",
-        __typename__: "",
       },
       works: [
         {
@@ -77,7 +83,7 @@ const CreatorProfilePage = ({ data, values, handleChange, isEditMode }) => {
     website,
     socialLinks,
     works,
-    email,
+    // email
   } = mockData && mockData.userInfo;
 
   const isAboutVisible = activeTab === PROFILE_TABS.ABOUT;
@@ -109,6 +115,29 @@ const CreatorProfilePage = ({ data, values, handleChange, isEditMode }) => {
             {firstName} {lastName}
           </h1>
           <h2 className="text-orange-500 font-medium">Product Designer</h2>
+          {isEditMode && (
+            <>
+              <button
+                type="button"
+                onClick={() => {
+                  uploadRef.current?.click();
+                }}
+                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm mt-5 font-medium rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+              >
+                Upload
+              </button>
+
+              <input
+                type="file"
+                ref={uploadRef}
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  handleProfileChange(file);
+                }}
+              ></input>
+            </>
+          )}
           <img
             src={profilePicture}
             className="max-w-1/1.3 xl:max-w-1/2 object-cover rounded-full aspect-square overflow-hidden mt-5"
@@ -166,7 +195,7 @@ const CreatorProfilePage = ({ data, values, handleChange, isEditMode }) => {
                 </EditableSection>
               </div>
 
-              <div className="flex items-center text-slate-900">
+              {/* <div className="flex items-center text-slate-900">
                 <div className="w-16 mr-6">Email:</div>
                 <EditableSection
                   inputProps={{
@@ -190,7 +219,7 @@ const CreatorProfilePage = ({ data, values, handleChange, isEditMode }) => {
                     test.test@gmail.com
                   </a>
                 </EditableSection>
-              </div>
+              </div> */}
 
               <div className="flex text-slate-900">
                 <div className="w-16 mr-6">Platforms:</div>
@@ -244,17 +273,29 @@ const CreatorProfilePage = ({ data, values, handleChange, isEditMode }) => {
             </EditableSection>
           </ProfileSection>
           <ProfileSection hasTitleLine={true} title="Skills">
-            <ul className="flex flex-wrap">
-              {skills?.length &&
-                mapUserSkills().map((skill) => (
-                  <li
-                    className="flex items-center border rounded-full py-1 px-3 text-xs mr-2 mb-2 font-semibold text-white bg-primaryOrange items-center"
-                    key={skill._id}
-                  >
-                    <span className="block truncate">{skill.label}</span>
-                  </li>
-                ))}
-            </ul>
+            <EditableSection
+              type="multi-select"
+              inputProps={{
+                name: "skills",
+                id: "skills",
+                value: values.skills,
+                onChange: handleChange,
+                className:
+                  "mt-1 focus:ring-secondary focus:border-secondary block w-full shadow-sm sm:text-sm border-gray-300 rounded-md",
+              }}
+            >
+              <ul className="flex flex-wrap">
+                {skills?.length &&
+                  mapUserSkills().map((skill) => (
+                    <li
+                      className="flex items-center border rounded-full py-1 px-3 text-xs mr-2 mb-2 font-semibold text-white bg-primaryOrange items-center"
+                      key={skill._id}
+                    >
+                      <span className="block truncate">{skill.label}</span>
+                    </li>
+                  ))}
+              </ul>
+            </EditableSection>
           </ProfileSection>
         </PanelContainer>
 

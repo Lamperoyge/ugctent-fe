@@ -1,3 +1,5 @@
+import Multiselect from "components/Shared/Form/MultiSelect";
+
 const EditableSection = ({
   children,
   type,
@@ -6,6 +8,14 @@ const EditableSection = ({
 }) => {
   const getInputComponent = () => {
     switch (type) {
+      case "multi-select": {
+        return (
+          <Multiselect
+            options={inputProps.options}
+            selected={inputProps.value}
+          ></Multiselect>
+        );
+      }
       default:
         return <input {...inputProps}></input>;
     }
