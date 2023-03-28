@@ -34,6 +34,7 @@ export const UserInfoFragment = gql`
       tiktok
     }
     skillIds
+    rating
     categoryIds
     website
     city

@@ -5,6 +5,7 @@ import { useQuery } from '@apollo/client';
 import ProfilePicture from 'components/ProfilePicture';
 import InfiniteScroll from 'components/InfiniteScroll';
 import ExploreFilters from 'components/ExploreFilters';
+import Link from 'next/link';
 
 export default function TalentsPage() {
   const [hasMore, setHasMore] = useState(true);
@@ -20,7 +21,6 @@ export default function TalentsPage() {
       },
     }
   );
-
 
   const handleFetchMore = () =>
     fetchMore({
@@ -88,9 +88,12 @@ export default function TalentsPage() {
               <div>
                 <div className='-mt-px flex divide-x divide-gray-200'>
                   <div className='w-0 flex-1 flex'>
-                    <button className='flex justify-center font-bold items-center px-4 py-1 w-full border border-transparent shadow-sm text-sm rounded-bl-lg rounded-br-lg text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'>
+                    <Link
+                      href={`/profile/${creator._id}`}
+                      className='flex justify-center font-bold items-center px-4 py-1 w-full border border-transparent shadow-sm text-sm rounded-bl-lg rounded-br-lg text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
+                    >
                       Visit profile
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>

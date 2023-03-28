@@ -13,7 +13,7 @@ export const GET_TOTAL_ASSIGNED_JOBS = gql`
 `;
 
 export const GET_TOTAL_CREATED_JOBS = gql`
-    query getTotalCreatedJobs {
-        getTotalCreatedJobs
+    query getTotalCreatedJobs($userId: String!) {
+        getTotalCreatedJobs(userId: $userId)
     }
 `;

@@ -130,6 +130,9 @@ export default function Dashboard() {
 
   const { data: businessJobsCount } = useQuery(GET_TOTAL_CREATED_JOBS, {
     skip: !user?._id || user?.userType !== USER_TYPES.ORG,
+    variables: {
+      userId: user?._id,
+    },
   });
 
   const { data: creatorJobsCount } = useQuery(GET_TOTAL_ASSIGNED_JOBS, {
