@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_TOTAL_COMPLETED_JOBS = gql`
-    query getTotalCompletedJobs {
-        getTotalCompletedJobs
+    query getTotalCompletedJobs($userId: String) {
+        getTotalCompletedJobs(userId: $userId)
     }
 `;
 
@@ -13,7 +13,7 @@ export const GET_TOTAL_ASSIGNED_JOBS = gql`
 `;
 
 export const GET_TOTAL_CREATED_JOBS = gql`
-    query getTotalCreatedJobs($userId: String!) {
+    query getTotalCreatedJobs($userId: String) {
         getTotalCreatedJobs(userId: $userId)
     }
 `;

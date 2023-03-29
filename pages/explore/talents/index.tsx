@@ -44,6 +44,10 @@ export default function TalentsPage() {
               key={creator._id}
               className='col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200'
             >
+              <>
+              {console.log(creator, 'creator')}
+              
+              </>
               <div className='flex-1 flex flex-col p-8'>
                 <ProfilePicture
                   src={creator?.profilePicture}
@@ -89,7 +93,7 @@ export default function TalentsPage() {
                 <div className='-mt-px flex divide-x divide-gray-200'>
                   <div className='w-0 flex-1 flex'>
                     <Link
-                      href={`/profile/${creator._id}`}
+                      href={`/profile/${creator.userId}`}
                       className='flex justify-center font-bold items-center px-4 py-1 w-full border border-transparent shadow-sm text-sm rounded-bl-lg rounded-br-lg text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
                     >
                       Visit profile

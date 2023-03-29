@@ -10,6 +10,7 @@ import { PencilIcon, SaveIcon, XCircleIcon } from '@heroicons/react/solid';
 
 import { CreatorProfile, BusinessProfile } from 'components/Profile';
 import { USER_TYPES } from 'utils/constants';
+import PageSpinner from 'components/PageSpinner';
 
 const PROFILE_TO_USER = {
   [USER_TYPES.CREATOR]: CreatorProfile,
@@ -107,6 +108,8 @@ const UserProfilePage = ({}) => {
   if (!data) return <div>No data</div>;
 
   const Component = PROFILE_TO_USER[data?.getUserById?.userType];
+
+  if(!Component) return <PageSpinner />
   return (
     <form className='h-full w-full gap-4'>
       <div className='flex justify-end w-full px-16'>
@@ -144,9 +147,9 @@ const UserProfilePage = ({}) => {
         )}
       </div>
       <Component
-        isEditMode={isEditMode}
-        values={formik.values}
-        handleChange={formik.handleChange}
+        // isEditMode={isEditMode}
+        // values={formik.values}
+        // handleChange={formik.handleChange}
         data={data.getUserById}
       />
     </form>

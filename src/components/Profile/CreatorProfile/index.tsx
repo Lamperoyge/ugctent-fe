@@ -1,341 +1,196 @@
-import { useState } from "react";
-import { useGetSkills } from "hooks";
+import { useState } from 'react';
 
-import { StarIcon, UserCircleIcon, MenuIcon } from "@heroicons/react/solid";
-import { FaFacebook, FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa";
+import {
+  StarIcon,
+} from '@heroicons/react/solid';
+import { FaFacebook, FaInstagram, FaTiktok, FaYoutube } from 'react-icons/fa';
 
-import PanelContainer from "components/PanelContainer";
-import SocialLinks from "components/Shared/Form/SocialLinks";
-import ProfileSection from "../ProfileSection";
-import ProfileSectionTitle from "../ProfileSection/ProfileSectionTitle";
-import WorkSection from "./WorkSection";
-import { PROFILE_SOCIAL_TYPES, PROFILE_TABS } from "utils/constants";
-import EditableSection from "../EditableSection";
+import PanelContainer from 'components/PanelContainer';
+import {
+  PROFILE_TABS,
+  PROFILE_SOCIAL_TYPES,
+  JOB_STATUS,
+} from '../../../utils/constants';
+import ProfilePicture from 'components/ProfilePicture';
+import { GET_CREATED_JOBS, GET_TOTAL_COMPLETED_JOBS, GET_TOTAL_CREATED_JOBS } from 'graphql/queries';
+import { useQuery } from '@apollo/client';
+import Link from 'next/link';
+import { GET_USER_FEEDBACK } from 'graphql/queries/rating';
+import ViewAttachments from 'components/ViewAttachments';
 
-const activeTabStyle = "border-b-2 border-orange-500 mb-[-2px]";
-
-const CreatorProfilePage = ({ data, values, handleChange, isEditMode }) => {
-  // console.log(data);
-  const mockData = {
-    ...data,
-    userInfo: {
-      ...data.userInfo,
-      socialLinks: {
-        instagram: "www.google.com",
-        facebook: "www.google.com",
-        tiktok: "www.google.com",
-        youtube: "www.google.com",
-        __typename__: "",
+const CreatorProfilePage = ({ data }) => {
+  const {
+    data: businessJobs,
+    error: businessJobsError,
+    loading: businessLoading,
+  } = useQuery(GET_CREATED_JOBS, {
+    variables: {
+      input: {
+        userId: data?.userInfo?.userId,
+        limit: 5,
+        status: JOB_STATUS.CREATED,
       },
-      works: [
-        {
-          company: "Amazon",
-          jobTitle: "Product Manager",
-          startDate: "01/07/2020",
-          endDate: "01/10/2022",
-          jobDescription: "Cea mai misto firma smr",
-        },
-        {
-          company: "Amazon",
-          jobTitle: "Product Manager",
-          startDate: "01/07/2020",
-          endDate: "01/10/2022",
-          jobDescription:
-            "Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma sm Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma sm Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma sm Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smCea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr",
-        },
-        {
-          company: "Amazon",
-          jobTitle: "Product Manager",
-          startDate: "01/07/2020",
-          endDate: "01/10/2022",
-          jobDescription:
-            "Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma sm Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma sm Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma sm Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smCea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr",
-        },
-        {
-          company: "Amazon",
-          jobTitle: "Product Manager",
-          startDate: "01/07/2020",
-          endDate: "01/10/2022",
-          jobDescription:
-            "Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma sm Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma sm Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma sm Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smCea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr Cea mai misto firma smr",
-        },
-      ],
     },
-  };
+    skip: !data?.userInfo?.userId,
+  });
 
-  const { skills } = useGetSkills();
-  const [activeTab, setActiveTab] = useState(PROFILE_TABS.ABOUT);
+  const {data: totalCompletedJobs} = useQuery(GET_TOTAL_COMPLETED_JOBS, {
+    variables: {
+      userId: data?.userInfo?.userId,
+    },
+    skip: !data?.userInfo?.userId,
+  })
+
+  const { data: userFeedback } = useQuery(GET_USER_FEEDBACK, {
+    fetchPolicy: 'network-only',
+    variables: {
+      userId: data?.userInfo?.userId,
+      limit: 5,
+      offset: 0,
+    },
+    skip: !data?.userInfo?.userId,
+  });
+
+  console.log(data, 'DATA')
 
   const {
-    profilePicture,
-    bio,
-    firstName,
-    lastName,
-    city,
-    country,
-    skillIds,
-    website,
-    socialLinks,
-    works,
-    email,
-  } = mockData && mockData.userInfo;
+    profilePicture = '',
+    bio = '',
+    firstName = '',
+    lastName = '',
+    city = '',
+    country = '',
+    website = '',
+    socialLinks = [],
+  } = data?.userInfo || {};
 
-  const isAboutVisible = activeTab === PROFILE_TABS.ABOUT;
-  const isWorkVisible = activeTab === PROFILE_TABS.WORK;
+  const [visibleTab, setVisibleTab] = useState(PROFILE_TABS.ABOUT);
 
   const getPlatformIcon = (platform) => {
     switch (platform) {
       case PROFILE_SOCIAL_TYPES.FACEBOOK:
-        return <FaFacebook className="text-slate-600 w-7 h-7"></FaFacebook>;
+        return <FaFacebook className='text-slate-600 w-7 h-7'></FaFacebook>;
       case PROFILE_SOCIAL_TYPES.INSTAGRAM:
-        return <FaInstagram className="text-slate-600 w-7 h-7"></FaInstagram>;
+        return <FaInstagram className='text-slate-600 w-7 h-7'></FaInstagram>;
       case PROFILE_SOCIAL_TYPES.TIKTOK:
-        return <FaTiktok className="text-slate-600 w-7 h-7"></FaTiktok>;
+        return <FaTiktok className='text-slate-600 w-7 h-7'></FaTiktok>;
       case PROFILE_SOCIAL_TYPES.YOUTUBE:
-        return <FaYoutube className="text-slate-600 w-7 h-7"></FaYoutube>;
+        return <FaYoutube className='text-slate-600 w-7 h-7'></FaYoutube>;
       default:
         return;
     }
   };
 
-  const mapUserSkills = () =>
-    skills.filter((skill) => skillIds.find((skillId) => skill._id === skillId));
-
   return (
-    <div className="flex flex-col h-full w-full px-10 xl:px-16 py-10 gap-x-10 lg:gap-x-1 2xl:gap-x-14 gap-y-8">
-      <div className="flex flex-col lg:flex-row justify-between w-full gap-y-10 lg:gap-x-10">
-        <PanelContainer extraClassName="flex flex-1 flex-col justify-center items-center">
-          <h1 className="font-sans font-semibold text-3xl">
-            {firstName} {lastName}
-          </h1>
-          <h2 className="text-orange-500 font-medium">Product Designer</h2>
-          <img
-            src={profilePicture}
-            className="max-w-1/1.3 xl:max-w-1/2 object-cover rounded-full aspect-square overflow-hidden mt-5"
-            alt="Profile image of the user"
-          />
-        </PanelContainer>
-
-        <PanelContainer extraClassName="flex flex-1 basis-1/3 flex-col justify-between">
-          <div className="flex-col w-full">
-            <div className="flex justify-between items-center w-full">
-              <div className="flex flex-col">
-                <ProfileSectionTitle>Rankings</ProfileSectionTitle>
-                <div className="flex items-center">
-                  <span className="text-xl text-slate-500">8.6</span>
-                  <div className="flex pl-2">
-                    {[1, 2, 3, 4, 5].map((val) => (
-                      <StarIcon
-                        className={
-                          val !== 5
-                            ? "text-orange-500 h-6 w-6"
-                            : "text-slate-500 h-6 w-6 opacity-30"
-                        }
-                      ></StarIcon>
-                    ))}
-                  </div>
-                </div>
-              </div>
+    <div className='flex flex-wrap gap-8'>
+      <div className='flex flex-col flex-grow basis-full sm:basis-5/12 max-w-full sm:max-w-1/2 items-start'>
+        <PanelContainer extraClassName='flex flex-col flex-grow w-full  justify-around items-start'>
+          <div className='flex justify-between gap-4'>
+            <ProfilePicture src={profilePicture} />
+            <div>
+              <h1 className='font-sans font-bold text-xl'>
+                {firstName} {lastName}
+              </h1>
+              <h2 className='text-gray-400'>Business</h2>
             </div>
           </div>
-          <ProfileSection title="Contact Information">
-            <div className="flex flex-col gap-5">
-              <div className="flex items-center text-slate-900">
-                <div className="w-16 mr-6">Website:</div>
-                <EditableSection
-                  inputProps={{
-                    type: "text",
-                    name: "website",
-                    value: values.website,
-                    onChange: handleChange,
-                    id: "website",
-                    autoComplete: "Website",
-                    className:
-                      "mt-1 focus:ring-secondary focus:border-secondary block w-1/2 shadow-sm sm:text-sm border-gray-300 rounded-md",
-                  }}
-                  isEditMode={isEditMode}
-                  type="input"
-                >
-                  <a
-                    className="text-orange-500 ml-10"
-                    target="_blank"
-                    href={website}
-                  >
-                    {website}
-                  </a>
-                </EditableSection>
-              </div>
-
-              <div className="flex items-center text-slate-900">
-                <div className="w-16 mr-6">Email:</div>
-                <EditableSection
-                  inputProps={{
-                    type: "text",
-                    name: "email",
-                    value: values.email,
-                    onChange: handleChange,
-                    id: "email",
-                    autoComplete: "Email",
-                    className:
-                      "mt-1 focus:ring-secondary focus:border-secondary block w-1/2 shadow-sm sm:text-sm border-gray-300 rounded-md",
-                  }}
-                  isEditMode={isEditMode}
-                  type="input"
-                >
-                  <a
-                    className="text-orange-500 ml-10"
-                    target="_blank"
-                    href={email}
-                  >
-                    test.test@gmail.com
-                  </a>
-                </EditableSection>
-              </div>
-
-              <div className="flex text-slate-900">
-                <div className="w-16 mr-6">Platforms:</div>
-                {isEditMode && (
-                  <SocialLinks
-                    onChange={handleChange}
-                    values={values}
-                    name="socialLinks"
-                  />
-                )}
-                {!isEditMode && (
-                  <div className="flex ml-10">
-                    {Object.keys(socialLinks).map(
-                      (platform, idx) =>
-                        socialLinks[platform] && (
-                          <a
-                            target="_blank"
-                            className={`${idx === 0 ? "ml-0" : "ml-5"}`}
-                            href={socialLinks[platform]}
-                          >
-                            {getPlatformIcon(platform)}
-                          </a>
-                        )
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          </ProfileSection>
+          <p className='italic text-gray-500'>{bio}</p>
         </PanelContainer>
       </div>
-
-      <div className="flex flex-col lg:flex-row justify-between w-full gap-y-10 lg:gap-x-10">
-        <PanelContainer extraClassName="flex flex-1 flex-col gap-20 h-full">
-          <ProfileSection hasTitleLine={true} title="Bio">
-            <EditableSection
-              inputProps={{
-                type: "text",
-                name: "bio",
-                value: values.bio,
-                onChange: handleChange,
-                id: "bio",
-                autoComplete: "Your description",
-                className:
-                  "mt-1 focus:ring-secondary focus:border-secondary block w-full shadow-sm sm:text-sm border-gray-300 rounded-md",
-              }}
-              isEditMode={isEditMode}
-              type="input"
+      <PanelContainer extraClassName='flex-grow max-w-full basis-full sm:basis-5/12 sm:max-w-1/2 flex flex-col justify-around items-start gap-8'>
+        <div className='flex flex-wrap items-center gap-10'>
+          <div className='flex flex-col'>
+            <span className='font-bold'>{totalCompletedJobs?.getTotalCompletedJobs}</span>
+            <span className='text-gray-600 text-sm'>Total jobs</span>
+          </div>
+          <div className='flex flex-col'>
+            <div className='font-bold flex gap-2 items-center'>
+              {data?.userInfo?.rating} <StarIcon className='h-5' />
+            </div>
+            <span className='text-gray-600 text-sm'>Overall rating</span>
+          </div>
+          <div className='flex flex-col'>
+            <span className='font-bold'>
+              {city ? city + ', ': ''} {country}
+            </span>
+            <span className='text-gray-600 text-sm'>City, Country</span>
+          </div>
+        </div>
+        <div className='flex items-center w-full'>
+          <div className='flex w-full'>
+            <span className='text-gray-800 text-md font-normal basis-28 block'>
+              Social links
+            </span>
+            <div className='flex flex-wrap gap-4 items-start justify-start flex-grow'>
+              {Object.keys(socialLinks).map(
+                (platform, idx) =>
+                  socialLinks[platform] && (
+                    <a target='_blank' href={socialLinks[platform]}>
+                      {getPlatformIcon(platform)}
+                    </a>
+                  )
+              )}
+            </div>
+          </div>
+        </div>
+        <div className='flex items-center w-full'>
+         {website ?  <div className='flex w-full'>
+            <span className='text-gray-800 text-md font-normal basis-28 block'>
+              Website
+            </span>
+            <a
+              href={website}
+              target='__blank'
+              className='text-secondary hover:text-primary'
             >
-              <p className="text-slate-700">{bio}</p>
-            </EditableSection>
-          </ProfileSection>
-          <ProfileSection hasTitleLine={true} title="Skills">
-            <ul className="flex flex-wrap">
-              {skills?.length &&
-                mapUserSkills().map((skill) => (
-                  <li
-                    className="flex items-center border rounded-full py-1 px-3 text-xs mr-2 mb-2 font-semibold text-white bg-primaryOrange items-center"
-                    key={skill._id}
-                  >
-                    <span className="block truncate">{skill.label}</span>
-                  </li>
+              {website}
+            </a>
+          </div> : null}
+        </div>
+      </PanelContainer>
+      <PanelContainer extraClassName='flex-grow max-w-full basis-full sm:basis-5/12 sm:max-w-1/2 flex flex-col justify-around items-start gap-8 w-1/2'>
+        <span className="font-semibold text-md">Portfolio</span>
+        <div className='flex gap-4 w-full flex-col'>
+          {data?.userInfo?.works?.map((work, idx) => (
+              <div
+              key={idx}
+              className='w-full cursor-pointer justify-start items-start border-gray-300 border p-2 rounded text-gray-900 hover:bg-gray-100 hover:text-primary'
+            >
+              <span className='font-semibold text-sm'>{work?.clientName}</span>
+              <p className="text-gray-600 text-xs line-clamp-2">
+                {work?.description}
+              </p>
+              <div className="flex py-4 gap-4 flex-wrap">
+                {work?.attachments?.map((src, idx) => (
+                  <img src={src} className="w-auto max-h-8 rounded overflow-hidden"/>
                 ))}
-            </ul>
-          </ProfileSection>
-        </PanelContainer>
+                </div>
+            </div>
+        ))}
+        </div>
+      </PanelContainer>
+      <PanelContainer extraClassName='flex-grow max-w-full basis-full sm:basis-5/12 sm:max-w-1/2 flex flex-col justify-around items-start gap-8'>
+      <span className="font-semibold text-md">Testimonials</span>
 
-        <PanelContainer extraClassName="flex flex-1 basis-1/3 flex-col gap-5">
-          <div className="flex border-solid border-b-2">
-            <button
-              type="button"
-              onClick={() => setActiveTab(PROFILE_TABS.ABOUT)}
-              className={`flex items-center p-3 text-slate-500 ${
-                isAboutVisible ? activeTabStyle : ""
-              }`}
-            >
-              <UserCircleIcon className="w-8 h-8 text-slate-500"></UserCircleIcon>
-              <span className="text-slate-500 font-semibold text-xl px-2">
-                About
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab(PROFILE_TABS.WORK)}
-              className={`flex items-center p-3 text-slate-500 ${
-                isWorkVisible ? activeTabStyle : ""
-              }`}
-            >
-              <MenuIcon className="w-8 h-8" />
-              <span className="font-semibold text-xl pl-2">Work</span>
-            </button>
-          </div>
-
-          {isAboutVisible && (
-            <ProfileSection title="Basic Information" classNames="gap-3">
-              <div className="flex items-center text-slate-900 w-full">
-                <div className="w-16 mr-4">City:</div>
-                <EditableSection
-                  inputProps={{
-                    type: "text",
-                    name: "city",
-                    value: values.city,
-                    onChange: handleChange,
-                    id: "city",
-                    autoComplete: "Your city",
-                    className:
-                      "mt-1 focus:ring-secondary focus:border-secondary block w-1/2 shadow-sm sm:text-sm border-gray-300 rounded-md",
-                  }}
-                  isEditMode={isEditMode}
-                  type="input"
-                >
-                  {city ? <span className="pl-1">{city}, </span> : "-"}
-                </EditableSection>
+        <div className='flex gap-4 w-full flex-col'>
+          {userFeedback?.getFeedbackForUser?.map((feedback, idx) =>
+            feedback?.note ? (
+              <div
+                key={feedback._id}
+                className='w-full justify-start items-start flex-col border-gray-300 border p-2 rounded text-gray-600'
+              >
+                <span className='font-semibold text-sm'>{feedback?.note}</span>
+                <div className="flex items-center gap-2">
+                <StarIcon className="h-3"/>
+                  <span className="text-gray-400 text-sm">
+                  {feedback?.rate} / 5
+                  </span>
+                  </div>
               </div>
-
-              <div className="flex items-center text-slate-900 w-full">
-                <div className="w-16 mr-6">Country:</div>
-                <EditableSection
-                  inputProps={{
-                    type: "text",
-                    name: "country",
-                    value: values.country,
-                    onChange: handleChange,
-                    id: "country",
-                    autoComplete: "Your country",
-                    className:
-                      "mt-1 focus:ring-secondary focus:border-secondary block w-1/2 shadow-sm sm:text-sm border-gray-300 rounded-md",
-                  }}
-                  isEditMode={isEditMode}
-                  type="input"
-                >
-                  {country ? (
-                    <span className="text-slate-700">{country}</span>
-                  ) : (
-                    "-"
-                  )}
-                </EditableSection>
-              </div>
-            </ProfileSection>
+            ) : null
           )}
-
-          {isWorkVisible && <WorkSection works={works}></WorkSection>}
-        </PanelContainer>
-      </div>
+        </div>
+      </PanelContainer>
     </div>
   );
 };
