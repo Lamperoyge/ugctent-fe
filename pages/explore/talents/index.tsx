@@ -5,6 +5,8 @@ import { useQuery } from '@apollo/client';
 import ProfilePicture from 'components/ProfilePicture';
 import InfiniteScroll from 'components/InfiniteScroll';
 import ExploreFilters from 'components/ExploreFilters';
+import Skills from 'components/JobsPageComponents/skills';
+
 import Link from 'next/link';
 
 export default function TalentsPage() {
@@ -44,20 +46,16 @@ export default function TalentsPage() {
               key={creator._id}
               className='col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200'
             >
-              <>
-              {console.log(creator, 'creator')}
-              
-              </>
-              <div className='flex-1 flex flex-col p-8'>
+              <div className='flex-1 flex flex-col p-8 gap-4'>
                 <ProfilePicture
                   src={creator?.profilePicture}
                   size='h-32 w-32'
                   className='object-cover mx-auto rounded-full'
                 />
-                <h3 className='mt-6 text-gray-900 text-sm font-medium'>
+                <h3 className='text-gray-900 text-sm font-medium'>
                   {creator.firstName} {creator.lastName}
                 </h3>
-                <dl className='mt-1 flex-grow flex flex-col justify-between'>
+                <dl className='flex-grow flex flex-col justify-between gap-4'>
                   <dt className='sr-only'>Title</dt>
                   <p className='text-gray-500 text-sm truncate'>
                     {creator?.bio}
@@ -65,15 +63,15 @@ export default function TalentsPage() {
                   <dt className='sr-only'>Role</dt>
                   <div className='flex flex-wrap gap-2 items-baseline my-2 justify-center items-center'>
                     {creator?.skills?.slice(0, 1).map((skill) => (
-                      <span
-                        className='border rounded-full py-1 px-3 text-xs mr-2 font-semibold text-white bg-primaryOrange items-center'
+                      <li
+                        className='px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-200 text-blue-800'
                         key={skill._id}
                       >
-                        <span className='block truncate'>{skill?.label}</span>
-                      </span>
+                        <span className='block truncate'>{skill.label}</span>
+                      </li>
                     ))}
                     {creator?.skills?.length > 1 ? (
-                      <span className='border rounded-full py-1 px-3 text-xs mr-2 font-semibold text-slate-200 bg-slate-400 items-center'>
+                      <span className='px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-200 text-blue-800'>
                         <span className='block truncate'>
                           + {creator?.skills.length - 2}
                         </span>
@@ -87,18 +85,26 @@ export default function TalentsPage() {
                       {creator?.country}
                     </span>
                   </div>
+                  <div className='py-4'>
+                    <Link
+                      href={`/profile/${creator.userId}`}
+                      className='flex justify-center font-bold items-center px-4 py-1 w-full border border-transparent shadow-sm text-sm rounded-xl text-white bg-primaryOrange hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
+                    >
+                      Visit profile
+                    </Link>
+                  </div>
                 </dl>
               </div>
               <div>
-                <div className='-mt-px flex divide-x divide-gray-200'>
-                  <div className='w-0 flex-1 flex'>
+                <div className=' flex divide-x divide-gray-200'>
+                  {/* <div className='w-0 flex-1 flex'>
                     <Link
                       href={`/profile/${creator.userId}`}
                       className='flex justify-center font-bold items-center px-4 py-1 w-full border border-transparent shadow-sm text-sm rounded-bl-lg rounded-br-lg text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
                     >
                       Visit profile
                     </Link>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </li>

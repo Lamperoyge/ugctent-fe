@@ -20,7 +20,7 @@ export default function Multiselect({
             {label}
           </Listbox.Label>
           <div className='mt-1 relative'>
-            <Listbox.Button className='flex min-h-10 flex-wrap gap-2 relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm items-center'>
+            <Listbox.Button className='flex min-h-10 flex-wrap gap-2 relative w-full bg-white border border-gray-300 rounded-xl shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm items-center'>
               {selected.length ? (
                 selected?.map((s, idx) => (
                   <span
@@ -59,7 +59,7 @@ export default function Multiselect({
               leaveFrom='opacity-100'
               leaveTo='opacity-0'
             >
-              <Listbox.Options className='absolute z-10 mt-1 w-full bg-white shadow-lg max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm'>
+              <Listbox.Options className='absolute z-10 mt-1 w-full bg-white shadow-lg max-h-56 rounded-xl py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm'>
                 {options?.map((option) => (
                   <Listbox.Option
                     key={option._id}

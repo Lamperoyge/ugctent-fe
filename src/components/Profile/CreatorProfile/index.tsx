@@ -52,6 +52,7 @@ const CreatorProfilePage = ({ data }) => {
     country = '',
     website = '',
     socialLinks = [],
+    skills,
   } = data?.userInfo || {};
 
   const [visibleTab, setVisibleTab] = useState(PROFILE_TABS.ABOUT);
@@ -85,7 +86,6 @@ const CreatorProfilePage = ({ data }) => {
     }
   };
 
-  console.log(portfolioItem, 'portfolioitem');
   return (
     <>
       <Modal
@@ -161,6 +161,14 @@ const CreatorProfilePage = ({ data }) => {
               </div>
             </div>
             <p className='italic text-gray-500'>{bio}</p>
+            {skills?.slice(0, 1).map((skill) => (
+              <li
+                className='px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-200 text-blue-800'
+                key={skill._id}
+              >
+                <span className='block truncate'>{skill.label}</span>
+              </li>
+            ))}
           </PanelContainer>
         </div>
         <PanelContainer extraClassName='flex-grow max-w-full basis-full sm:basis-5/12 sm:max-w-1/2 flex flex-col justify-around items-start gap-8'>

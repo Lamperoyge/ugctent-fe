@@ -12,6 +12,9 @@ module.exports = {
         secondary: "#035397",
         primaryOrange: "#E8630A",
         primaryYellow: "#FCD900",
+        ugcblue: '#233060',
+        vista: '#fcfbfa',
+        vistaDark: '#d4cecb'
       },
       minWidth: {
         '1/2': '50%',

@@ -39,5 +39,9 @@ export const UserInfoFragment = gql`
     website
     city
     country
+    skills {
+      _id
+      label
+    }
   }
 `;

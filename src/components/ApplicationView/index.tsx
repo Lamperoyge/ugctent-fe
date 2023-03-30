@@ -21,8 +21,11 @@ import {
 } from 'utils/constants';
 import { useAuth } from 'hooks';
 import StripeComponent from 'components/Stripe';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import StatusChip from 'components/StatusChip';
+import PanelContainer from 'components/PanelContainer';
+import { GET_USER_FEEDBACK } from 'graphql/queries/rating';
+import { StarIcon } from '@heroicons/react/solid';
 
 function ApplicationHeader({ application }) {
   const { user }: any = useAuth();
@@ -188,6 +191,16 @@ export default function ApplicationView() {
     }
   }, [router.query?.applicationId]);
 
+  const { data: userFeedback } = useQuery(GET_USER_FEEDBACK, {
+    fetchPolicy: 'network-only',
+    variables: {
+      userId: jobApplication?.getJobApplicationById?.creator.userId,
+      limit: 3,
+      offset: 0,
+    },
+    skip: !jobApplication?.getJobApplicationById?.creator.userId,
+  });
+
   if (error) {
     return <InvalidApplication jobId={router.query.jobId} />;
   }
@@ -246,11 +259,61 @@ export default function ApplicationView() {
                 fields={applicationPanelData}
               />
               {/* Comments*/}
-              <Comments
-                entityId={router.query.applicationId}
-                disabled={!isApplicationInReview}
-                entityType={COMMENT_ENTITY_TYPES.JOB_APPLICATION}
-              />
+              <div className='flex gap-8 flex-wrap sm:flex-nowrap'>
+                <div className='flex-grow'>
+                  <Comments
+                    entityId={router.query.applicationId}
+                    disabled={!isApplicationInReview}
+                    entityType={COMMENT_ENTITY_TYPES.JOB_APPLICATION}
+                  />
+                </div>
+                <section
+                  aria-labelledby='applicant-information-title'
+                  className='flex-grow'
+                >
+                  <div className='bg-white shadow sm:rounded-lg'>
+                    <div className='px-4 py-5 sm:px-6'>
+                      <h2
+                        id='applicant-information-title'
+                        className='text-sm font-medium text-gray-500'
+                      >
+                        Testimonials
+                      </h2>
+                    </div>
+                    <div className='border-t border-gray-200 px-4 py-5 sm:px-6 w-full'>
+                        <div className='flex gap-4 w-full flex-col'>
+                          {!userFeedback?.getFeedbackForUser?.length
+                            ? 'No feedback yet'
+                            : ''}
+                          {userFeedback?.getFeedbackForUser?.map(
+                            (feedback, idx) =>
+                              feedback?.note ? (
+                                <div
+                                  key={feedback._id}
+                                  className='w-full justify-start items-start flex-col border-gray-300 border p-2 rounded text-gray-600'
+                                >
+                                  <span className='font-semibold text-sm'>
+                                    {feedback?.note}
+                                  </span>
+                                  <div className='flex items-center gap-2'>
+                                    <StarIcon className='h-3' />
+                                    <span className='text-gray-400 text-sm'>
+                                      {feedback?.rate} / 5
+                                    </span>
+                                  </div>
+                                </div>
+                              ) : null
+                          )}
+                        </div>
+                    </div>
+                  </div>
+                </section>
+
+                {/* <div className='flex-grow'> */}
+
+                {/* <h1 className="font-bold text-4xl">Make sure to ask all the relevant questions!</h1> */}
+                {/* </div> */}
+              </div>
             </div>
           </div>
         </main>

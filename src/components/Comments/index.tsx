@@ -214,7 +214,7 @@ export default function Comments({ entityId, entityType, disabled = false }) {
                   <button
                     onClick={toggleSuggestionModal}
                     type='button'
-                    className='inline-flex items-center w-full justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-semibold rounded-md text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
+                    className='inline-flex items-center w-full justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-semibold rounded-full text-white bg-ugcblue hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
                   >
                     Suggest new price
                   </button>
@@ -279,7 +279,7 @@ export default function Comments({ entityId, entityType, disabled = false }) {
                   <div className='mt-3 flex items-center justify-between'>
                     <button
                       type='submit'
-                      className='inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary'
+                      className='inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primaryOrange hover:opacity-100 opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary'
                     >
                       Comment
                     </button>
