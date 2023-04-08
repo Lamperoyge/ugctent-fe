@@ -23,6 +23,7 @@ export const CREATE_USER_INFO = gql`
         facebook
         instagram
         tiktok
+        
       }
       skillIds
       categoryIds
