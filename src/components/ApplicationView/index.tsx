@@ -309,10 +309,6 @@ export default function ApplicationView() {
                   </div>
                 </section>
 
-                {/* <div className='flex-grow'> */}
-
-                {/* <h1 className="font-bold text-4xl">Make sure to ask all the relevant questions!</h1> */}
-                {/* </div> */}
               </div>
             </div>
           </div>
