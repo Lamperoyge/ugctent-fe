@@ -104,7 +104,7 @@ const ChatPage = ({ job }) => {
     <>
         <button
           onClick={toggleDrawer}
-        className="bg-blue-400 w-full rounded-full py-2 px-4 main-gradient-btn flex justify-center items-center gap-4"
+        className="bg-blue-400 w-full rounded-md py-2 px-4 main-gradient-btn flex justify-center items-center gap-4"
         >
           <ChatAltIcon className="h-5 w-5 text-white" aria-hidden="true" />
           Open chat</button>

@@ -9,40 +9,40 @@ import Layout from 'components/Layout';
 import { MantineProvider } from '@mantine/core';
 import { useState, useEffect, useRef } from 'react';
 import { ChatContext } from 'contexts';
+import GenerateContract from 'components/GenerateContract';
 
 function MyApp({ Component, pageProps }) {
   const [isConnected, setIsConnected] = useState(false);
   const socketClient = useRef(null);
   const [lastPong, setLastPong] = useState(null);
-  
 
   useEffect(() => {
     const token = localStorage.getItem('ugctent-token');
-    if(!socketClient.current && token) {
+    if (!socketClient.current && token) {
       const socket = io('http://localhost:4000', {
         withCredentials: true,
         auth: {
           token,
-        }
+        },
       });
-  
-      socketClient.current = socket;  
+
+      socketClient.current = socket;
     }
 
-    if(socketClient.current) {
+    if (socketClient.current) {
       socketClient.current.on('connect', () => {
-        console.log('once ')
+        console.log('once ');
         setIsConnected(true);
       });
-  
+
       socketClient.current.on('disconnect', () => {
         setIsConnected(false);
       });
-  
+
       socketClient.current.on('pong', () => {
         setLastPong(new Date().toISOString());
       });
-  
+
       return () => {
         socketClient.current.off('connect');
         socketClient.current.off('disconnect');
@@ -56,6 +56,22 @@ function MyApp({ Component, pageProps }) {
   };
 
   return (
+    // <GenerateContract
+    //   userFullname={'test'}
+    //   userAddress={'Adresa mea'}
+    //   userCISeries={'RD'}
+    //   userCINumber={'944923'}
+    //   userCIDate={'04/20/20'}
+    //   userCIInstitute={'SPCEP Sector 5'}
+    //   userCNP={'1950420803921'}
+    //   companyFullName={'Companie'}
+    //   companyFullAddress={'Adresa companiei'}
+    //   companyNumber={'J40/123/1234'}
+    //   companyCUI={'123456'}
+    //   companyRepresentative={'Reprezentant'}
+    //   jobTitle={'Job'}
+    //   paidSum={'1000'}
+    // />
     <ApolloProvider client={apollo}>
       <MantineProvider
         withGlobalStyles

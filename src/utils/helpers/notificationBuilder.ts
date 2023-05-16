@@ -108,8 +108,17 @@ const buildSubmissionStatusChange = (notification, verb) => {
     }
 };
 
-export default function notificationBuilder(notification) {
+const buildJobInvoiceRequested = (notification) => {
+    return {
+        avatar: notification?.creator?.avatar,
+        fullName: `${notification?.creator?.firstName} ${notification?.creator?.lastName}`,
+        title: `requested an invoice for the job`,
+        subtitle: notification?.entity?.title ? `${notification?.entity?.title?.substring(0, 15)}...` : '',
+        link: `/projects/${notification?.entityId}?uploadInvoice=true`,
+    }
+}
 
+export default function notificationBuilder(notification) {
     switch (notification.notificationType) {
         case NOTIFICATION_TYPES.JOB_APPLICATION_RECEIVED:
             return buildJobApplicationNotification(notification);
@@ -125,6 +134,8 @@ export default function notificationBuilder(notification) {
             return buildSubmissionStatusChange(notification, 'accepted');
         case NOTIFICATION_TYPES.JOB_SUBMISSION_REJECTED:
             return buildSubmissionStatusChange(notification, 'rejected');
+        case NOTIFICATION_TYPES.JOB_INVOICE_STATUS_REQUESTED:
+            return buildJobInvoiceRequested(notification);
         default:
             return null
     }

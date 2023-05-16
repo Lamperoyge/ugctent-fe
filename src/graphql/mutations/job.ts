@@ -31,3 +31,11 @@ export const UPDATE_JOB = gql`
     }
   }
 `;
+
+export const REQUEST_INVOICE = gql`
+  mutation requestInvoice($jobId: ID!) {
+    requestInvoice(jobId: $jobId) {
+      success
+    }
+  }
+`;

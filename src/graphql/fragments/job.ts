@@ -20,5 +20,6 @@ export const JobFragment = gql`
     status
     description
     applicationsCount
+    invoiceStatus
   }
 `;

@@ -32,6 +32,7 @@ import Category from 'components/JobsPageComponents/category';
 import Assignee from 'components/JobsPageComponents/assignee';
 import RatingPrompt from 'components/RatingPrompt';
 import Chat from 'components/Chat';
+import ManageInvoice from 'components/ManageInvoice';
 
 export default function ProjectPage() {
   const [isEditMode, setIsEditMode] = useState(false);
@@ -154,6 +155,8 @@ export default function ProjectPage() {
                             <span>Edit</span>
                           </button>
                         )}
+        <ManageInvoice job={job}/>
+
                         {canArchive && (
                           <button
                             type='button'

@@ -7,6 +7,7 @@ import Skills from 'components/JobsPageComponents/skills';
 import Category from 'components/JobsPageComponents/category';
 import Assignee from 'components/JobsPageComponents/assignee';
 import { useMemo } from 'react';
+import ManageInvoice from 'components/ManageInvoice';
 
 function ProjectPageAsideContent({ job, canViewAssignedPerson, children }) {
   const asideDetails: any = useMemo(() => {
@@ -65,7 +66,6 @@ function ProjectPageAsideContent({ job, canViewAssignedPerson, children }) {
     <aside className='block xl:pl-8'>
       <div className='flex gap-8 items-left justify-center flex-col'>
         {asideDetails.map((item, key) => {
-          console.log(item.value);
           return (
             <div className='flex gap-4 justify-between'>
               <span className='font-semibold text-sm text-gray-500'>

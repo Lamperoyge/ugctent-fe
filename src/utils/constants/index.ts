@@ -154,6 +154,15 @@ export const NOTIFICATION_TYPES = {
   JOB_SUBMISSION_COMMENT_RECEIVED: 'jobSubmissionCommentReceived',
   JOB_STATUS_COMPLETED: 'jobStatusCompleted',
   COMMENT_MENTION: 'commentMention',
+  JOB_INVOICE_STATUS_UPLOADED: 'jobInvoiceStatusUploaded',
+  JOB_INVOICE_STATUS_REQUESTED: 'jobInvoiceStatusRequested',
 };
 
 export const SUBMISSION_UPLOAD_LIMIT = 25000000
+
+export const JOB_INVOICE_STATUS = {
+  NOT_REQUESTED: 'notRequested',
+  REQUESTED: 'requested',
+  UPLOADED: 'uploaded',
+  FAILED: 'failed'
+}
