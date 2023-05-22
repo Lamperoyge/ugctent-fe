@@ -9,6 +9,7 @@ export default function ViewAttachments({
   fromMemory = false,
   removeAttachment = () => {},
 }:any) {
+  console.log(attachments, 'attachments')
   const [img, setImg] = useState(null);
 
   return (
@@ -30,10 +31,17 @@ export default function ViewAttachments({
               onClick={() => setImg(attach)}
               type='button'
             >
-              <img
+              <>
+              {attach?.includes('.pdf') ? 
+              
+              <iframe className={'w-auto max-h-24 rounded overflow-hidden'} src={attach}/>
+              :               <img
                 className='w-auto max-h-24 rounded overflow-hidden'
                 src={attach}
               />
+}
+              
+              </>
             </button>
           )}
          {attach?.name &&  <span className='inline-flex rounded-full items-center my-2 py-0.5 pl-2.5 pr-1 text-sm font-medium bg-indigo-100 text-primary'>

@@ -9,6 +9,7 @@ export const Input = ({
   variant = 'md',
   onChange,
   error,
+  disclaimer,
   ...rest
 }:any) => {
   const variantClass = {
@@ -43,6 +44,8 @@ export const Input = ({
         />
       </div>
       {error ? <span className='mt-4 text-red-400'>{error}</span> : null}
+      {disclaimer ? <span className='mt-4 text-xs text-gray-400'>{disclaimer}</span> : null}
+
     </div>
   );
 };

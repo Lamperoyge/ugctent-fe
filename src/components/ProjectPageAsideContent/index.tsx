@@ -33,8 +33,14 @@ function ProjectPageAsideContent({ job, canViewAssignedPerson, children }) {
           : 'Left to pay',
         value: job?.price,
         component: () => (
-          <div className='px-2 inline-flex text-xs leading-5 font-bold rounded-full bg-green-200 text-green-800'>
-            {job?.price} RON
+          <div className='flex flex-col'>
+            <div className='px-2 inline-flex text-xs leading-5 font-bold rounded-full bg-green-200 text-green-800'>
+              {job?.price} RON
+            </div>
+            {/* <span className="text-xs text-gray-400">
+            You will receive this amount minus the platform fee (10%) and payment processing fees (2.5%). - You will receive RON{job?.price - job?.price * 0.1 - job?.price * 0.025}
+
+            </span> */}
           </div>
         ),
       },
@@ -55,8 +61,8 @@ function ProjectPageAsideContent({ job, canViewAssignedPerson, children }) {
         label: 'Category',
         value: job?.category,
         component: () => <Category job={job} />,
-        condiition: !!job?.category
-      }
+        condiition: !!job?.category,
+      },
     ];
 
     return items?.filter((item) => item?.condition !== false);

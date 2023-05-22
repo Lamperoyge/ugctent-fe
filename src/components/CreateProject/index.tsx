@@ -19,60 +19,6 @@ const CreateProjectModal = ({ open, onClose, existingJob }:any) => {
     onError: () => console.log(error),
   });
 
-  const formConfig = [
-    {
-      name: 'title',
-      type: 'text',
-      placeholder: 'Project name',
-      label: 'Title',
-      component: 'input',
-    },
-    {
-      name: 'categoryId',
-      component: 'select',
-      label: 'Business Domain',
-      placeholder: 'Select business domain',
-      options: categories,
-    },
-    {
-      name: 'skillIds',
-      component: 'multipleSelect',
-      label: 'Skills',
-      placeholder: 'Select skills required to complete this job',
-      options: skills,
-    },
-    {
-      // add rich text
-      name: 'description',
-      component: 'textarea',
-      rows: 6,
-      placeholder: 'I want to create TikTok videos for my company',
-      label: 'Description',
-      description: 'Share as many details as possible',
-      minContent: 100,
-    },
-    {
-      name: 'price',
-      step: 1,
-      placeholder: '150',
-      label: 'Price',
-      type: 'number',
-      component: 'input',
-      withCurrency: true,
-    },
-    {
-      name: 'links',
-      component: 'links',
-      label: 'Links',
-      placeholder: 'Add link',
-    },
-    {
-      name: 'attachments',
-      component: 'attachments',
-      label: 'Attachments',
-    },
-  ];
-
   const getInitialValuesFromExistingJob = () => {
     return {
       title: existingJob?.title || '',
@@ -133,6 +79,62 @@ const CreateProjectModal = ({ open, onClose, existingJob }:any) => {
       });
     },
   });
+
+
+  const formConfig = [
+    {
+      name: 'title',
+      type: 'text',
+      placeholder: 'Project name',
+      label: 'Title',
+      component: 'input',
+    },
+    {
+      name: 'categoryId',
+      component: 'select',
+      label: 'Business Domain',
+      placeholder: 'Select business domain',
+      options: categories,
+    },
+    {
+      name: 'skillIds',
+      component: 'multipleSelect',
+      label: 'Skills',
+      placeholder: 'Select skills required to complete this job',
+      options: skills,
+    },
+    {
+      // add rich text
+      name: 'description',
+      component: 'textarea',
+      rows: 6,
+      placeholder: 'I want to create TikTok videos for my company',
+      label: 'Description',
+      description: 'Share as many details as possible',
+      minContent: 100,
+    },
+    {
+      name: 'price',
+      step: 1,
+      placeholder: '300',
+      label: 'Price',
+      type: 'number',
+      component: 'input',
+      withCurrency: true,
+      disclaimer: `This is the total amount you will pay. The creator will get this amount minus the platform fee (10%) and payment processing fees (2.5%).`
+    },
+    {
+      name: 'links',
+      component: 'links',
+      label: 'Links',
+      placeholder: 'Add link',
+    },
+    {
+      name: 'attachments',
+      component: 'attachments',
+      label: 'Attachments',
+    },
+  ];
 
 
   const handleAttachments = (e) => {
@@ -209,6 +211,7 @@ const CreateProjectModal = ({ open, onClose, existingJob }:any) => {
                                       error={formik.errors[item.name]}
                                       variant='xs'
                                       onChange={formik.handleChange}
+                                      disclaimer={item.disclaimer}
                                     />
                                   );
                                 }

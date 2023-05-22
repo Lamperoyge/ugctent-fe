@@ -13,26 +13,6 @@ const validationSchema = yup.object().shape({
   price: yup.number(),
 });
 
-const config = [
-  {
-    name: 'message',
-    component: 'textarea',
-    rows: 6,
-    placeholder: 'I am interested in your project',
-    label: 'Description',
-    description: 'Please describe your interest in this project',
-    minContent: 100,
-  },
-  {
-    name: 'price',
-    step: 1,
-    placeholder: '150',
-    label: 'Offered Price',
-    type: 'number',
-    component: 'input',
-    withCurrency: true,
-  },
-];
 
 const CreateJobApplication = ({ opened, onClose, job }) => {
   const initialValues = {
@@ -64,6 +44,28 @@ const CreateJobApplication = ({ opened, onClose, job }) => {
     }
   }, [opened, job?._id]);
 
+  const config = [
+    {
+      name: 'message',
+      component: 'textarea',
+      rows: 6,
+      placeholder: 'I am interested in your project',
+      label: 'Description',
+      description: 'Please describe your interest in this project',
+      minContent: 100,
+    },
+    {
+      name: 'price',
+      step: 1,
+      placeholder: '150',
+      label: 'Offered Price',
+      disclaimer: `You will receive this amount minus the platform fee (10%) and payment processing fees (2.5%). - You will receive ${formik?.values?.price - formik?.values?.price * 0.1 - formik?.values?.price * 0.025}`,
+      type: 'number',
+      component: 'input',
+      withCurrency: true,
+    },
+  ];
+  
   const { user }:any = useAuth();
   const { createJobApplication } = useJobApplications();
   return (

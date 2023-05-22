@@ -39,3 +39,10 @@ export const REQUEST_INVOICE = gql`
     }
   }
 `;
+export const ADD_INVOICE = gql`
+  mutation addInvoice($id: ID!, $invoiceUrls: [String]) {
+    addInvoice(id: $id, invoiceUrls: $invoiceUrls) {
+      success
+    }
+  }
+`;
