@@ -20,6 +20,14 @@ export const JobFragment = gql`
     status
     description
     applicationsCount
-    invoiceStatus
+    invoice {
+      _id
+      status
+      companyFullName
+      companyFullAddress
+      companyNumber
+      companyCUI
+      companyRepresentative
+    }
   }
 `;

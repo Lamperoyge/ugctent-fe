@@ -9,7 +9,6 @@ import Layout from 'components/Layout';
 import { MantineProvider } from '@mantine/core';
 import { useState, useEffect, useRef } from 'react';
 import { ChatContext } from 'contexts';
-import GenerateContract from 'components/GenerateContract';
 
 function MyApp({ Component, pageProps }) {
   const [isConnected, setIsConnected] = useState(false);

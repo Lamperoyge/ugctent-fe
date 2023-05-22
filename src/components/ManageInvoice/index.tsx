@@ -7,28 +7,105 @@ import { LoadingOverlay, Modal } from '@mantine/core';
 import { useState } from 'react';
 import { classNames } from 'utils/helpers';
 import { PlusIcon } from '@heroicons/react/outline';
-import { Attachments } from 'components/CreateProject/helpers';
+import { Attachments, Input } from 'components/CreateProject/helpers';
+import { useFormik } from 'formik';
+import GenerateContract from 'components/GenerateContract';
+
+
+
+const COMPANY_CONFIG = [
+  {
+    label: 'Company Name',
+    name: 'companyFullName',
+    placeholder: 'UGCTENT SRL',
+  },
+  {
+    label: 'Address',
+    name: 'companyFullAddress',
+    placeholder: 'Str. Mihai Eminescu, nr. 1, Bucuresti',
+  },
+  {
+    label: 'Registry No.',
+    name: 'companyNumber',
+    placeholder: 'J12/123/2021',
+  },
+  {
+    label: 'Fiscal Code / CUI',
+    name: 'companyCUI',
+    placeholder: '12345678',
+  },
+  {
+    label: 'Represented By',
+    name: 'companyRepresentative',
+    placeholder: 'John Doe',
+  },
+];
+
 
 const RequestInvoice = ({ job }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [requestInvoice] = useMutation(REQUEST_INVOICE, {
     refetchQueries: ['getJobById'],
+    onCompleted: () => {
+      setIsModalOpen(false);
+    }
   });
+  const formik = useFormik({
+    initialValues: {},
+    onSubmit: (values) => {
+      requestInvoice({
+        variables: {
+          jobId: job._id,
+          input: {
+            ...values,
+          }
+        }
+      })
+    },
+  })
+  const { values, handleChange, handleSubmit, handleBlur, errors, touched } = formik;
   return (
+    <>
+    <Modal opened={isModalOpen} onClose={() => setIsModalOpen(false)} title="Request Invoice">
+    <form onSubmit={handleSubmit}>
+      <div className='flex flex-col w-full space-y-6 py-4'>
+        {COMPANY_CONFIG.map((item, idx) => (
+          <Input
+            {...item}
+            key={idx}
+            placeholder={item.placeholder}
+            value={values[item.name]}
+            name={item.name}
+            label={item.label}
+            error={formik.errors[item.name]}
+            onChange={handleChange}
+          />
+        ))}
+      </div>
+      <button
+        type='submit'
+        className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary'
+      >
+        Request
+      </button>
+    </form>
+
+    </Modal>
     <button
       type='button'
       onClick={() => {
-        requestInvoice({
-          variables: {
-            jobId: job._id,
-          },
-        });
-        // setNewProjectModalOpen(true);
-        // setSidebarOpen(false);
+        setIsModalOpen(true);
+        // requestInvoice({
+        //   variables: {
+        //     jobId: job._id,
+        //   },
+        // });
       }}
       className='items-center w-full justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
     >
       Request Invoice
     </button>
+    </>
   );
 };
 
@@ -138,13 +215,116 @@ const HandleCompanyUpload = () => {
   );
 };
 
-const HandlePersonUpload = () => {
-  return <div>person upload</div>;
+const CONFIG = [
+  {
+    label: 'Full name',
+    name: 'userFullname',
+    placeholder: 'John Doe',
+  },
+  {
+    label: 'Address',
+    name: 'userAddress',
+    placeholder: 'Str. Mihai Eminescu, nr. 1, Bucuresti',
+  },
+  {
+    label: 'CI series',
+    name: 'userCISeries',
+    placeholder: 'AB',
+  },
+  {
+    label: 'CI number',
+    name: 'userCINumber',
+    placeholder: '123456',
+  },
+  {
+    label: 'CI date',
+    name: 'userCIDate',
+    placeholder: '01.01.2021',
+  },
+  {
+    label: 'CI institute',
+    name: 'userCIInstitute',
+    placeholder: 'Bucuresti',
+  },
+  {
+    label: 'CNP',
+    name: 'userCNP',
+    placeholder: '1234567890123',
+  },
+];
+
+const HandlePersonUpload = ({job}) => {
+  const [isContractOpen, setIsContractOpen] = useState(false);
+  const formik = useFormik({
+    initialValues: {
+      userFullname: '',
+      userAddress: '',
+      userCISeries: '',
+      userCINumber: '',
+      userCIDate: '',
+      userCIInstitute: '',
+      userCNP: '',
+      companyFullName: '',
+      companyFullAddress: '',
+      companyNumber: '',
+      companyCUI: '',
+      companyRepresentative: '',
+    },
+    onSubmit: (values) => setIsContractOpen(true),
+  });
+
+  const { values, handleChange, handleSubmit, handleBlur, errors, touched } =
+    formik;
+  return (
+    <>
+   {isContractOpen ?  
+   <Modal opened={isContractOpen} onClose={() => setIsContractOpen(false)} fullScreen style={{
+    padding: '0'
+   }}> 
+    <div className="p-0 m-0">
+    <GenerateContract 
+    
+    {...values}
+    companyFullName={'Company'} companyFullAddress={'Addr'} companyNumber={'123'} companyCUI={'1213'} companyRepresentative={'Noone'} jobTitle={'title'} paidSum={'suuum'}    
+    />
+    </div>
+    </Modal>
+   : null}
+    <form onSubmit={handleSubmit}>
+      <div className='flex flex-col w-full space-y-6 py-4'>
+        {CONFIG.map((item, idx) => (
+          <Input
+            {...item}
+            key={idx}
+            placeholder={item.placeholder}
+            value={formik.values[item.name]}
+            name={item.name}
+            label={item.label}
+            error={formik.errors[item.name]}
+            onChange={formik.handleChange}
+          />
+        ))}
+      </div>
+      <button
+        type='submit'
+        className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary'
+      >
+        Generate contract
+      </button>
+      <p>
+        <span className='text-sm text-gray-500'>
+          After you generate the contract, please download it, sign it and upload.
+        </span>
+      </p>
+    </form>
+    
+    </>
+  );
 };
 
-const UploadInvoice = ({ job }) => {
+const UploadInvoice = ({ job, defaultOpen = false }) => {
   const [activeTab, setActiveTab] = useState(KEYS.SRL);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(defaultOpen);
   const toggleModal = () => setIsOpen((prev) => !prev);
 
   const tabs = TAB_ITEMS.map((tab) => ({
@@ -164,7 +344,7 @@ const UploadInvoice = ({ job }) => {
           <div className='flex flex-col w-full space-y-6 py-4'>
             <Tabs tabs={tabs} onChange={(key) => setActiveTab(key)} />
             {activeTab === KEYS.SRL && <HandleCompanyUpload />}
-            {activeTab === KEYS.PF && <HandlePersonUpload />}
+            {activeTab === KEYS.PF && <HandlePersonUpload job={job}/>}
           </div>
         </div>
       </Modal>
@@ -185,15 +365,18 @@ const ManageInvoice = ({ job }) => {
 
   const { uploadInvoice } = router?.query;
 
-  if (uploadInvoice && user?._id === job.assigneeId) {
-    return <UploadInvoice job={job} />;
+  if (
+    user?._id === job.assigneeId &&
+    job?.invoice?.status !== JOB_INVOICE_STATUS.NOT_REQUESTED
+  ) {
+    return <UploadInvoice job={job} defaultOpen={!!uploadInvoice} />;
   }
 
   if (job.status !== JOB_STATUS.COMPLETED) return null;
-  if (job.invoiceStatus === JOB_INVOICE_STATUS.NOT_REQUESTED) {
+  if (job?.invoice?.status === JOB_INVOICE_STATUS.NOT_REQUESTED) {
     return <RequestInvoice job={job} />;
   }
-  if (job.invoiceStatus === JOB_INVOICE_STATUS.REQUESTED) {
+  if (job?.invoice?.status === JOB_INVOICE_STATUS.REQUESTED) {
     return <CreatorInvoiceRequested />;
   }
   return null;

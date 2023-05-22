@@ -33,8 +33,8 @@ export const UPDATE_JOB = gql`
 `;
 
 export const REQUEST_INVOICE = gql`
-  mutation requestInvoice($jobId: ID!) {
-    requestInvoice(jobId: $jobId) {
+  mutation requestInvoice($jobId: ID!, $input: RequestInvoiceInput) {
+    requestInvoice(jobId: $jobId, input: $input) {
       success
     }
   }

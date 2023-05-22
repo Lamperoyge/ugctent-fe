@@ -55,7 +55,16 @@ export const GET_JOB_BY_ID = gql`
       _id
       title
       assigneeId
-      invoiceStatus
+      invoice {
+        _id
+        status
+        companyFullName
+        companyFullAddress
+        companyNumber
+        companyCUI
+        companyRepresentative
+        invoiceUrl
+      }
       assignee {
         firstName
         lastName
