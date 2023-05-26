@@ -15,16 +15,17 @@ async function configureBucketCors(storage, bucketName) {
       Content-Type', 'access-control-allow-origin responses across origins`);
 }
 
-const credential = JSON.parse(
-  Buffer.from(process.env.GC_STORAGE_PRIVATE_KEY, "base64").toString()
-);
+const credential = Buffer.from(
+  process.env.GC_STORAGE_PRIVATE_KEY,
+  'base64'
+).toString();
 
 console.log(credential, 'CREDENTIALS');
 const storage = new Storage({
   projectId: process.env.GC_STORAGE_PROJECT_ID,
   credentials: {
     client_email: process.env.GC_STORAGE_CLIENT_EMAIL,
-    private_key: credential.private_key,
+    private_key: credential,
   },
 });
 
