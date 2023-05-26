@@ -20,11 +20,12 @@ export default async function handler(req, res) {
     projectId: process.env.GC_STORAGE_PROJECT_ID,
     credentials: {
       client_email: process.env.GC_STORAGE_CLIENT_EMAIL,
-      private_key: process.env.GC_STORAGE_PRIVATE_KEY,
+      private_key: process.env.GC_STORAGE_PRIVATE_KEY.split(
+        String.raw`\n`
+      ).join('\n'),
     },
   });
 
-  console.log(process.env.GC_STORAGE_PRIVATE_KEY);
   const bucket = storage.bucket('ugctent-profile-pictures');
   const filename = `${req.query.file}_` + `${new Date().valueOf()}`;
   const file = bucket.file(filename);
