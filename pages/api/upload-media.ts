@@ -24,14 +24,20 @@ export default async function handler(req, res) {
     },
   });
 
+  console.log(process.env.GC_STORAGE_PRIVATE_KEY);
   const bucket = storage.bucket('ugctent-profile-pictures');
-  const filename = `${req.query.file  }_` + `${new Date().valueOf()}`;
+  const filename = `${req.query.file}_` + `${new Date().valueOf()}`;
   const file = bucket.file(filename);
   const options = {
     expires: Date.now() + 1 * 60 * 1000, //  1 minute,
     fields: { 'x-goog-meta-test': 'data' },
   };
 
-  const [response] = await file.generateSignedPostPolicyV4(options);
-  res.status(200).json({ resp: response, newFileName: filename });
+  try {
+    const [response] = await file.generateSignedPostPolicyV4(options);
+    res.status(200).json({ resp: response, newFileName: filename });
+  } catch (error) {
+    console.log(error, 'ERROR');
+    res.status(500).json({ error: error.message });
+  }
 }
