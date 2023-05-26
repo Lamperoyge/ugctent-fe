@@ -15,17 +15,20 @@ async function configureBucketCors(storage, bucketName) {
       Content-Type', 'access-control-allow-origin responses across origins`);
 }
 
-export default async function handler(req, res) {
-  const storage = new Storage({
-    projectId: process.env.GC_STORAGE_PROJECT_ID,
-    credentials: {
-      client_email: process.env.GC_STORAGE_CLIENT_EMAIL,
-      private_key: process.env.GC_STORAGE_PRIVATE_KEY.split(
-        String.raw`\n`
-      ).join('\n'),
-    },
-  });
+const credential = JSON.parse(
+  Buffer.from(process.env.GC_STORAGE_PRIVATE_KEY, "base64").toString()
+);
 
+console.log(credential, 'CREDENTIALS');
+const storage = new Storage({
+  projectId: process.env.GC_STORAGE_PROJECT_ID,
+  credentials: {
+    client_email: process.env.GC_STORAGE_CLIENT_EMAIL,
+    private_key: credential.private_key,
+  },
+});
+
+export default async function handler(req, res) {
   const bucket = storage.bucket('ugctent-profile-pictures');
   const filename = `${req.query.file}_` + `${new Date().valueOf()}`;
   const file = bucket.file(filename);
