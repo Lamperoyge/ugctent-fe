@@ -3,7 +3,7 @@ import { setContext } from '@apollo/client/link/context';
 import { offsetLimitPagination } from '@apollo/client/utilities';
 import offsetLimitPaginationInput from 'utils/helpers/offsetLimitPaginationInput';
 
-const graphqlUri = 'http://localhost:4000/graphql';
+const graphqlUri = `${process.env.NEXT_PUBLIC_SERVER_URL}/graphql`;
 
 const httpLink = new HttpLink({
   uri: graphqlUri,
@@ -29,20 +29,28 @@ const cache = new InMemoryCache({
           merge: offsetLimitPaginationInput,
         },
         getSubmissionsForJob: offsetLimitPagination(['jobId', 'offset']),
-        getCommentsByEntityId: offsetLimitPagination(['entityId', 'entityType']),
-        getCreators: offsetLimitPagination(['skillIds', 'interestIds', 'minRating', 'search']),
+        getCommentsByEntityId: offsetLimitPagination([
+          'entityId',
+          'entityType',
+        ]),
+        getCreators: offsetLimitPagination([
+          'skillIds',
+          'interestIds',
+          'minRating',
+          'search',
+        ]),
         getNotifications: offsetLimitPagination(),
         getJobsForCreator: {
           keyArgs: false,
-          merge: offsetLimitPaginationInput
+          merge: offsetLimitPaginationInput,
         },
         getJobsForBusinessUser: {
           keyArgs: false,
-          merge: offsetLimitPaginationInput
+          merge: offsetLimitPaginationInput,
         },
-      }
-    }
-  }
+      },
+    },
+  },
 });
 export default new ApolloClient({
   link: authLink.concat(httpLink),

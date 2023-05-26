@@ -18,7 +18,7 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     const token = localStorage.getItem('ugctent-token');
     if (!socketClient.current && token) {
-      const socket = io('http://localhost:4000', {
+      const socket = io(`${process.env.NEXT_PUBLIC_SERVER_URL}`, {
         withCredentials: true,
         auth: {
           token,
