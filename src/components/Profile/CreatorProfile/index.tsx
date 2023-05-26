@@ -203,6 +203,7 @@ const CreatorProfilePage = ({ data }) => {
                     socialLinks[platform] && (
                       <a
                         target='_blank'
+                        rel="noreferrer"
                         href={getPlatformLink(platform) + socialLinks[platform]}
                       >
                         {getPlatformIcon(platform)}
@@ -252,6 +253,7 @@ const CreatorProfilePage = ({ data }) => {
                   {work?.attachments?.map((src, idx) => (
                     <img
                       src={src}
+                      key={'work-attachment-idx_' + idx}
                       className='w-auto max-h-8 rounded overflow-hidden'
                     />
                   ))}

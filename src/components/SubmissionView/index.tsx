@@ -205,8 +205,8 @@ const SubmissionView = ({ submissionId, isOpen, onClose, jobCreator }) => {
                     role='list'
                     className='divide-y divide-gray-200 rounded-md border border-gray-200'
                   >
-                    {submission?.links?.map((link) => (
-                      <li className='flex items-center justify-between py-3 pl-3 pr-4 text-sm'>
+                    {submission?.links?.map((link, key) => (
+                      <li className='flex items-center justify-between py-3 pl-3 pr-4 text-sm' key={`idx_${key}_${link?.url}`}>
                         <div className='flex w-0 flex-1 items-center'>
                           <LinkIcon
                             className='h-5 w-5 flex-shrink-0 text-gray-400'

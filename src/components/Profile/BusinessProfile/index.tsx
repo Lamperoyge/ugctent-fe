@@ -148,7 +148,7 @@ const BusinessProfilePage = ({ data }) => {
               {Object.keys(socialLinks).map(
                 (platform, idx) =>
                   socialLinks[platform] && (
-                    <a target='_blank' href={socialLinks[platform]}>
+                    <a target='_blank' href={socialLinks[platform]} rel="noreferrer">
                       {getPlatformIcon(platform)}
                     </a>
                   )
@@ -164,6 +164,7 @@ const BusinessProfilePage = ({ data }) => {
             <a
               href={website}
               target='__blank'
+              rel="noreferrer"
               className='text-secondary hover:text-primary'
             >
               {website}
@@ -175,7 +176,7 @@ const BusinessProfilePage = ({ data }) => {
         <span className="font-semibold text-md">Open jobs</span>
         <div className='flex gap-4 w-full flex-col'>
           {businessJobs?.getJobsForBusinessUser?.map((job, idx) => (
-            <Link href={`/job/${job?._id}`}>
+            <Link href={`/job/${job?._id}`} key={job?._id}>
               <div
                 key={job._id}
                 className='w-full justify-start items-start border-gray-300 border p-2 rounded text-secondary hover:bg-gray-100 hover:text-primary'

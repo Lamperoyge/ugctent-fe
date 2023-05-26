@@ -73,7 +73,7 @@ function ProjectPageAsideContent({ job, canViewAssignedPerson, children }) {
       <div className='flex gap-8 items-left justify-center flex-col'>
         {asideDetails.map((item, key) => {
           return (
-            <div className='flex gap-4 justify-between'>
+            <div className='flex gap-4 justify-between' key={item.label + '_' + key}>
               <span className='font-semibold text-sm text-gray-500'>
                 {item.label}
               </span>
