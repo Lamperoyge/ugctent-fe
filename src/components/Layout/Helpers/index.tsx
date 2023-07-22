@@ -38,15 +38,20 @@ export function Navbar({ navigation, classNames, setNewProjectModalOpen }) {
   );
 }
 
-export const MissingStripeAnnouncement = () => (
-  <>
-    <span className='md:hidden'>Verify your account!</span>
-    <span className='hidden md:inline'>
-      Please verify your account to be able to apply for jobs and receive
-      payments.
-    </span>{' '}
-  </>
-);
+export const MissingStripeAnnouncement = ({user}) => {
+  console.log(user, 'SUERR')
+  if(!user) return null;
+  const btnTitle = !user.taxId ? 'Add company details' : 'Verify your account!'
+  return (
+    <>
+      <span className='md:hidden'>{btnTitle}</span>
+      <span className='hidden md:inline'>
+        Please verify your account to be able to apply for jobs and receive
+        payments.
+      </span>{' '}
+    </>
+  );
+}
 
 export const NavItemWrapper = ({ as = 'link', ...props }) => {
   if (as === 'link') {

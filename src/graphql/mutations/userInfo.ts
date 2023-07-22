@@ -42,3 +42,11 @@ export const CONNECT_STRIPE = gql`
     }
   }
 `;
+
+export const UPDATE_USER_INFO = gql`
+  mutation updateUserInfo($input: UpdateUserInfoInput) {
+    updateUserInfo(input: $input) {
+      _id
+    }
+  }
+`;

@@ -12,6 +12,65 @@ import { useAuth } from 'hooks';
 import { useRouter } from 'next/router';
 import UserProfile from './UserProfile';
 import Portfolio from './Portfolio';
+import { getPathArray } from 'utils/helpers';
+import { set } from 'lodash';
+
+const personalInformationSchema = yup.object({
+  firstName: yup.string().required('Please enter your first name'),
+  lastName: yup.string().required('Please enter your last name'),
+  city: yup.string(),
+  country: yup.string(),
+})
+
+
+const profileSchema = yup.object({
+  bio: yup.string(),
+  interestIds: yup
+  .array()
+  .of(
+    yup.object({
+      _id: yup.string(),
+      label: yup.string(),
+      __typename: yup.string(),
+    })
+  ),
+skillIds: yup
+  .array()
+  .of(
+    yup.object({
+      _id: yup.string().required(),
+      label: yup.string().required(),
+      __typename: yup.string(),
+    }).required('You must select at least one skill')
+  ).min(1, 'You must select at least one skill')
+  .required(),
+
+socialLinks: yup.object({
+  instagram: yup.string(),
+  tiktok: yup.string(),
+  youtube: yup.string(),
+  facebook: yup.string(),
+}),
+website: yup.string(),
+isCompanyProfile: yup.boolean(),
+taxId: yup.string().when('isCompany', {
+  is: true,
+  then: yup.string().required('Please enter a valid VAT ID'),
+  otherwise: yup.string()
+}),
+
+});
+
+const worksSchema = yup.object({
+  works: yup.array().of(
+    yup.object({
+      title: yup.string(),
+      clientName: yup.string(),
+      attachments: yup.array().of(yup.mixed()).max(3),
+      description: yup.string(),
+    })
+  ),
+})
 
 const schema = yup.object({
   // personal
@@ -19,7 +78,13 @@ const schema = yup.object({
   lastName: yup.string().required(),
   city: yup.string(),
   country: yup.string(),
+  isCompany: yup.boolean(),
   profilePicture: yup.mixed(),
+  taxId: yup.string().when('isCompany', {
+    is: true,
+    then: yup.string().required('Please enter a valid VAT ID'),
+    otherwise: yup.string()
+  }),
   // profile
   bio: yup.string(),
   interestIds: yup
@@ -66,14 +131,17 @@ const STEPS = [
   {
     name: 'Personal details',
     id: 'personalDetails',
+    schema: personalInformationSchema,
   },
   {
     name: 'Your profile',
     id: 'userProfile',
+    schema: profileSchema,
   },
   {
     name: 'Portfolio',
     id: 'portfolio',
+    schema: worksSchema,
   },
 ];
 
@@ -86,6 +154,7 @@ const STEPS_TO_COMPONENT_MAP = {
 const CreatorOnboardingForm = () => {
   const [step, setStep] = useState(STEPS[0]);
   const router = useRouter();
+  const [fieldErrors, setFieldErrors] = useState({});
   const { getLoggedInUser }:any = useAuth();
 
   const [createUserInfo, { data, error, loading }] = useMutation(
@@ -109,9 +178,11 @@ const CreatorOnboardingForm = () => {
       firstName: '',
       lastName: '',
       city: '',
-      country: null,
+      country: '',
       profilePicture: null,
       website: '',
+      taxId: '',
+      isCompany: true,
       socialLinks: {
         youtube: '',
         tiktok: '',
@@ -125,6 +196,7 @@ const CreatorOnboardingForm = () => {
     },
     validationSchema: schema,
     onSubmit: async (values) => {
+      
       const profilePic = values?.profilePicture
         ? await uploadPhoto(values.profilePicture)
         : null;
@@ -146,10 +218,11 @@ const CreatorOnboardingForm = () => {
               : [],
           }))
       );
+      const {isCompany, ...rest} = values;
       createUserInfo({
         variables: {
           input: {
-            ...values,
+            ...rest,
             profilePicture: profilePic?.src,
             interestIds: values.interestIds.map((c) => c._id),
             skillIds: values.skillIds.map((s) => s._id),
@@ -159,19 +232,53 @@ const CreatorOnboardingForm = () => {
       });
     },
   });
-  const moveStepper = (type) => {
+
+    console.log(formik.values, 'formik values')
+
+  const moveStepper = async (type) => {
     if (type === 'next') {
-      return setStep(STEPS[lastCompletedStepIdx + 2]);
+      try {
+        await step.schema.validate(formik.values, {
+          abortEarly: false,
+        });
+        return setStep(STEPS[lastCompletedStepIdx + 2]);
+      } catch (error) {
+        const errors = {}
+        error.inner.forEach((error) => {
+          console.log(error.path, "ERR PATH");
+          const path = getPathArray(error.path);
+          set(errors, path, error.message);
+        });
+        setFieldErrors(errors);
+  
+      }
+      
     }
     if (type === 'prev') {
       return setStep(STEPS[lastCompletedStepIdx]);
     }
   };
 
-  const submitBtnAction =
-    step.id !== STEPS[STEPS.length - 1].id
-      ? () => moveStepper('next')
-      : formik.handleSubmit;
+  const submitBtnAction = async (e) => {
+    try {
+      await step.schema.validate(formik.values, {
+        abortEarly: false,
+      });
+      return step.id !== STEPS[STEPS.length - 1].id
+      ?  moveStepper('next')
+      : formik.handleSubmit(e);
+  
+    } catch (error) {
+      const errors = {};
+      error.inner.forEach((error) => {
+        console.log(error.path, "ERR PATH");
+        const path = getPathArray(error.path);
+        set(errors, path, error.message);
+      });
+      setFieldErrors(errors);
+    }
+  }
+    
 
   if (formik.isSubmitting) {
     return (
@@ -198,6 +305,7 @@ const CreatorOnboardingForm = () => {
             handleSubmit={formik.handleSubmit}
             handleChange={formik.handleChange}
             setFieldValue={formik.setFieldValue}
+            errors={fieldErrors}
           />
         </div>
       </div>

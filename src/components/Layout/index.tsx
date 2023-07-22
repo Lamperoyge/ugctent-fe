@@ -23,11 +23,14 @@ import { MissingStripeAnnouncement } from './Helpers';
 import Notifications from 'components/Notifications';
 import ProfilePicture from 'components/ProfilePicture';
 import Spotlight from 'components/Spotlight';
+import AddCompanyDetails from 'components/AddCompanyDetails';
 
 export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const { user, isStripeVerified }:any = useAuth();
+  const [openCompanyDetailsModal, setOpenCompanyDetailsModal] = useState(false);
+
   const [isNewProjectModalOpen, setNewProjectModalOpen] = useState(false);
   const [getStripeDashboardLink] = useLazyQuery(GET_STRIPE_DASHBOARD_LINK, {
     onCompleted: (data) => {
@@ -37,6 +40,7 @@ export default function Layout({ children }) {
   const [displayAnnouncement, setDisplayAnnouncement] = useState(
     !isStripeVerified && user?.userType === USER_TYPES.CREATOR
   );
+
   const profilePicture = user?.userInfo?.profilePicture;
   const router = useRouter();
 
@@ -104,6 +108,15 @@ export default function Layout({ children }) {
   const onModalClose = () => setNewProjectModalOpen(false);
 
   const handleAlertDismiss = () => setDisplayAnnouncement(false);
+
+  const handleAlertClick = () => {
+    if(!user) return null;
+    if(!user?.userInfo?.taxId) {
+      return setOpenCompanyDetailsModal(true)
+    }
+    return router.push('/verify', undefined, { shallow: true });
+
+  }
   return (
     <>
       {isNewProjectModalOpen && (
@@ -112,7 +125,7 @@ export default function Layout({ children }) {
           onClose={onModalClose}
         />
       )}
-
+      {openCompanyDetailsModal ? <AddCompanyDetails onClose={() => setOpenCompanyDetailsModal(false)}/> : null}
       <div className="h-full">
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
@@ -310,18 +323,18 @@ export default function Layout({ children }) {
             </div>
           </div>
         </div>
-
         <div className='md:pl-64 h-full'>
           <div className='mx-auto flex flex-col md:px-8 xl:px-0 h-full'>
             <div className='sticky top-0 z-10 '>
               {displayAnnouncement && (
                 <HeaderAlert
-                  btnTitle={'Verify now'}
+                  bgColor={user?.userInfo?.taxId ? 'bg-indigo-600' : 'bg-primaryOrange'}
+                  btnTitle={user?.userInfo?.taxId ? 'Verify now' : 'Add company details'}
                   ctaAction={() => {
                     handleAlertDismiss();
-                    router.push('/verify', undefined, { shallow: true });
+                    handleAlertClick()
                   }}
-                  renderContent={() => <MissingStripeAnnouncement />}
+                  renderContent={() => <MissingStripeAnnouncement user={user}/>}
                 />
               )}
 

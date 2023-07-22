@@ -50,7 +50,8 @@ export default function ProjectPage() {
       setIsFeedbackPromptOpen(true);
     },
   });
-  const { user, isStripeVerified }: any = useAuth();
+  const { user }: any = useAuth();
+  const isStripeVerified = user?.isStripeVerified;
   const { data } = useQuery(GET_JOB_BY_ID, {
     variables: {
       id: router.query.jobId,

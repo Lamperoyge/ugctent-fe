@@ -129,7 +129,7 @@ const Auth = ({ children }) => {
       <AuthContext.Provider
         value={{
           user: data?.getLoggedInUser,
-          isStripeVerified: data?.getLoggedInUser?.userInfo?.isStripeVerified,
+          isStripeVerified: data?.getLoggedInUser?.isStripeVerified,
           signUp,
           emailSignupError,
           signIn,

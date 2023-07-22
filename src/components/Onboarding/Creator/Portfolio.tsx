@@ -3,10 +3,11 @@ import EmptyStateAction from 'components/EmptyState';
 import AddWork from 'components/AddWorkModal';
 import ImagePreview from 'components/ImagePreview';
 
-export default function Portfolio({values, setFieldValue}) {
+export default function Portfolio({values, setFieldValue, errors}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editWork, setEditWork] = useState(null);
 
+  console.log(errors, 'errors')
   const addWork = (work) => {
     setFieldValue('works', [...values.works, work]);
     setIsModalOpen(false);

@@ -1,11 +1,19 @@
 import { useGetSkills, useGetInterests } from 'hooks';
 import SocialLinks from 'components/Shared/Form/SocialLinks';
 import MultiSelect from 'components/Shared/Form/MultiSelect';
+import IntroductionVideo from 'components/Shared/Form/IntroductionVideo';
+import { useState } from 'react';
+import SwitchComponent from 'components/Switch';
 
-export default function UserProfile({ handleChange, values, setFieldValue }) {
+export default function UserProfile({ handleChange, values, setFieldValue, errors }) {
   const { skills } = useGetSkills();
+  // const [isCompanySelected, setIsCompanySelected] = useState(true);
   const { interests } = useGetInterests();
-
+  
+  const onSwitchChange = value => {
+    setFieldValue('taxId', '')
+    return setFieldValue('isCompany', value)
+  }
   return (
     <div className='bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6 w-full'>
       <div className='md:grid md:grid-cols-3 md:gap-6'>
@@ -17,6 +25,43 @@ export default function UserProfile({ handleChange, values, setFieldValue }) {
         </div>
         <div className='mt-5 md:mt-0 md:col-span-2'>
           <div className='space-y-6'>
+            <SwitchComponent enabled={values?.isCompany} onChange={onSwitchChange}/>
+            {values?.isCompany ? <div>
+            <label
+                htmlFor='companyName'
+                className='block text-sm font-medium text-gray-700'
+              >
+                VAT Number - required
+              </label>
+              <input
+                type='text'
+                name='taxId'
+                id='taxId'
+                onChange={handleChange}
+                value={values.taxId}
+                autoComplete='taxId'
+                placeholder='RO1234567'
+                className='mt-1 focus:ring-secondary focus:border-secondary block w-1/3 shadow-sm sm:text-sm border-gray-300 rounded-md'
+              />
+          {errors?.taxId ? <span className="text-xs text-red-400">{errors?.taxId}</span> : null}
+
+            </div> : 
+            <p className="text-sm text-gray-500">You will not be able to receive payments via the platform until you add valid company details.</p>
+            }
+            <div>
+            <label
+                htmlFor='introduction-video'
+                className='block text-sm font-medium text-gray-700'
+              >
+                Introduce yourself in a video up to 3 minutes long
+              </label>
+              <div className='mt-1'>
+                <IntroductionVideo 
+                selectedFile={values.introductionAsset}
+                setFieldValue={setFieldValue}
+                />
+                </div>
+            </div>
             <div>
               <label
                 htmlFor='Bio'
@@ -68,6 +113,7 @@ export default function UserProfile({ handleChange, values, setFieldValue }) {
                 options={skills}
                 label='Select skills'
                 selected={values.skillIds}
+                error={errors?.skillIds ? 'You must select at least one skill' : ''}
                 onChange={(e) => {
                   setFieldValue('skillIds', e);
                 }}

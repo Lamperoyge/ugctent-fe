@@ -4,13 +4,14 @@ export default function HeaderAlert({
   renderContent,
   btnTitle = 'Learn more',
   ctaAction,
+  bgColor='bg-indigo-600'
 }) {
   return (
-    <div className='bg-indigo-600'>
+    <div className={bgColor}>
       <div className='mx-auto max-w-7xl py-3 px-3 sm:px-6 lg:px-8'>
         <div className='flex flex-wrap items-center justify-between'>
           <div className='flex w-0 flex-1 items-center'>
-            <span className='flex rounded-lg bg-indigo-800 p-2'>
+            <span className={`flex rounded-lg p-2 ${bgColor}`}>
               <MegaphoneIcon
                 color='white'
                 aria-hidden='true'

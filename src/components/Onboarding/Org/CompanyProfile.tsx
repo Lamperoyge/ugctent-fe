@@ -106,7 +106,7 @@ export default function CompanyProfile({
                 htmlFor='companyName'
                 className='block text-sm font-medium text-gray-700'
               >
-                Tax ID - for invoices
+                VAT Number - for invoices
               </label>
               <input
                 type='text'

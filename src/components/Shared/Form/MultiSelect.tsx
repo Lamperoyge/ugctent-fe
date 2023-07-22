@@ -106,6 +106,7 @@ export default function Multiselect({
               </Listbox.Options>
             </Transition>
           </div>
+          {error ? <span className="text-xs text-red-400">{error}</span> : null}
         </div>
       )}
     </Listbox>

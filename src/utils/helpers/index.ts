@@ -11,3 +11,7 @@ export const debounce = (func, wait = 1000) => {
     }, wait);
   };
 };
+
+export function getPathArray(path) {
+  return path.split(/[[\].]+/).filter(Boolean);
+}

@@ -39,15 +39,15 @@ const CreatorCards = () => {
       name: 'Available balance',
       icon: CashIcon,
       amount: `${
-        stripeBalanceData?.getStripeAccountBalance?.available[0]?.amount / 100
-      } ${stripeBalanceData?.getStripeAccountBalance?.available[0]?.currency?.toUpperCase()}`,
+        (stripeBalanceData?.getStripeAccountBalance?.available[0]?.amount / 100) || 0
+      } ${stripeBalanceData?.getStripeAccountBalance?.available[0]?.currency?.toUpperCase() || 'RON'}`,
     },
     {
       name: 'Pending balance',
       icon: ScaleIcon,
       amount: `${
-        stripeBalanceData?.getStripeAccountBalance?.pending[0]?.amount / 100
-      } ${stripeBalanceData?.getStripeAccountBalance?.pending[0]?.currency?.toUpperCase()}`,
+        (stripeBalanceData?.getStripeAccountBalance?.pending[0]?.amount / 100) || 0
+      } ${stripeBalanceData?.getStripeAccountBalance?.pending[0]?.currency?.toUpperCase() || 'RON'}`,
     },
     {
       name: 'Total jobs completed',

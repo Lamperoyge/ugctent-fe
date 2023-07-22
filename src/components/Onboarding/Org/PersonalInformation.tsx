@@ -9,7 +9,9 @@ export default function PersonalInformation({
   values,
   handleChange,
   setFieldValue,
+  errors
 }) {
+  console.log(errors, 'errors')
   const addressHandleChange = (address) => {
     const country = address?.address_components?.find((i) =>
       i.types.includes('country')
@@ -48,6 +50,7 @@ export default function PersonalInformation({
                 >
                   First name
                 </label>
+                <div>
                 <input
                   type='text'
                   name='firstName'
@@ -57,6 +60,10 @@ export default function PersonalInformation({
                   autoComplete='given-name'
                   className='mt-1 focus:ring-secondary focus:border-secondary block w-full shadow-sm sm:text-sm border-gray-300 rounded-md'
                 />
+                {errors?.firstName ?  <span className='text-red-400 text-xs'>
+                              {errors?.firstName}
+                            </span> : null}
+                </div>
               </div>
 
               <div className='col-span-6 sm:col-span-3'>
@@ -66,6 +73,7 @@ export default function PersonalInformation({
                 >
                   Last name
                 </label>
+                <div>
                 <input
                   type='text'
                   name='lastName'
@@ -75,6 +83,10 @@ export default function PersonalInformation({
                   autoComplete='family-name'
                   className='mt-1 focus:ring-secondary focus:border-secondary block w-full shadow-sm sm:text-sm border-gray-300 rounded-md'
                 />
+                {errors?.lastName ?  <span className='text-red-400 text-xs'>
+                              {errors?.lastName}
+                            </span> : null}
+                </div>
               </div>
 
               <div className='col-span-6 sm:col-span-3'>
@@ -84,6 +96,7 @@ export default function PersonalInformation({
                 >
                   Country
                 </label>
+                <div>
                 <select
                   id='country'
                   name='country'
@@ -101,7 +114,11 @@ export default function PersonalInformation({
                       {country.name}
                     </option>
                   ))}
-                </select>
+                </select>                {errors?.country ?  <span className='text-red-400 text-xs'>
+                              {errors?.country}
+                            </span> : null}
+
+                </div>
               </div>
               <div className='col-span-6 sm:col-span-3'>
                 <Places
