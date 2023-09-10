@@ -25,7 +25,12 @@ export default function UserProfile({ handleChange, values, setFieldValue, error
         </div>
         <div className='mt-5 md:mt-0 md:col-span-2'>
           <div className='space-y-6'>
+          
+
+            <div className="flex gap-2 items-center">
             <SwitchComponent enabled={values?.isCompany} onChange={onSwitchChange}/>
+            <p className="text-sm text-red-600">{'I have a formed company ( PFA / SRL )'}</p>
+            </div>
             {values?.isCompany ? <div>
             <label
                 htmlFor='companyName'

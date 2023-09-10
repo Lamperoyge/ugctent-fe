@@ -66,11 +66,11 @@ const worksSchema = yup.object({
     yup.object({
       title: yup.string(),
       clientName: yup.string(),
-      attachments: yup.array().of(yup.mixed()).max(3),
+      attachments: yup.array().of(yup.mixed()).max(3).nullable(),
       description: yup.string(),
     })
   ),
-})
+}).nullable();
 
 const schema = yup.object({
   // personal
@@ -121,10 +121,10 @@ const schema = yup.object({
     yup.object({
       title: yup.string(),
       clientName: yup.string(),
-      attachments: yup.array().of(yup.mixed()).max(3),
+      attachments: yup.array().of(yup.mixed()).max(3).nullable(),
       description: yup.string(),
     })
-  ),
+  ).nullable(),
 });
 
 const STEPS = [
@@ -182,6 +182,7 @@ const CreatorOnboardingForm = () => {
       profilePicture: null,
       website: '',
       taxId: '',
+      introductionAsset: null,
       isCompany: true,
       socialLinks: {
         youtube: '',
@@ -210,6 +211,8 @@ const CreatorOnboardingForm = () => {
           })
         );
 
+        const introductionAssetString = values?.introductionAsset ? await uploadPhoto(values.introductionAsset) : null;
+        console.log(introductionAssetString, 'INTRO ASSET STRING')
       const works = await Promise.all(
         values?.works?.map(async (el, idx) => ({
             ...el,
@@ -227,6 +230,7 @@ const CreatorOnboardingForm = () => {
             interestIds: values.interestIds.map((c) => c._id),
             skillIds: values.skillIds.map((s) => s._id),
             works,
+            introductionAsset: introductionAssetString?.src || null,
           },
         },
       });

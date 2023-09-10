@@ -33,6 +33,7 @@ export const UserInfoFragment = gql`
       instagram
       tiktok
     }
+    introductionAsset
     skillIds
     rating
     categoryIds

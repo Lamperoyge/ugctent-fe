@@ -111,48 +111,49 @@ const UserProfilePage = ({}) => {
 
   if(!Component) return <PageSpinner />
   return (
-    <form className='h-full w-full gap-4'>
-      <div className='flex justify-end w-full px-16'>
-        {/* {!isEditMode && (
-          <button
-            onClick={() => setIsEditMode(true)}
-            type='button'
-            className='inline-flex items-center justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
-          >
-            <PencilIcon className='h-5 w-5 mr-2'></PencilIcon> Edit
-          </button>
-        )} */}
+    // <form className='h-full w-full gap-4'>
+    //   <div className='flex justify-end w-full px-16'>
+    //     {/* {!isEditMode && (
+    //       <button
+    //         onClick={() => setIsEditMode(true)}
+    //         type='button'
+    //         className='inline-flex items-center justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
+    //       >
+    //         <PencilIcon className='h-5 w-5 mr-2'></PencilIcon> Edit
+    //       </button>
+    //     )} */}
 
-        {isEditMode && (
-          <div className='inline-flex'>
-            <button
-              type='button'
-              onClick={(e) => {
-                formik.handleSubmit();
-                e.preventDefault();
-              }}
-              className='inline-flex justify-center py-2 px-4 mr-5 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
-            >
-              <SaveIcon className='h-5 w-5 mr-2' /> Save
-            </button>
+    //     {isEditMode && (
+    //       <div className='inline-flex'>
+    //         <button
+    //           type='button'
+    //           onClick={(e) => {
+    //             formik.handleSubmit();
+    //             e.preventDefault();
+    //           }}
+    //           className='inline-flex justify-center py-2 px-4 mr-5 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
+    //         >
+    //           <SaveIcon className='h-5 w-5 mr-2' /> Save
+    //         </button>
 
-            <button
-              onClick={() => setIsEditMode(false)}
-              type='button'
-              className='inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
-            >
-              <XCircleIcon className='h-5 w-5 mr-2'></XCircleIcon> Cancel
-            </button>
-          </div>
-        )}
-      </div>
-      <Component
+    //         <button
+    //           onClick={() => setIsEditMode(false)}
+    //           type='button'
+    //           className='inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
+    //         >
+    //           <XCircleIcon className='h-5 w-5 mr-2'></XCircleIcon> Cancel
+    //         </button>
+    //       </div>
+    //     )}
+    //   </div>
+      
+    // </form>
+    <Component
         // isEditMode={isEditMode}
         // values={formik.values}
         // handleChange={formik.handleChange}
         data={data.getUserById}
       />
-    </form>
   );
 };
 

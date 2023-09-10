@@ -8,7 +8,7 @@ import ExploreJobsList from 'components/ExploreJobsList';
 import { ExploreJobsFilters } from 'components/ExploreFilters';
 
 const ExplorePageComponent = () => {
-  const { user }:any = useAuth();
+  const { user }: any = useAuth();
   const [hasMore, setHasMore] = useState(true);
   const { data, loading, error, fetchMore, refetch } = useQuery(
     GET_EXPLORE_JOBS,
@@ -44,10 +44,14 @@ const ExplorePageComponent = () => {
         Discover jobs that match your skills and interests
       </p>
       {loading && !data?.getExploreJobs?.length && null}
-      
-      <ExploreJobsFilters refetch={refetch}/>
+
+      <ExploreJobsFilters refetch={refetch} />
       <div className='h-full w-full flex justify-center items-center'>
-          <ExploreJobsList jobs={jobs} fetchNextJobs={fetchNextJobs} hasMore={hasMore}/>
+        <ExploreJobsList
+          jobs={jobs}
+          fetchNextJobs={fetchNextJobs}
+          hasMore={hasMore}
+        />
         {!jobs.length && !loading && (
           <EmptyStateAction
             title='No projects in here'

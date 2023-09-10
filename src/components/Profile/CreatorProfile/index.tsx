@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { StarIcon } from '@heroicons/react/solid';
 import { FaFacebook, FaInstagram, FaTiktok, FaYoutube } from 'react-icons/fa';
-import { Modal } from '@mantine/core';
+import { Divider, Modal } from '@mantine/core';
 
 import PanelContainer from 'components/PanelContainer';
 import {
@@ -20,6 +20,7 @@ import { useQuery } from '@apollo/client';
 import Link from 'next/link';
 import { GET_USER_FEEDBACK } from 'graphql/queries/rating';
 import ViewAttachments from 'components/ViewAttachments';
+import PanelComponent, { Header } from 'components/Panel';
 
 const CreatorProfilePage = ({ data }) => {
   const [portfolioItem, setPortfolioItem] = useState(null);
@@ -41,7 +42,7 @@ const CreatorProfilePage = ({ data }) => {
     skip: !data?.userInfo?.userId,
   });
 
-  console.log(data, 'DATA');
+  console.log(userFeedback, 'DATA');
 
   const {
     profilePicture = '',
@@ -51,11 +52,11 @@ const CreatorProfilePage = ({ data }) => {
     city = '',
     country = '',
     website = '',
-    socialLinks = [],
+    socialLinks = {},
     skills,
+    taxId,
+    introductionAsset,
   } = data?.userInfo || {};
-
-  const [visibleTab, setVisibleTab] = useState(PROFILE_TABS.ABOUT);
 
   const getPlatformIcon = (platform) => {
     switch (platform) {
@@ -86,6 +87,15 @@ const CreatorProfilePage = ({ data }) => {
     }
   };
 
+  const socials = useMemo(() => {
+    const { facebook, instagram, tiktok, youtube } = socialLinks;
+    return {
+      facebook,
+      instagram,
+      tiktok,
+      youtube,
+    };
+  }, [socialLinks]);
   return (
     <>
       <Modal
@@ -148,145 +158,173 @@ const CreatorProfilePage = ({ data }) => {
           </div>
         </div>
       </Modal>
-      <div className='flex flex-wrap gap-8'>
-        <div className='flex flex-col flex-grow basis-full sm:basis-5/12 max-w-full sm:max-w-1/2 items-start'>
-          <PanelContainer extraClassName='flex flex-col flex-grow w-full  justify-around items-start'>
-            <div className='flex justify-between gap-4'>
-              <ProfilePicture src={profilePicture} />
-              <div>
-                <h1 className='font-sans font-bold text-xl'>
-                  {firstName} {lastName}
-                </h1>
-                <h2 className='text-gray-400'>Business</h2>
-              </div>
-            </div>
-            <p className='italic text-gray-500'>{bio}</p>
-            {skills?.slice(0, 1).map((skill) => (
-              <li
-                className='px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-200 text-blue-800'
-                key={skill._id}
-              >
-                <span className='block truncate'>{skill.label}</span>
-              </li>
-            ))}
-          </PanelContainer>
-        </div>
-        <PanelContainer extraClassName='flex-grow max-w-full basis-full sm:basis-5/12 sm:max-w-1/2 flex flex-col justify-around items-start gap-8'>
-          <div className='flex flex-wrap items-center gap-10'>
-            <div className='flex flex-col'>
-              <span className='font-bold'>
-                {totalCompletedJobs?.getTotalCompletedJobs}
-              </span>
-              <span className='text-gray-600 text-sm'>Total jobs</span>
-            </div>
-            <div className='flex flex-col'>
-              <div className='font-bold flex gap-2 items-center'>
-                {data?.userInfo?.rating} <StarIcon className='h-5' />
-              </div>
-              <span className='text-gray-600 text-sm'>Overall rating</span>
-            </div>
-            <div className='flex flex-col'>
-              <span className='font-bold'>
-                {city ? city + ', ' : ''} {country}
-              </span>
-              <span className='text-gray-600 text-sm'>City, Country</span>
-            </div>
-          </div>
-          <div className='flex items-center w-full'>
-            <div className='flex w-full'>
-              <span className='text-gray-800 text-md font-normal basis-28 block'>
-                Social links
-              </span>
-              <div className='flex flex-wrap gap-4 items-start justify-start flex-grow'>
-                {Object.keys(socialLinks).map(
-                  (platform, idx) =>
-                    socialLinks[platform] && (
-                      <a
-                        target='_blank'
-                        rel="noreferrer"
-                        href={getPlatformLink(platform) + socialLinks[platform]}
-                      >
-                        {getPlatformIcon(platform)}
-                      </a>
-                    )
-                )}
-              </div>
-            </div>
-          </div>
-          <div className='flex items-center w-full'>
-            {website ? (
-              <div className='flex w-full'>
-                <span className='text-gray-800 text-md font-normal basis-28 block'>
-                  Website
-                </span>
-                <a
-                  href={
-                    website.includes('https://')
-                      ? website
-                      : 'https://' + website
-                  }
-                  target='__blank'
-                  className='text-secondary hover:text-primary'
-                >
-                  {website}
-                </a>
-              </div>
-            ) : null}
-          </div>
-        </PanelContainer>
-        <PanelContainer extraClassName='flex-grow max-w-full basis-full sm:basis-5/12 sm:max-w-1/2 flex flex-col justify-around items-start gap-8 w-1/2'>
-          <span className='font-semibold text-md'>Portfolio</span>
-          <div className='flex gap-4 w-full flex-col'>
-            {data?.userInfo?.works?.map((work, idx) => (
-              <div
-                key={idx}
-                onClick={() => setPortfolioItem(work)}
-                className='w-full cursor-pointer justify-start items-start border-gray-300 border p-2 rounded text-gray-900 hover:bg-gray-100 hover:text-primary'
-              >
-                <span className='font-semibold text-sm'>
-                  {work?.clientName}
-                </span>
-                <p className='text-gray-600 text-xs line-clamp-2'>
-                  {work?.description}
-                </p>
-                <div className='flex py-4 gap-4 flex-wrap'>
-                  {work?.attachments?.map((src, idx) => (
-                    <img
-                      src={src}
-                      key={'work-attachment-idx_' + idx}
-                      className='w-auto max-h-8 rounded overflow-hidden'
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </PanelContainer>
-        <PanelContainer extraClassName='flex-grow max-w-full basis-full sm:basis-5/12 sm:max-w-1/2 flex flex-col justify-around items-start gap-8'>
-          <span className='font-semibold text-md'>Testimonials</span>
-
-          <div className='flex gap-4 w-full flex-col'>
-            {!userFeedback?.getFeedbackForUser?.length ? 'No feedback yet' : ''}
-            {userFeedback?.getFeedbackForUser?.map((feedback, idx) =>
-              feedback?.note ? (
-                <div
-                  key={feedback._id}
-                  className='w-full justify-start items-start flex-col border-gray-300 border p-2 rounded text-gray-600'
-                >
-                  <span className='font-semibold text-sm'>
-                    {feedback?.note}
-                  </span>
-                  <div className='flex items-center gap-2'>
-                    <StarIcon className='h-3' />
-                    <span className='text-gray-400 text-sm'>
-                      {feedback?.rate} / 5
-                    </span>
+      <div className='flex flex-wrap gap-4'>
+        <div className='w-full sm:w-2/3'>
+          <PanelComponent
+            renderBody={() => (
+              <div className='px-4 py-5 sm:px-6 w-full flex flex-col gap-4'>
+                <div className='flex gap-4'>
+                  <ProfilePicture src={profilePicture} />
+                  <div className='flex flex-col gap-1'>
+                    <h1 className='font-sans font-bold text-xl'>
+                      {firstName} {lastName}
+                    </h1>
+                    <h3 className='font-semibold text-sm text-gray-600'>
+                      {city ? city + ', ' : ''} {country}
+                    </h3>
+                    <h3 className='font-semibold text-sm text-gray-600'>
+                      TAX ID: {taxId || 'N/A'}
+                    </h3>
                   </div>
                 </div>
-              ) : null
+                <Divider />
+                <div className='flex items-center justify-between'>
+                  {/* bio */}
+                  <h3 className='font-semibold text-sm text-gray-600'>About</h3>
+                  <p className='italic text-gray-500'>{bio}</p>
+                </div>
+                <div className='flex items-center justify-between'>
+                  {/* skills */}
+                  <h3 className='font-semibold text-sm text-gray-600'>
+                    Skills
+                  </h3>
+
+                  <ul className='flex leading-8 my-4 flex-wrap gap-2 justify-start items-center'>
+                    {skills?.map((skill) => (
+                      <li
+                        className='px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-200 text-blue-800'
+                        key={skill._id}
+                      >
+                        <span className='block truncate'>{skill.label}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className='flex items-center justify-between'>
+                  {/* skills */}
+                  <h3 className='font-semibold text-sm text-gray-600'>
+                    Social networks
+                  </h3>
+                  <div className='flex flex-col gap-4'>
+                    {Object.keys(socials)?.map((skill) => (
+                      <>
+                        {socials[skill] ? (
+                          <a
+                            href={`${getPlatformLink(skill)}${
+                              socialLinks[skill]
+                            }`}
+                            target='_blank'
+                            className='flex items-center gap-2'
+                          >
+                            {getPlatformIcon(skill)}
+                            <span className='block truncate'>
+                              {socialLinks[skill]}
+                            </span>
+                          </a>
+                        ) : null}
+                      </>
+                    ))}
+                  </div>
+                </div>
+              </div>
             )}
-          </div>
-        </PanelContainer>
+          />
+        </div>
+        <div className='w-full sm:w-1/4'>
+          <PanelComponent
+            renderBody={() => (
+              <div className='flex flex-col items-center'>
+                <div className='rounded-full w-60 h-60 object-fit object-cover border border-solid border-gray-200 overflow-hidden'>
+                  <video controls autoPlay muted>
+                    <source src={introductionAsset} />
+                  </video>
+                </div>
+                <span className='mt-4 text-sm text-gray-400'>
+                  Double click to enlarge
+                </span>
+              </div>
+            )}
+          />
+        </div>
+        <div className='w-full sm:w-2/3'>
+          <PanelComponent
+            renderBody={() => (
+              <div className='flex flex-col gap-4'>
+                <span className='text-md text-black font-bold'>Portfolio</span>
+                {data?.userInfo?.works?.length ? (
+                  <div className='flex flex-col gap-4'>
+                    {data?.userInfo?.works?.map((item, idx) => {
+                      return (
+                        <div
+                          className='bg-ugcblue text-white font-bold flex flex-col px-12 gap-4 py-6 rounded-xl'
+                          style={{
+                            cursor: 'pointer',
+                            backgroundImage: `url(${
+                              item?.attachments?.[0]?.url || '/white-orange.svg'
+                            })`,
+                            backgroundPosition: 'center',
+                            backgroundBlendMode: 'darken',
+                            backgroundSize: 'cover',
+                            backgroundRepeat: 'no-repeat',
+                            backgroundColor: 'rgba(0,0,0,0.7)',
+                          }}
+                          onClick={() => setPortfolioItem(item)}
+                        >
+                          <span>{item?.title}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <span className='text-sm text-gray-400'>
+                    No portfolio items
+                  </span>
+                )}
+              </div>
+            )}
+          />
+        </div>
+        <div className='w-full sm:w-1/4'>
+          <PanelComponent
+            renderBody={() => (
+              <div className='flex flex-col gap-4 w-full'>
+                <span className='text-md text-black font-bold'>Feedback</span>
+
+                {userFeedback?.getFeedbackForUser?.length ? (
+                  <div className='flex flex-col gap-4 w-full'>
+                    {userFeedback?.getFeedbackForUser?.map((item, idx) => {
+                      return (
+                        <div className='w-full'>
+                          <div
+                            className='flex flex-col gap-4 w-full'
+                            key={item?._id || idx}
+                          >
+                            <div className='flex items-center gap-2'>
+                              <StarIcon className='w-5 h-5 text-yellow-400' />
+                              <span className='text-sm text-gray-400'>
+                                {item?.rate}
+                              </span>
+                            </div>
+                            <span className='text-sm text-gray-400 break-words'>
+                              {item.note}
+                            </span>
+                            <span className='text-sm text-gray-400'></span>
+                          </div>
+                          {idx !==
+                          userFeedback?.getFeedbackForUser?.length - 1 ? (
+                            <Divider />
+                          ) : null}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <span className='text-sm text-gray-400'>No feedback yet</span>
+                )}
+              </div>
+            )}
+          />
+        </div>
       </div>
     </>
   );

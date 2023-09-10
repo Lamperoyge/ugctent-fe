@@ -8,8 +8,12 @@ import Category from 'components/JobsPageComponents/category';
 import Assignee from 'components/JobsPageComponents/assignee';
 import { useMemo } from 'react';
 import ManageInvoice from 'components/ManageInvoice';
+import { useAuth } from 'hooks';
 
 function ProjectPageAsideContent({ job, canViewAssignedPerson, children }) {
+  const auth: any = useAuth();
+  const user = auth?.user;
+
   const asideDetails: any = useMemo(() => {
     const items = [
       {
@@ -73,7 +77,10 @@ function ProjectPageAsideContent({ job, canViewAssignedPerson, children }) {
       <div className='flex gap-8 items-left justify-center flex-col'>
         {asideDetails.map((item, key) => {
           return (
-            <div className='flex gap-4 justify-between' key={item.label + '_' + key}>
+            <div
+              className='flex gap-4 justify-between'
+              key={item.label + '_' + key}
+            >
               <span className='font-semibold text-sm text-gray-500'>
                 {item.label}
               </span>
@@ -87,6 +94,13 @@ function ProjectPageAsideContent({ job, canViewAssignedPerson, children }) {
             </div>
           );
         })}
+        {!user?.userInfo?.taxId && (
+          <span className='text-gray-600 text-xs w-full text-left'>
+            You will not be able to receive payments on the platform until you
+            add company details and must handle all the payment details directly
+            with the job poster
+          </span>
+        )}
       </div>
       {/* <div className='space-y-5'>
         <div className='flex items-center space-x-2'>

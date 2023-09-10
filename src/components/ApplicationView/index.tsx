@@ -28,6 +28,7 @@ import { GET_USER_FEEDBACK } from 'graphql/queries/rating';
 import { StarIcon } from '@heroicons/react/solid';
 
 function ApplicationHeader({ application }) {
+  console.log(application.creator)
   const { user }: any = useAuth();
   const [clientSecret, setClientSecret] = useState(false);
 
@@ -35,11 +36,15 @@ function ApplicationHeader({ application }) {
     application.status === JOB_APPLICATION_STATUS.IN_REVIEW &&
     user?._id !== application?.creator?.userId;
 
-  const { rejectJobApplication, getPaymentIntent } = useJobApplications();
+  const { rejectJobApplication, getPaymentIntent, approveJobApplication } = useJobApplications();
 
   const handleApprove = async () => {
-    const secret = await getPaymentIntent(application._id);
-    setClientSecret(secret);
+    if(application.creator?.taxId) {
+      const secret = await getPaymentIntent(application._id);
+      setClientSecret(secret);
+      return;
+    }
+    return approveJobApplication({ variables: { jobApplicationId: application._id } });
   };
   const handleReject = () =>
     rejectJobApplication({ variables: { jobApplicationId: application._id } });
@@ -92,6 +97,7 @@ function ApplicationHeader({ application }) {
               ).toLocaleDateString()}
             </time>
           </p>
+          <p className="text-sm py-2 text-gray-600"><b>VAT ID</b>: {application?.creator?.taxId || 'This applicant does not have a VAT ID associated. You will need to handle all the payment details off platform.'}</p>
         </div>
       </div>
       {!hasRightForActions &&

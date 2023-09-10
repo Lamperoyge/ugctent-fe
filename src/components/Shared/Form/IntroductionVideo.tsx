@@ -7,7 +7,6 @@ const IntroductionVideo = ({ setFieldValue, selectedFile, error = null }) => {
   const MAX_VIDEO_DURATION = 3 * 60 * 1000; // 3 minutes
 
 
-  console.log(selectedFile, 'selectedFile')
   const handleVideoSelect = (e) => {
     const videoFile = e.target.files[0];
     // Validate video size

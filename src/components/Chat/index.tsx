@@ -69,7 +69,6 @@ const ChatPage = ({ job }) => {
       setIsOpen(false);
     }
     if(e.key === 'Enter' && ref.current.value) {
-      console.log(ref.current.value, 'val')
       sendMessage();
     }
   }

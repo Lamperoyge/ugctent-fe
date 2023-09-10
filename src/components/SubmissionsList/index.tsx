@@ -69,8 +69,8 @@ const SubmissionsList = ({ jobId, assignee, jobCreator}) => {
         isOpen={!!activeSubmissionId}
         jobCreator={jobCreator}
       />
-      <main className='pt-8 pb-16'>
-        <div className='w-full mx-auto'>
+      <div className='pt-8 pb-16'>
+        <div className='w-full'>
           <div className=''>
             <h2 className='text-lg font-medium text-gray-900'>Submissions</h2>
           </div>
@@ -167,7 +167,7 @@ const SubmissionsList = ({ jobId, assignee, jobCreator}) => {
             )}
           </ul>
         </div>
-      </main>
+      </div>
     </>
   );
 };

@@ -39,15 +39,14 @@ export function Navbar({ navigation, classNames, setNewProjectModalOpen }) {
 }
 
 export const MissingStripeAnnouncement = ({user}) => {
-  console.log(user, 'SUERR')
   if(!user) return null;
-  const btnTitle = !user.taxId ? 'Add company details' : 'Verify your account!'
+  const btnTitle = !user.userInfo?.taxId ? 'Add company details' : 'Verify your account!'
+  const title  = !user.userInfo?.taxId ? 'Add company details to be able to receive payments on the platform' : 'Verify your account to be able to apply for jobs and receive payments.'
   return (
     <>
       <span className='md:hidden'>{btnTitle}</span>
       <span className='hidden md:inline'>
-        Please verify your account to be able to apply for jobs and receive
-        payments.
+        {title}
       </span>{' '}
     </>
   );

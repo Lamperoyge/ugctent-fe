@@ -51,7 +51,7 @@ export default function ProjectPage() {
     },
   });
   const { user }: any = useAuth();
-  const isStripeVerified = user?.isStripeVerified;
+  const isStripeVerified = user?.userInfo?.isStripeVerified;
   const { data } = useQuery(GET_JOB_BY_ID, {
     variables: {
       id: router.query.jobId,
@@ -70,7 +70,7 @@ export default function ProjectPage() {
 
   const canApply =
     job?.creator?.userId !== user?._id &&
-    isStripeVerified &&
+    (isStripeVerified || !user?.userInfo?.taxId) &&
     job?.status === JOB_STATUS.CREATED;
 
   const canViewAssignedTask =
@@ -106,7 +106,7 @@ export default function ProjectPage() {
     await completeJob({ variables: { jobId: job?._id } });
   };
 
-
+  const paymentDisclaimer = job?.assignee?.userId === user?._id ? 'You do not have a valid Tax ID. Payment is to be handled outside the platform' : 'Assignee does not have a valid Tax ID. Payment is to be handled outside the platform.';
   return (
     <>
       <RatingPrompt
@@ -121,11 +121,9 @@ export default function ProjectPage() {
       />
       {isEditMode ? <EditJob job={job} onClose={toggleEdit} /> : null}
       <div className='w-full h-full'>
-        <main className='flex-1'>
-          <div className='py-8 xl:py-10'>
-            <div className='max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 xl:max-w-5xl xl:grid xl:grid-cols-3'>
+          <div className='py-8 xl:py-10 bg-slate-50'>
+            <div className='max-w-3xl mx-auto xl:max-w-5xl xl:grid xl:grid-cols-3'>
               <div className='xl:col-span-2 xl:pr-8 xl:border-r xl:border-gray-200'>
-                <div>
                   <div>
                     <div className='md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-6'>
                       <div>
@@ -141,6 +139,7 @@ export default function ProjectPage() {
                             {job.creator?.firstName} {job.creator?.lastName}
                           </Link>
                         </p>
+                        {!job?.assignee || job?.assignee?.taxId ? null : <span className="mt-4 text-xs text-red-400">{paymentDisclaimer}</span>}
                       </div>
                       <div className='mt-4 flex space-x-3 md:mt-0'>
                         {canEdit && (
@@ -156,7 +155,7 @@ export default function ProjectPage() {
                             <span>Edit</span>
                           </button>
                         )}
-        <ManageInvoice job={job}/>
+                        <ManageInvoice job={job} />
 
                         {canArchive && (
                           <button
@@ -186,23 +185,26 @@ export default function ProjectPage() {
                             <span>Mark job as complete</span>
                           </button>
                         )}
-                        {canApply && (
-                          <button
-                            type='button'
-                            onClick={toggleCreateApplicationModal}
-                            className='inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-bold rounded-md text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900'
-                          >
-                            <BellIcon
-                              className='-ml-1 mr-2 h-5 w-5 text-white-400'
-                              aria-hidden='true'
-                            />
-                            <span>
-                              {job?.userApplication?.hasUserApplied
-                                ? 'View application'
-                                : 'Apply'}
-                            </span>
-                          </button>
-                        )}
+                        <div className='flex flex-col items-end gap-4'>
+                          {canApply && (
+                            <button
+                              type='button'
+                              onClick={toggleCreateApplicationModal}
+                              className='w-fit inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-bold rounded-md text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900'
+                            >
+                              <BellIcon
+                                className='-ml-1 mr-2 h-5 w-5 text-white-400'
+                                aria-hidden='true'
+                              />
+                              <span>
+                                {job?.userApplication?.hasUserApplied
+                                  ? 'View application'
+                                  : 'Apply'}
+                              </span>
+                            </button>
+                          )}
+                          
+                        </div>
                         {!canApply &&
                           job?.creator?.userId !== user?._id &&
                           job?.status === JOB_STATUS.CREATED && (
@@ -239,7 +241,6 @@ export default function ProjectPage() {
                       ) : null}
                       <Skills job={job} />
                     </div>
-                  </div>
                 </div>
 
                 <div className='mt-8 py-4 border-t flex flex-col gap-4'>
@@ -276,7 +277,6 @@ export default function ProjectPage() {
               </ProjectPageAsideContent>
             </div>
           </div>
-        </main>
       </div>
     </>
   );

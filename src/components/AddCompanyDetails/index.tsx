@@ -7,6 +7,9 @@ import { useRef } from 'react';
 const AddCompanyDetails = ({ onClose }) => {
   const { user = {}, isStripeVerified }: any = useAuth();
   const [updateUser] = useMutation(UPDATE_USER_INFO, {
+    onCompleted: (data) => {
+      return onClose()
+    },
     refetchQueries: ['getLoggedInUser'],
   });
 

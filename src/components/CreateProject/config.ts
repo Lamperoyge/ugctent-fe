@@ -46,4 +46,5 @@ export const schema = yup.object({
     .string()
     .required('You need to enter project description')
     .min(100),
+    introductionAsset: yup.mixed().nullable()
 });

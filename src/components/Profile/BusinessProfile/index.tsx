@@ -40,12 +40,12 @@ const BusinessProfilePage = ({ data }) => {
     skip: !data?.userInfo?.userId,
   });
 
-  const {data: totalCreatedJobs} = useQuery(GET_TOTAL_CREATED_JOBS, {
+  const { data: totalCreatedJobs } = useQuery(GET_TOTAL_CREATED_JOBS, {
     variables: {
       userId: data?.userInfo?.userId,
     },
     skip: !data?.userInfo?.userId,
-  })
+  });
 
   const { data: userFeedback } = useQuery(GET_USER_FEEDBACK, {
     variables: {
@@ -56,7 +56,6 @@ const BusinessProfilePage = ({ data }) => {
     skip: !data?.userInfo?.userId,
   });
 
-  console.log(data, 'DATA')
   const mockData = {
     ...data,
     userInfo: {
@@ -103,7 +102,8 @@ const BusinessProfilePage = ({ data }) => {
     }
   };
 
-  console.log(userFeedback, 'USERFEEDBACK');
+  return <h1 className='text-8xl font-bold text-center'>This page is work in progress</h1>;
+
   return (
     <div className='flex flex-wrap gap-8'>
       <div className='flex flex-col flex-grow basis-full sm:basis-5/12 max-w-full sm:max-w-1/2 items-start'>
@@ -123,7 +123,9 @@ const BusinessProfilePage = ({ data }) => {
       <PanelContainer extraClassName='flex-grow max-w-full basis-full sm:basis-5/12 sm:max-w-1/2 flex flex-col justify-around items-start gap-8'>
         <div className='flex flex-wrap items-center gap-10'>
           <div className='flex flex-col'>
-            <span className='font-bold'>{totalCreatedJobs?.getTotalCreatedJobs}</span>
+            <span className='font-bold'>
+              {totalCreatedJobs?.getTotalCreatedJobs}
+            </span>
             <span className='text-gray-600 text-sm'>Total jobs</span>
           </div>
           <div className='flex flex-col'>
@@ -148,7 +150,11 @@ const BusinessProfilePage = ({ data }) => {
               {Object.keys(socialLinks).map(
                 (platform, idx) =>
                   socialLinks[platform] && (
-                    <a target='_blank' href={socialLinks[platform]} rel="noreferrer">
+                    <a
+                      target='_blank'
+                      href={socialLinks[platform]}
+                      rel='noreferrer'
+                    >
                       {getPlatformIcon(platform)}
                     </a>
                   )
@@ -164,7 +170,7 @@ const BusinessProfilePage = ({ data }) => {
             <a
               href={website}
               target='__blank'
-              rel="noreferrer"
+              rel='noreferrer'
               className='text-secondary hover:text-primary'
             >
               {website}
@@ -173,7 +179,7 @@ const BusinessProfilePage = ({ data }) => {
         </div>
       </PanelContainer>
       <PanelContainer extraClassName='flex-grow max-w-full basis-full sm:basis-5/12 sm:max-w-1/2 flex flex-col justify-around items-start gap-8 w-1/2'>
-        <span className="font-semibold text-md">Open jobs</span>
+        <span className='font-semibold text-md'>Open jobs</span>
         <div className='flex gap-4 w-full flex-col'>
           {businessJobs?.getJobsForBusinessUser?.map((job, idx) => (
             <Link href={`/job/${job?._id}`} key={job?._id}>
@@ -188,7 +194,7 @@ const BusinessProfilePage = ({ data }) => {
         </div>
       </PanelContainer>
       <PanelContainer extraClassName='flex-grow max-w-full basis-full sm:basis-5/12 sm:max-w-1/2 flex flex-col justify-around items-start gap-8'>
-      <span className="font-semibold text-md">Testimonials</span>
+        <span className='font-semibold text-md'>Testimonials</span>
 
         <div className='flex gap-4 w-full flex-col'>
           {userFeedback?.getFeedbackForUser?.map((feedback, idx) =>
@@ -198,12 +204,12 @@ const BusinessProfilePage = ({ data }) => {
                 className='w-full justify-start items-start flex-col border-gray-300 border p-2 rounded text-gray-600'
               >
                 <span className='font-semibold text-sm'>{feedback?.note}</span>
-                <div className="flex items-center gap-2">
-                <StarIcon className="h-3"/>
-                  <span className="text-gray-400 text-sm">
-                  {feedback?.rate} / 5
+                <div className='flex items-center gap-2'>
+                  <StarIcon className='h-3' />
+                  <span className='text-gray-400 text-sm'>
+                    {feedback?.rate} / 5
                   </span>
-                  </div>
+                </div>
               </div>
             ) : null
           )}

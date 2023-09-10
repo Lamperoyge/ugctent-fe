@@ -119,16 +119,6 @@ const CreatorInvoiceRequested = () => {
   );
 };
 
-const KEYS = {
-  SRL: 'srl',
-  PF: 'pf',
-};
-
-const TAB_ITEMS = [
-  { name: 'Upload document', key: KEYS.SRL },
-  { name: 'Generate contract for individual', key: KEYS.PF },
-];
-
 function Tabs({ tabs, onChange }) {
   return (
     <div>
@@ -184,7 +174,7 @@ function Tabs({ tabs, onChange }) {
 }
 
 const HandleCompanyUpload = ({ invoiceId, onClose }) => {
-  console.log(invoiceId, 'INVOICE ID')
+  console.log(invoiceId, 'INVOICE ID');
   const [attachments, setAttachments] = useState([]);
   const [addInvoice] = useMutation(ADD_INVOICE, {
     refetchQueries: ['getJobById'],
@@ -368,14 +358,9 @@ const HandlePersonUpload = ({ job }) => {
 };
 
 const UploadInvoice = ({ job, defaultOpen = false }) => {
-  const [activeTab, setActiveTab] = useState(KEYS.SRL);
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const toggleModal = () => setIsOpen((prev) => !prev);
 
-  const tabs = TAB_ITEMS.map((tab) => ({
-    ...tab,
-    current: tab.key === activeTab,
-  }));
   return (
     <>
       <Modal
@@ -385,35 +370,40 @@ const UploadInvoice = ({ job, defaultOpen = false }) => {
       >
         <h2 className='py-4 font-bold'>Add invoice: {job.title}</h2>
         <span className='py-4 text-xs'>Description: {job.description}</span>
-        <div className="mt-4 flex flex-col" >
-        <span className='py-4 text-sm font-semibold text-red-400'>Billing Details</span>
+        <div className='mt-4 flex flex-col'>
+          <span className='py-4 text-sm font-semibold text-red-400'>
+            Billing Details
+          </span>
 
-        <span className='py-4 text-xs'>Company name: {job.invoice?.companyFullName}</span>
-        <span className='py-4 text-xs'>Company address: {job.invoice?.companyFullAddress}</span>
-        <span className='py-4 text-xs'>Fiscal Code: {job.invoice?.companyNumber}</span>
-        <span className='py-4 text-xs'>Company Number / CUI: {job.invoice?.companyCUI}</span>
-        <span className='py-4 text-xs'>Represented by: {job?.invoice?.companyRepresentative}</span>
-        {job?.invoice?.invoiceUrls?.length ? 
-       <>
-       <span className="text-sm">Uploaded invoices</span>
-        <ViewAttachments 
-        attachments={job?.invoice?.invoiceUrls}
-        />
-       </>
-        
-        : null}
+          <span className='py-4 text-xs'>
+            Company name: {job.invoice?.companyFullName}
+          </span>
+          <span className='py-4 text-xs'>
+            Company address: {job.invoice?.companyFullAddress}
+          </span>
+          <span className='py-4 text-xs'>
+            Fiscal Code: {job.invoice?.companyNumber}
+          </span>
+          <span className='py-4 text-xs'>
+            Company Number / CUI: {job.invoice?.companyCUI}
+          </span>
+          <span className='py-4 text-xs'>
+            Represented by: {job?.invoice?.companyRepresentative}
+          </span>
+          {job?.invoice?.invoiceUrls?.length ? (
+            <>
+              <span className='text-sm'>Uploaded invoices</span>
+              <ViewAttachments attachments={job?.invoice?.invoiceUrls} />
+            </>
+          ) : null}
         </div>
 
         <div className='flex justify-center items-center'>
           <div className='flex flex-col w-full space-y-6 py-4'>
-            <Tabs tabs={tabs} onChange={(key) => setActiveTab(key)} />
-            {activeTab === KEYS.SRL && (
-              <HandleCompanyUpload
-                invoiceId={job?.invoice?._id}
-                onClose={() => setIsOpen(false)}
-              />
-            )}
-            {activeTab === KEYS.PF && <HandlePersonUpload job={job} />}
+            <HandleCompanyUpload
+              invoiceId={job?.invoice?._id}
+              onClose={() => setIsOpen(false)}
+            />
           </div>
         </div>
       </Modal>
@@ -434,8 +424,28 @@ const ManageInvoice = ({ job }) => {
 
   const { uploadInvoice } = router?.query;
 
+  if (!job?.assignee?.taxId) return null;
   if (job.status !== JOB_STATUS.COMPLETED) return null;
+  
 
+  const redirectToInvoice = () => {
+    const invoiceUrl = job?.invoice?.invoiceUrls?.[0];
+    if (invoiceUrl) {
+      window.open(invoiceUrl, '_blank');
+    }
+  }
+  
+  if(user?._id === job.creator?.userId && job?.invoice?.status === JOB_INVOICE_STATUS.UPLOADED) {
+    return (
+      <button
+        type='button'
+        onClick={redirectToInvoice}
+        className='items-center w-full justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-secondary hover:bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary'
+      >
+        View Invoice
+      </button>
+    )
+  }
   if (
     user?._id === job.assigneeId &&
     job?.invoice?.status !== JOB_INVOICE_STATUS.NOT_REQUESTED

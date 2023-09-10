@@ -44,7 +44,9 @@ export const Input = ({
         />
       </div>
       {error ? <span className='mt-4 text-red-400'>{error}</span> : null}
-      {disclaimer ? <span className='mt-4 text-xs text-gray-400'>{disclaimer}</span> : null}
+      {disclaimer ? <div>
+        <span className='mt-4 text-xs text-gray-400'>{disclaimer}</span>
+      </div> : null}
 
     </div>
   );

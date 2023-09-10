@@ -6,7 +6,8 @@ import { Badge } from '@mantine/core';
 
 const ExploreJobsList = ({ jobs, fetchNextJobs, hasMore }) => {
   return (
-    <ul
+    <div className="h-full w-full">
+      <ul
       role='list'
       className='grid grid-cols-1 gap-6 py-5 sm:grid-cols-2 lg:grid-cols-3'
     >
@@ -57,6 +58,7 @@ const ExploreJobsList = ({ jobs, fetchNextJobs, hasMore }) => {
         ))}
       </InfiniteScroll>
     </ul>
+    </div>
   );
 };
 

@@ -9,20 +9,20 @@ const ProjectList = ({ data, count, fetchMore }) => {
             <table className='min-w-full divide-y divide-gray-200'>
               <thead>
                 <tr>
-                  <th className='px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                  <th className='px-6 py-3 bg-ugcblue text-left text-xs font-xl text-white uppercase tracking-wider'>
                     Title
                   </th>
-                  <th className='px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                  <th className='px-6 py-3 bg-ugcblue text-right text-xs font-xl text-white uppercase tracking-wider'>
                     Amount
                   </th>
-                  <th className='px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                  <th className='px-6 py-3 bg-ugcblue text-right text-xs font-xl text-white uppercase tracking-wider'>
                     Status
                   </th>
-                  <th className='px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                  <th className='px-6 py-3 bg-ugcblue text-right text-xs font-xl text-white uppercase tracking-wider'>
                     Applications
                   </th>
 
-                  <th className='px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                  <th className='px-6 py-3 bg-ugcblue text-right text-xs font-xl text-white uppercase tracking-wider'>
                     Last update
                   </th>
                 </tr>
@@ -41,7 +41,7 @@ const ProjectList = ({ data, count, fetchMore }) => {
             >
               <div className='hidden sm:block'>
                 <p className='text-sm text-gray-700'>
-                  <span className='font-medium'>{count}</span> results
+                  <span className='font-xl'>{count}</span> results
                 </p>
               </div>
               <div className='flex-1 flex justify-between sm:justify-end'>

@@ -323,7 +323,7 @@ export default function Layout({ children }) {
             </div>
           </div>
         </div>
-        <div className='md:pl-64 h-full'>
+        <div className='md:pl-64 h-full bg-slate-50'>
           <div className='mx-auto flex flex-col md:px-8 xl:px-0 h-full'>
             <div className='sticky top-0 z-10 '>
               {displayAnnouncement && (
@@ -331,7 +331,6 @@ export default function Layout({ children }) {
                   bgColor={user?.userInfo?.taxId ? 'bg-indigo-600' : 'bg-primaryOrange'}
                   btnTitle={user?.userInfo?.taxId ? 'Verify now' : 'Add company details'}
                   ctaAction={() => {
-                    handleAlertDismiss();
                     handleAlertClick()
                   }}
                   renderContent={() => <MissingStripeAnnouncement user={user}/>}

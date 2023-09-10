@@ -25,6 +25,7 @@ function MyApp({ Component, pageProps }) {
         },
       });
 
+      console.log(socket, 'SOCKET')
       socketClient.current = socket;
     }
 

@@ -28,6 +28,7 @@ export const GET_JOB_APPLICATIONS = gql`
         userId
         profilePicture
         bio
+        taxId
       }
     }
   }

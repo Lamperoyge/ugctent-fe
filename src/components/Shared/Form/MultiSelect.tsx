@@ -11,7 +11,7 @@ export default function Multiselect({
   onChange = (e) => {},
   selected,
   error = ''
-}) {
+}:any) {
   return (
     <Listbox value={selected} onChange={onChange} multiple>
       {({ open }) => (
