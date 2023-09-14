@@ -34,7 +34,8 @@ function ApplicationHeader({ application }) {
 
   const hasRightForActions =
     application.status === JOB_APPLICATION_STATUS.IN_REVIEW &&
-    user?._id !== application?.creator?.userId;
+    user?._id !== application?.creator?.userId &&
+    application?.paymentStatus !== JOB_APPLICATION_PAYMENT_STATUS.PAID;
 
   const { rejectJobApplication, getPaymentIntent, approveJobApplication } =
     useJobApplications();
@@ -200,7 +201,11 @@ export default function ApplicationView() {
       }).then(({ data }) => {
         if (
           data?.getJobApplicationById?.paymentStatus !==
-          JOB_APPLICATION_PAYMENT_STATUS.PAID
+            JOB_APPLICATION_PAYMENT_STATUS.PAID ||
+          (data?.getJobApplicationById?.paymentStatus ===
+            JOB_APPLICATION_PAYMENT_STATUS.PAID &&
+            data?.getJobApplicationById?.status ===
+              JOB_APPLICATION_STATUS.IN_REVIEW)
         ) {
           jobApplicationStartPolling(800);
         }
