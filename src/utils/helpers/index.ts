@@ -15,3 +15,8 @@ export const debounce = (func, wait = 1000) => {
 export function getPathArray(path) {
   return path.split(/[[\].]+/).filter(Boolean);
 }
+
+export function isVideo(url) {
+  const regex = /^https?:\/\/.*\/.*\.(mp4|mkv|flv|avi|mov|wmv)[^\/]*$/;
+  return regex.test(url);
+}

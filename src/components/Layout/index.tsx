@@ -323,7 +323,7 @@ export default function Layout({ children }) {
             </div>
           </div>
         </div>
-        <div className='md:pl-64 h-full bg-slate-50'>
+        <div className='md:pl-64 h-full'>
           <div className='mx-auto flex flex-col md:px-8 xl:px-0 h-full'>
             <div className='sticky top-0 z-10 '>
               {displayAnnouncement && (

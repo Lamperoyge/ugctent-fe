@@ -121,7 +121,7 @@ export default function ProjectPage() {
       />
       {isEditMode ? <EditJob job={job} onClose={toggleEdit} /> : null}
       <div className='w-full h-full'>
-          <div className='py-8 xl:py-10 bg-slate-50'>
+          <div className='py-8 xl:py-10 bg-white-50'>
             <div className='max-w-3xl mx-auto xl:max-w-5xl xl:grid xl:grid-cols-3'>
               <div className='xl:col-span-2 xl:pr-8 xl:border-r xl:border-gray-200'>
                   <div>

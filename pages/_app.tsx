@@ -9,6 +9,7 @@ import Layout from 'components/Layout';
 import { MantineProvider } from '@mantine/core';
 import { useState, useEffect, useRef } from 'react';
 import { ChatContext } from 'contexts';
+import Head from 'next/head';
 
 function MyApp({ Component, pageProps }) {
   const [isConnected, setIsConnected] = useState(false);
@@ -56,22 +57,13 @@ function MyApp({ Component, pageProps }) {
   };
 
   return (
-    // <GenerateContract
-    //   userFullname={'test'}
-    //   userAddress={'Adresa mea'}
-    //   userCISeries={'RD'}
-    //   userCINumber={'944923'}
-    //   userCIDate={'04/20/20'}
-    //   userCIInstitute={'SPCEP Sector 5'}
-    //   userCNP={'1950420803921'}
-    //   companyFullName={'Companie'}
-    //   companyFullAddress={'Adresa companiei'}
-    //   companyNumber={'J40/123/1234'}
-    //   companyCUI={'123456'}
-    //   companyRepresentative={'Reprezentant'}
-    //   jobTitle={'Job'}
-    //   paidSum={'1000'}
-    // />
+    <>
+    <Head>
+      <title>UGCTENT</title>
+      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      <meta name="description" content="UGCTENT" />
+      <link rel="icon" href="/favicon.ico" />
+    </Head>
     <ApolloProvider client={apollo}>
       <MantineProvider
         withGlobalStyles
@@ -96,6 +88,7 @@ function MyApp({ Component, pageProps }) {
         </Auth>
       </MantineProvider>
     </ApolloProvider>
+    </>
   );
 }
 
