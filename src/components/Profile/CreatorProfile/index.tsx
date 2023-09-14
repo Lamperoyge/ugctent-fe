@@ -214,6 +214,7 @@ const CreatorProfilePage = ({ data }) => {
                               socialLinks[skill]
                             }`}
                             target='_blank'
+                            rel="noreferrer"
                             className='flex items-center gap-2'
                           >
                             {getPlatformIcon(skill)}
@@ -256,6 +257,7 @@ const CreatorProfilePage = ({ data }) => {
                     {data?.userInfo?.works?.map((item, idx) => {
                       return (
                         <div
+                          key={`userinfo-${idx}`}
                           className='bg-ugcblue text-white font-bold flex flex-col px-12 gap-4 py-6 rounded-xl'
                           style={{
                             cursor: 'pointer',
@@ -294,7 +296,7 @@ const CreatorProfilePage = ({ data }) => {
                   <div className='flex flex-col gap-4 w-full'>
                     {userFeedback?.getFeedbackForUser?.map((item, idx) => {
                       return (
-                        <div className='w-full'>
+                        <div className='w-full' key={`feedback-${idx}`}>
                           <div
                             className='flex flex-col gap-4 w-full'
                             key={item?._id || idx}
