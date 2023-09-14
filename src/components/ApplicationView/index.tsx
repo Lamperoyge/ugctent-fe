@@ -26,9 +26,9 @@ import StatusChip from 'components/StatusChip';
 import PanelContainer from 'components/PanelContainer';
 import { GET_USER_FEEDBACK } from 'graphql/queries/rating';
 import { StarIcon } from '@heroicons/react/solid';
+import { LightSpinner } from 'components/Shared/Spinner';
 
 function ApplicationHeader({ application }) {
-  console.log(application.creator)
   const { user }: any = useAuth();
   const [clientSecret, setClientSecret] = useState(false);
 
@@ -36,15 +36,18 @@ function ApplicationHeader({ application }) {
     application.status === JOB_APPLICATION_STATUS.IN_REVIEW &&
     user?._id !== application?.creator?.userId;
 
-  const { rejectJobApplication, getPaymentIntent, approveJobApplication } = useJobApplications();
+  const { rejectJobApplication, getPaymentIntent, approveJobApplication } =
+    useJobApplications();
 
   const handleApprove = async () => {
-    if(application.creator?.taxId) {
+    if (application.creator?.taxId) {
       const secret = await getPaymentIntent(application._id);
       setClientSecret(secret);
       return;
     }
-    return approveJobApplication({ variables: { jobApplicationId: application._id } });
+    return approveJobApplication({
+      variables: { jobApplicationId: application._id },
+    });
   };
   const handleReject = () =>
     rejectJobApplication({ variables: { jobApplicationId: application._id } });
@@ -56,6 +59,14 @@ function ApplicationHeader({ application }) {
   const textColor = `text-${statusColor}-400`;
 
   const onClose = () => setClientSecret(false);
+
+  const redirectStatus = new URLSearchParams(window.location.search).get(
+    'redirect_status'
+  );
+
+  const isPaymentLoading =
+    redirectStatus === 'succeeded' &&
+    application?.paymentStatus !== JOB_APPLICATION_PAYMENT_STATUS.PAID;
 
   return (
     <div className='mx-auto px-4 sm:px-6 md:flex md:items-center md:justify-between md:space-x-5 lg:px-8'>
@@ -97,7 +108,11 @@ function ApplicationHeader({ application }) {
               ).toLocaleDateString()}
             </time>
           </p>
-          <p className="text-sm py-2 text-gray-600"><b>VAT ID</b>: {application?.creator?.taxId || 'This applicant does not have a VAT ID associated. You will need to handle all the payment details off platform.'}</p>
+          <p className='text-sm py-2 text-gray-600'>
+            <b>VAT ID</b>:{' '}
+            {application?.creator?.taxId ||
+              'This applicant does not have a VAT ID associated. You will need to handle all the payment details off platform.'}
+          </p>
         </div>
       </div>
       {!hasRightForActions &&
@@ -135,24 +150,28 @@ function ApplicationHeader({ application }) {
           handleClose={onClose}
         />
       )}
-      {hasRightForActions && !clientSecret && (
-        <div className='mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3'>
-          <button
-            type='button'
-            onClick={handleReject}
-            className='inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500'
-          >
-            Reject
-          </button>
-          <button
-            type='button'
-            onClick={handleApprove}
-            className='inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500'
-          >
-            Accept
-          </button>
-        </div>
-      )}
+      {hasRightForActions &&
+        !clientSecret &&
+        (isPaymentLoading ? (
+          <LightSpinner />
+        ) : (
+          <div className='mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-reverse sm:space-y-0 sm:space-x-3 md:mt-0 md:flex-row md:space-x-3'>
+            <button
+              type='button'
+              onClick={handleReject}
+              className='inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500'
+            >
+              Reject
+            </button>
+            <button
+              type='button'
+              onClick={handleApprove}
+              className='inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500'
+            >
+              Accept
+            </button>
+          </div>
+        ))}
     </div>
   );
 }
@@ -174,10 +193,21 @@ export default function ApplicationView() {
       'payment_intent'
     );
     if (isPaymentIntent) {
-      jobApplicationStartPolling(800);
+      getJobApplicationById({
+        variables: {
+          id: router.query.applicationId,
+        },
+      }).then(({ data }) => {
+        if (
+          data?.getJobApplicationById?.paymentStatus !==
+          JOB_APPLICATION_PAYMENT_STATUS.PAID
+        ) {
+          jobApplicationStartPolling(800);
+        }
+      });
     }
     return () => jobApplicationStopPolling();
-  }, []);
+  }, [router.query?.applicationId]);
 
   useEffect(() => {
     if (
@@ -287,34 +317,33 @@ export default function ApplicationView() {
                       </h2>
                     </div>
                     <div className='border-t border-gray-200 px-4 py-5 sm:px-6 w-full'>
-                        <div className='flex gap-4 w-full flex-col'>
-                          {!userFeedback?.getFeedbackForUser?.length
-                            ? 'No feedback yet'
-                            : ''}
-                          {userFeedback?.getFeedbackForUser?.map(
-                            (feedback, idx) =>
-                              feedback?.note ? (
-                                <div
-                                  key={feedback._id}
-                                  className='w-full justify-start items-start flex-col border-gray-300 border p-2 rounded text-gray-600'
-                                >
-                                  <span className='font-semibold text-sm'>
-                                    {feedback?.note}
+                      <div className='flex gap-4 w-full flex-col'>
+                        {!userFeedback?.getFeedbackForUser?.length
+                          ? 'No feedback yet'
+                          : ''}
+                        {userFeedback?.getFeedbackForUser?.map(
+                          (feedback, idx) =>
+                            feedback?.note ? (
+                              <div
+                                key={feedback._id}
+                                className='w-full justify-start items-start flex-col border-gray-300 border p-2 rounded text-gray-600'
+                              >
+                                <span className='font-semibold text-sm'>
+                                  {feedback?.note}
+                                </span>
+                                <div className='flex items-center gap-2'>
+                                  <StarIcon className='h-3' />
+                                  <span className='text-gray-400 text-sm'>
+                                    {feedback?.rate} / 5
                                   </span>
-                                  <div className='flex items-center gap-2'>
-                                    <StarIcon className='h-3' />
-                                    <span className='text-gray-400 text-sm'>
-                                      {feedback?.rate} / 5
-                                    </span>
-                                  </div>
                                 </div>
-                              ) : null
-                          )}
-                        </div>
+                              </div>
+                            ) : null
+                        )}
+                      </div>
                     </div>
                   </div>
                 </section>
-
               </div>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { use, useContext, useEffect, useState } from 'react';
 import { AuthContext } from 'contexts';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import {
@@ -80,6 +80,7 @@ export const useImagePreview = (file) => {
 };
 
 export const useJobApplications = () => {
+  const [postApproveLoading, setPostApproveLoading] = useState(false);
   const [
     getJobApplicationById,
     {
