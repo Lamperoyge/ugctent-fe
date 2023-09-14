@@ -103,7 +103,7 @@ const ApplicationsList = ({ jobId }) => {
                         </div>
                          <div className="flex flex-col gap-1">
                           <span className="text-sm text-gray-400 font-bold">Message</span>
-                         <span className='text-sm text-gray-800 line-clamp-3 w-full h-full'>
+                         <span className='text-sm text-gray-800 line-clamp-3 w-full h-full break-all'>
                   {application?.message}
                             </span>
                          </div>
